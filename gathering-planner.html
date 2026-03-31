@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Gathering Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #fdf4ff 0%, #eff6ff 55%, #fff1f2 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 4px 48px rgba(139,92,246,0.13), 0 1px 6px rgba(0,0,0,0.05);
+      padding: 40px 44px;
+      max-width: 720px;
+      width: 100%;
+    }
+
+    .app-title {
+      text-align: center; font-size: 19px; font-weight: 900;
+      color: #7c3aed; margin-bottom: 20px; letter-spacing: -0.2px;
+    }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-bottom: 28px; }
+    .prog-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .prog-section { font-size: 11px; font-weight: 800; color: #c4b5fd; text-transform: uppercase; letter-spacing: 0.8px; }
+    .prog-step    { font-size: 12px; font-weight: 700; color: #9ca3af; }
+    .progress-track {
+      height: 8px; background: #f3e8ff; border-radius: 100px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+      border-radius: 100px;
+      transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── Question ── */
+    .q-emoji { display: block; font-size: 52px; text-align: center; margin-bottom: 12px; line-height: 1; }
+    .q-text  { text-align: center; font-size: 26px; font-weight: 900; color: #111827; margin-bottom: 8px; letter-spacing: -0.4px; }
+    .q-sub   { text-align: center; font-size: 14px; color: #6b7280; font-weight: 600; margin-bottom: 8px; }
+    .multi-hint {
+      text-align: center; font-size: 12px; color: #c4b5fd; font-weight: 700;
+      margin-bottom: 20px; letter-spacing: 0.2px;
+    }
+
+    /* ── Options grid ── */
+    .opts { display: grid; gap: 11px; margin-bottom: 4px; }
+    .opts.c2 { grid-template-columns: 1fr 1fr; }
+    .opts.c3 { grid-template-columns: 1fr 1fr 1fr; }
+    .opts.c2 .opt:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 320px; margin: 0 auto; width: 100%; }
+
+    .opt {
+      background: #fafafa; border: 2.5px solid #ede9fe;
+      border-radius: 16px; padding: 16px 11px;
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 5px; text-align: center;
+      transition: all 0.18s ease; font-family: inherit;
+      position: relative;
+    }
+    .opt:hover { border-color: #a855f7; background: #fdf4ff; transform: translateY(-2px); box-shadow: 0 5px 18px rgba(168,85,247,0.17); }
+    .opt.selected { border-color: #a855f7; background: linear-gradient(135deg, #fdf4ff, #fce7f3); box-shadow: 0 0 0 3px rgba(168,85,247,0.14); }
+    .opt.selected .opt-l { color: #7c3aed; }
+
+    .opt-check {
+      position: absolute; top: 8px; right: 8px;
+      width: 20px; height: 20px; background: #a855f7; color: white;
+      border-radius: 50%; font-size: 11px; font-weight: 900;
+      display: none; align-items: center; justify-content: center;
+    }
+    .opt.selected .opt-check { display: flex; }
+
+    .opt-e    { font-size: 28px; line-height: 1; }
+    .opt-l    { font-size: 12.5px; font-weight: 800; color: #1f2937; line-height: 1.2; }
+    .opt-d    { font-size: 11px; color: #9ca3af; font-weight: 600; line-height: 1.3; }
+    .opt-note {
+      font-size: 9.5px; color: #ec4899; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.3px; background: #fce7f3; border-radius: 100px; padding: 2px 8px;
+    }
+    .opt-req { border-color: #ec4899 !important; }
+    .opt-req.selected { background: linear-gradient(135deg, #fff1f2, #fce7f3) !important; }
+
+    /* ── Slider ── */
+    .slider-wrap { padding: 4px 0 24px; }
+    .dur-display {
+      text-align: center; margin-bottom: 24px;
+      background: linear-gradient(135deg, #fdf4ff, #fce7f3);
+      border-radius: 20px; padding: 18px;
+    }
+    .dur-big  { display: block; font-size: 68px; font-weight: 900; color: #7c3aed; line-height: 1; letter-spacing: -2px; }
+    .dur-unit { display: block; font-size: 20px; font-weight: 700; color: #a855f7; margin-top: 2px; }
+    .dur-nice { display: block; font-size: 12px; color: #9ca3af; font-weight: 600; margin-top: 4px; }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 8px; border-radius: 100px;
+      background: #f3e8ff; outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      cursor: pointer; box-shadow: 0 2px 10px rgba(168,85,247,0.45);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 26px; height: 26px; border-radius: 50%; border: none;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      cursor: pointer; box-shadow: 0 2px 10px rgba(168,85,247,0.45);
+    }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 700; color: #c4b5fd; margin-top: 7px; }
+
+    /* ── Text input ── */
+    .text-input {
+      width: 100%; border: 2.5px solid #ede9fe; border-radius: 16px;
+      padding: 20px 22px; font-family: inherit; font-size: 16px;
+      font-weight: 600; color: #1f2937; outline: none;
+      transition: border-color 0.2s; background: #fafafa;
+    }
+    .text-input:focus { border-color: #a855f7; background: white; }
+    .text-input::placeholder { color: #c4b5fd; }
+    .text-hint { font-size: 12px; color: #c4b5fd; font-weight: 600; margin-top: 8px; text-align: center; }
+
+    /* ── Buttons ── */
+    .continue-btn {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: white; border: none; border-radius: 14px;
+      padding: 16px 32px; font-size: 16px; font-weight: 800;
+      font-family: inherit; cursor: pointer;
+      display: block; width: 100%; margin-top: 18px;
+      transition: all 0.2s; box-shadow: 0 4px 16px rgba(168,85,247,0.3);
+    }
+    .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(168,85,247,0.4); }
+    .back-btn {
+      background: none; border: none; font-family: inherit;
+      font-size: 14px; font-weight: 700; color: #9ca3af;
+      cursor: pointer; margin-top: 16px; padding: 6px 0;
+      display: inline-block; transition: color 0.15s;
+    }
+    .back-btn:hover { color: #6b7280; }
+
+    /* ── Transition screen ── */
+    .transition-wrap { text-align: center; }
+    .transition-recap {
+      background: linear-gradient(135deg, #fdf4ff, #eff6ff);
+      border-radius: 18px; padding: 22px 24px; margin-bottom: 24px; text-align: left;
+    }
+    .recap-label { font-size: 11px; font-weight: 800; color: #a855f7; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+      color: #7c3aed; border-radius: 100px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 700;
+    }
+    .transition-next {
+      font-size: 13.5px; color: #6b7280; font-weight: 600;
+      margin-bottom: 24px; line-height: 1.6;
+    }
+    .transition-next strong { color: #7c3aed; }
+
+    /* ── Result ── */
+    .result { text-align: center; padding: 8px 0; }
+    .r-emoji  { font-size: 60px; display: block; margin-bottom: 14px; }
+    .r-title  { font-size: 28px; font-weight: 900; color: #111827; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .r-sub    { font-size: 14px; color: #6b7280; font-weight: 600; margin-bottom: 22px; }
+    .r-tags   { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 24px; }
+    .r-tag    { background: linear-gradient(135deg, #f3e8ff, #fce7f3); color: #7c3aed; border-radius: 100px; padding: 6px 14px; font-size: 12px; font-weight: 700; }
+    .r-desc   { font-size: 14px; color: #374151; font-weight: 600; margin-bottom: 28px; line-height: 1.65; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .dl-btn {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: white; border: none; border-radius: 16px;
+      padding: 18px 36px; font-size: 16px; font-weight: 800;
+      font-family: inherit; cursor: pointer;
+      display: block; width: 100%; max-width: 380px; margin: 0 auto 14px;
+      transition: all 0.2s; box-shadow: 0 4px 20px rgba(168,85,247,0.35);
+    }
+    .dl-btn:hover  { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(168,85,247,0.45); }
+    .restart-btn {
+      background: none; border: none; font-family: inherit;
+      font-size: 13px; font-weight: 700; color: #9ca3af;
+      cursor: pointer; padding: 8px;
+    }
+    .restart-btn:hover { color: #6b7280; }
+
+    @media (max-width: 560px) {
+      .card { padding: 26px 18px; }
+      .opts.c2, .opts.c3 { grid-template-columns: 1fr 1fr; }
+      .opts.c2 .opt:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 100%; }
+      .q-text { font-size: 21px; }
+      .dur-big { font-size: 52px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let S = { step: 0, answers: {} };
+let _sliderVal = 3;
+let _multiSel  = new Set();
+
+// ═══════════════════════════════════════════════════════════════════
+// QUESTIONS  (index 5 is the transition screen)
+// ═══════════════════════════════════════════════════════════════════
+const Qs = [
+  // ── Part 1: The Basics ──────────────────────────────────────────
+  {
+    id:'size', emoji:'🏕️', section:'Part 1 of 2 — The Basics',
+    q:"Who's coming?", sub:"Tell us about the gathering size",
+    cols:2,
+    opts:[
+      {v:'micro',      e:'🌱', l:'Small Gathering',        d:'Under 10 people'},
+      {v:'contingent', e:'⛺', l:'Contingent or Camp',     d:'10–40 at another event or gathering'},
+      {v:'initiation', e:'🔮', l:'Official NAO Initiation',d:'20–40 people, on-site'},
+      {v:'conference', e:'🎪', l:'Conference or Big Party', d:'40+ people'},
+    ]
+  },
+  {
+    id:'purpose', emoji:'✨', section:'Part 1 of 2 — The Basics',
+    q:"What's the vibe?", sub:"How will people be showing up?",
+    cols:2,
+    opts:[
+      {v:'coworking', e:'🏠', l:'Co-Working & Co-Living',  d:'Living together, working on all the things'},
+      {v:'nao',       e:'🚀', l:'Full NAO Sprint',          d:'Entirely focused, sprint-style'},
+      {v:'dropin',    e:'🌊', l:'Drop In & Out',            d:'Visit and engage as you see fit'},
+      {v:'gohard',    e:'🔥', l:'Go Hard',                  d:'Party or conference, a couple days'},
+    ]
+  },
+  {
+    id:'duration', emoji:'⏳', section:'Part 1 of 2 — The Basics',
+    q:"How long?", sub:"Drag the slider to set the duration",
+    type:'slider'
+  },
+  {
+    id:'location', emoji:'📍', section:'Part 1 of 2 — The Basics',
+    q:"Where is it?", sub:"As specific or vague as you like",
+    type:'text', placeholder:'e.g., Joshua Tree house, Burning Man camp, Portland venue...'
+  },
+  {
+    id:'budget', emoji:'💸', section:'Part 1 of 2 — The Basics',
+    q:"What's the money situation?", sub:"How is this gathering funded?",
+    cols:2,
+    opts:[
+      {v:'payyourway',  e:'👛', l:'Pay Your Way',           d:'Everyone covers their own costs'},
+      {v:'somesupport', e:'🤝', l:'Some Support Available', d:'Partial subsidies or scholarships'},
+      {v:'sponsored',   e:'🎁', l:'Fully Sponsored',        d:'Costs covered by the organization'},
+      {v:'produce',     e:'🎟️', l:'Produce to Cover Costs', d:'Events or ticket sales fund it'},
+    ]
+  },
+
+  // ── TRANSITION ──────────────────────────────────────────────────
+  { type:'transition' },
+
+  // ── Part 2: The Planning Details ────────────────────────────────
+  {
+    id:'locationNeeds', emoji:'🏡', section:'Part 2 of 2 — The Details',
+    q:"What do you need in your planner?",
+    sub:"Some venues have things covered — only select what you actually need help planning",
+    cols:2, multiSelect:true,
+    opts:[
+      {v:'sleeping',  e:'🛏️', l:'Sleeping for Everyone',    d:'On-site beds or rooms for all participants'},
+      {v:'cowork',    e:'💻', l:'Workspace & Internet',      d:'Tables, power, and reliable high-speed connection'},
+      {v:'movement',  e:'💃', l:'Movement & Dance Space',    d:'Open floor for dancing, yoga, and ceremony'},
+      {v:'ceremony',  e:'🌿', l:'Sacred or Ceremony Space',  d:'Dedicated quiet space for ritual and medicine work'},
+      {v:'outdoor',   e:'🌳', l:'Outdoor Space',             d:'Essential for smoking, fire, and nature connection'},
+      {v:'kitchen',   e:'🍳', l:'Full Kitchen',              d:'For communal cooking and meal prep'},
+      {v:'quiet',     e:'🔇', l:'Quiet / Rest Zones',        d:'Private areas for sleep, deep work, decompression'},
+    ]
+  },
+  {
+    id:'foodPlan', emoji:'🍽️', section:'Part 2 of 2 — The Details',
+    q:"How will food work?", sub:"Choose the model that fits your gathering",
+    cols:2,
+    opts:[
+      {v:'catered',       e:'👨‍🍳', l:'Fully Catered',          d:'A chef or service handles all meals'},
+      {v:'collaborative', e:'🍳',  l:'Collaborative Cooking',  d:'Meal teams rotate on a schedule'},
+      {v:'hybrid',        e:'🗓️', l:'Hybrid Calendar',         d:'Mix: cooked meals, nights out, and off-nights'},
+      {v:'self',          e:'🏪',  l:'Self-Organized',          d:'Everyone handles their own (not recommended)'},
+    ]
+  },
+  {
+    id:'ceremony', emoji:'🕯️', section:'Part 2 of 2 — The Details',
+    q:"What ceremonies will you hold?", sub:"Select all — these need to be planned ahead of time",
+    cols:2, multiSelect:true,
+    preSelect: a => a.size === 'initiation' ? ['medicine','initiation'] : [],
+    opts:[
+      {v:'embodiment', e:'🌅', l:'Daily Embodiment',       d:'Yoga, breathwork, movement, meditation'},
+      {v:'openclose',  e:'🔥', l:'Opening & Closing',      d:'Ceremonies to open and close the container'},
+      {v:'circles',    e:'🌙', l:'Sharing Circles',        d:'Evening or daily circles for reflection and connection'},
+      {v:'medicine',   e:'🍄', l:'Deep Medicine Ceremony', d:'Breathwork or plant medicine — experienced facilitation required',
+        noteIf: a => a.size === 'initiation', note:'Required for Official Initiations'},
+      {v:'initiation', e:'🎭', l:'Initiation Rites',       d:'Formal rites of passage — the heart of the gathering'},
+      {v:'other',      e:'💫', l:'Other / TBD',            d:'Bring your own rituals and traditions'},
+    ]
+  },
+  {
+    id:'fundingModel', emoji:'🌱', section:'Part 2 of 2 — The Details',
+    q:"How will it be funded?", sub:"Select all that apply — combinations are great",
+    cols:2, multiSelect:true,
+    opts:[
+      {v:'pledges',  e:'💝', l:'Participant Pledges',         d:'Members contribute what they can toward the total'},
+      {v:'orgfunds', e:'🏢', l:'Organizational Funds',        d:'NAO or org covers some or all of the costs'},
+      {v:'produce',  e:'🎟️', l:'Produce a Public Event',      d:'Ticket sales from outside attendees cover inside costs'},
+      {v:'sliding',  e:'🤲', l:'Sliding Scale + Scholarships',d:'Tiered pricing with support for those who need it'},
+    ]
+  },
+  {
+    id:'logisticsNeeds', emoji:'🚦', section:'Part 2 of 2 — The Details',
+    q:"What logistics need coordination?", sub:"Select everything — nothing falls through the cracks",
+    cols:2, multiSelect:true,
+    opts:[
+      {v:'transport', e:'✈️', l:'Airport & Transit Pickups', d:'Coordinating arrivals and departures'},
+      {v:'sleeping',  e:'🏠', l:'Sleeping Assignments',      d:'Who sleeps where — room and bed planning'},
+      {v:'carpool',   e:'🚗', l:'Carpools & Group Travel',   d:'Ride coordination between participants'},
+      {v:'dietary',   e:'🥗', l:'Food & Dietary Needs',      d:'Restrictions, allergies, and preferences'},
+      {v:'access',    e:'♿', l:'Accessibility',             d:'Mobility, sensory, or other access needs'},
+      {v:'health',    e:'💚', l:'Health & Wellness',         d:'Medications, medical needs, emotional support'},
+      {v:'none',      e:'✅', l:'None / All Handled',        d:'Logistics are already sorted'},
+    ]
+  },
+];
+
+const TOTAL_REAL_STEPS = 10; // excluding transition
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════
+function render() {
+  const app = document.getElementById('app');
+  if (S.step >= Qs.length) { renderResult(app); return; }
+  const q = Qs[S.step];
+  if (q.type === 'transition') { renderTransition(app); return; }
+  if (q.type === 'slider')     { renderSlider(app, q);   return; }
+  if (q.type === 'text')       { renderText(app, q);     return; }
+  if (q.multiSelect)           { renderMulti(app, q);    return; }
+  renderSingle(app, q);
+}
+
+function progressHTML(q) {
+  const isTransition = q && q.type === 'transition';
+  // Real step position: steps 0-4 → 0-4, transition → 4.5, steps 6-10 → 5-9
+  let pos = S.step;
+  if (S.step > 5) pos = S.step - 1;
+  else if (S.step === 5) pos = 4.5;
+  const pct = (pos / TOTAL_REAL_STEPS) * 100;
+  const section = isTransition ? 'Halfway there!' : (q && q.section) || '';
+  // step display: 1-5, then 6-10 (skip transition)
+  const displayStep = S.step < 5 ? S.step + 1 : S.step > 5 ? S.step : null;
+  return `
+    <div class="app-title">✨ Gathering Planner</div>
+    <div class="progress-wrap">
+      <div class="prog-header">
+        <span class="prog-section">${section}</span>
+        ${displayStep ? `<span class="prog-step">Step ${displayStep} of ${TOTAL_REAL_STEPS}</span>` : ''}
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+}
+
+function renderSingle(app, q) {
+  app.innerHTML = `
+    ${progressHTML(q)}
+    <span class="q-emoji">${q.emoji}</span>
+    <h2 class="q-text">${q.q}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <div class="opts c${q.cols}">
+      ${q.opts.map(o=>`
+        <button class="opt" onclick="pick('${q.id}','${o.v}')">
+          <div class="opt-check">✓</div>
+          <span class="opt-e">${o.e}</span>
+          <span class="opt-l">${o.l}</span>
+          <span class="opt-d">${o.d}</span>
+        </button>`).join('')}
+    </div>
+    ${S.step>0?`<button class="back-btn" onclick="back()">← Back</button>`:''}
+  `;
+}
+
+function renderMulti(app, q) {
+  // Initialize selection state
+  if (S.answers[q.id]) {
+    _multiSel = new Set(S.answers[q.id]);
+  } else {
+    const pre = q.preSelect ? q.preSelect(S.answers) : [];
+    _multiSel = new Set(pre);
+  }
+
+  app.innerHTML = `
+    ${progressHTML(q)}
+    <span class="q-emoji">${q.emoji}</span>
+    <h2 class="q-text">${q.q}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <p class="multi-hint">Tap to select — choose as many as apply</p>
+    <div class="opts c${q.cols}" id="multiOpts">
+      ${q.opts.map(o => {
+        const showNote = o.noteIf && o.noteIf(S.answers);
+        const isReq = showNote && _multiSel.has(o.v);
+        const isSel = _multiSel.has(o.v);
+        return `
+          <button class="opt${isSel?' selected':''}${showNote?' opt-req':''}" data-val="${o.v}" onclick="toggleOpt('${o.v}',this)">
+            <div class="opt-check">✓</div>
+            <span class="opt-e">${o.e}</span>
+            <span class="opt-l">${o.l}</span>
+            <span class="opt-d">${o.d}</span>
+            ${showNote ? `<span class="opt-note">${o.note}</span>` : ''}
+          </button>`;
+      }).join('')}
+    </div>
+    <button class="continue-btn" onclick="pickMulti('${q.id}')">Continue →</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  `;
+}
+
+function renderSlider(app, q) {
+  const d = durFmt(_sliderVal);
+  app.innerHTML = `
+    ${progressHTML(q)}
+    <span class="q-emoji">${q.emoji}</span>
+    <h2 class="q-text">${q.q}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <div class="slider-wrap">
+      <div class="dur-display">
+        <span class="dur-big" id="durBig">${d.big}</span>
+        <span class="dur-unit" id="durUnit">${d.unit}</span>
+        <span class="dur-nice" id="durNice">${d.nice}</span>
+      </div>
+      <input type="range" min="1" max="365" value="${_sliderVal}" id="durSlider" oninput="onSlider(this.value)">
+      <div class="slider-labels"><span>1 day</span><span>1 week</span><span>1 month</span><span>6 months</span><span>1 year</span></div>
+    </div>
+    <button class="continue-btn" onclick="pickSlider()">Continue →</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  `;
+  updateSliderTrack(_sliderVal);
+}
+
+function renderText(app, q) {
+  app.innerHTML = `
+    ${progressHTML(q)}
+    <span class="q-emoji">${q.emoji}</span>
+    <h2 class="q-text">${q.q}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <input type="text" class="text-input" id="locInput"
+           placeholder="${q.placeholder}" value="${S.answers.location||''}"
+           onkeydown="if(event.key==='Enter')pickText()">
+    <p class="text-hint">Press Enter or tap Continue</p>
+    <button class="continue-btn" onclick="pickText()">Continue →</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  `;
+  setTimeout(()=>{ const el=document.getElementById('locInput'); if(el) el.focus(); },50);
+}
+
+function renderTransition(app) {
+  const a = S.answers;
+  app.innerHTML = `
+    ${progressHTML(Qs[5])}
+    <div class="transition-wrap">
+      <span class="q-emoji">🗺️</span>
+      <h2 class="q-text">The basics are locked in!</h2>
+      <p class="q-sub" style="margin-bottom:24px">Now let's plan the details that make it real.</p>
+      <div class="transition-recap">
+        <div class="recap-label">Your gathering so far</div>
+        <div class="pills">
+          <span class="pill">🏕️ ${sizeLabel(a.size)}</span>
+          <span class="pill">✨ ${purposeLabel(a.purpose)}</span>
+          <span class="pill">⏳ ${durationLabel(a.duration)}</span>
+          <span class="pill">📍 ${a.location||'TBD'}</span>
+          <span class="pill">💸 ${budgetLabel(a.budget)}</span>
+        </div>
+      </div>
+      <p class="transition-next">
+        Next we'll go deeper into:<br>
+        <strong>Location needs → Food plan → Ceremony & ritual → Funding model → Logistics</strong>
+      </p>
+      <button class="continue-btn" onclick="nextStep()">Let's plan the details →</button>
+      <button class="back-btn" onclick="back()">← Back</button>
+    </div>
+  `;
+}
+
+function renderResult(app) {
+  const a = S.answers;
+  const sheets = ['Overview', 'Checklist', 'Budget & Funding', 'Guest List & Logistics', 'Daily Schedule'];
+  if (a.foodPlan && a.foodPlan !== 'self')      sheets.push('Meal Calendar');
+  if (a.ceremony && a.ceremony.length > 0)     sheets.push('Ceremony Plan');
+
+  app.innerHTML = `
+    <div class="result">
+      <span class="r-emoji">🎊</span>
+      <h2 class="r-title">Your full planner is ready!</h2>
+      <p class="r-sub">Everything you need to make it happen</p>
+      <div class="r-tags" style="margin-bottom:16px">
+        <span class="r-tag">🏕️ ${sizeLabel(a.size)}</span>
+        <span class="r-tag">✨ ${purposeLabel(a.purpose)}</span>
+        <span class="r-tag">⏳ ${durationLabel(a.duration)}</span>
+        <span class="r-tag">📍 ${a.location||'TBD'}</span>
+      </div>
+      <div class="r-tags">
+        <span class="r-tag">💸 ${budgetLabel(a.budget)}</span>
+        <span class="r-tag">🍽️ ${foodLabel(a.foodPlan)}</span>
+        ${(a.ceremony||[]).includes('medicine') ? '<span class="r-tag" style="background:linear-gradient(135deg,#fff1f2,#fce7f3)">🍄 Medicine Ceremony</span>' : ''}
+        ${(a.fundingModel||[]).includes('produce') ? '<span class="r-tag">🎟️ Public Event</span>' : ''}
+      </div>
+      <p class="r-desc" style="margin-top:24px">
+        Your download includes <strong>${sheets.length} planning sheets</strong>:
+        ${sheets.map(s=>`<em>${s}</em>`).join(', ')}.
+        Everything is tailored to your specific gathering.
+      </p>
+      <button class="dl-btn" onclick="generate()">📥 Download My Full Gathering Planner</button>
+      <br><button class="restart-btn" onclick="restart()">↩ Start over</button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════════
+function pick(id,val)    { S.answers[id]=val; S.step++; render(); }
+function pickSlider()    { S.answers.duration=_sliderVal; S.step++; render(); }
+function pickText()      { const v=document.getElementById('locInput')?.value||''; S.answers.location=v||'TBD'; S.step++; render(); }
+function pickMulti(id)   { S.answers[id]=[..._multiSel]; S.step++; render(); }
+function nextStep()      { S.step++; render(); }
+function back()          { S.step=Math.max(0,S.step-1); render(); }
+function restart()       { S={step:0,answers:{}}; _sliderVal=3; _multiSel=new Set(); render(); }
+
+function toggleOpt(val, btn) {
+  if (_multiSel.has(val)) {
+    _multiSel.delete(val);
+    btn.classList.remove('selected');
+  } else {
+    _multiSel.add(val);
+    btn.classList.add('selected');
+  }
+}
+
+function onSlider(val) {
+  _sliderVal = parseInt(val);
+  const d = durFmt(_sliderVal);
+  const big = document.getElementById('durBig');
+  const unit = document.getElementById('durUnit');
+  const nice = document.getElementById('durNice');
+  if (big)  big.textContent  = d.big;
+  if (unit) unit.textContent = d.unit;
+  if (nice) nice.textContent = d.nice;
+  updateSliderTrack(val);
+}
+
+function updateSliderTrack(val) {
+  const el = document.getElementById('durSlider');
+  if (!el) return;
+  const pct = ((val-1)/364)*100;
+  el.style.background = `linear-gradient(90deg, #a855f7 ${pct}%, #f3e8ff ${pct}%)`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LABELS
+// ═══════════════════════════════════════════════════════════════════
+function durFmt(days) {
+  days = parseInt(days);
+  if (days===1)  return {big:'1',    unit:'day',    nice:'a single day'};
+  if (days<8)    return {big:String(days), unit:'days',   nice:`${days} days`};
+  if (days<14)   return {big:'1',    unit:'week',   nice:`${days} days`};
+  if (days<30)   return {big:String(Math.round(days/7)), unit:'weeks', nice:`~${days} days`};
+  if (days<60)   return {big:'1',    unit:'month',  nice:`~${days} days`};
+  if (days<365)  return {big:String(Math.round(days/30)), unit:'months', nice:`~${days} days`};
+  return               {big:'1',    unit:'year',   nice:'the full journey'};
+}
+
+function durationLabel(d) {
+  if (!d) return 'TBD';
+  const f = durFmt(d);
+  return `${f.big} ${f.unit}`;
+}
+
+const sizeLabel    = v => ({micro:'Small Gathering (<10)',contingent:'Contingent / Camp (10–40)',initiation:'Official NAO Initiation (20–40)',conference:'Conference / Big Party (40+)'}[v]||v||'—');
+const purposeLabel = v => ({coworking:'Co-Working & Co-Living',nao:'Full NAO Sprint',dropin:'Drop In & Out',gohard:'Go Hard'}[v]||v||'—');
+const budgetLabel  = v => ({payyourway:'Pay Your Way',somesupport:'Some Support Available',sponsored:'Fully Sponsored',produce:'Produce to Cover Costs'}[v]||v||'—');
+const foodLabel    = v => ({catered:'Fully Catered',collaborative:'Collaborative Cooking',hybrid:'Hybrid Calendar',self:'Self-Organized'}[v]||v||'—');
+
+function eventName(a) {
+  const p = {coworking:'Residency',nao:'NAO Sprint',dropin:'Open Gathering',gohard:'Event'}[a.purpose]||'Gathering';
+  const s = {micro:'Intimate',contingent:'Camp',initiation:'Initiation',conference:'Full'}[a.size]||'';
+  return `${s} ${p}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CHECKLIST BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildChecklist(a) {
+  const rows = [];
+  const T = (task,cat,priority,timing,notes) =>
+    rows.push([task, cat, priority, timing||'—', 'To Do', '', notes||'']);
+
+  const ceremony  = a.ceremony        || [];
+  const locNeeds  = a.locationNeeds   || [];
+  const funding   = a.fundingModel    || [];
+  const logistics = a.logisticsNeeds  || [];
+  const days      = parseInt(a.duration)||3;
+
+  // ── Universal ──────────────────────────────────────────────────
+  T('Define the purpose, intention, and desired outcomes',          'Planning',      'High',   'First thing');
+  T('Create participant list and send invitations',                 'Planning',      'High',   'Early');
+  T('Set up group communication channel (Signal, Discord, etc.)',   'Communication', 'High',   'Early');
+  T('Confirm dates and share logistics with all participants',      'Communication', 'High',   'Early');
+  T('Prepare arrival info packet (address, timing, what to bring)','Communication', 'Medium', 'Week before');
+  T('Conduct arrival welcome and orientation on day one',           'Day-of',        'High',   'Day 1');
+  T('Hold closing circle or group wrap-up on final day',            'Programming',   'High',   'Last day');
+  T('Send post-gathering message and next steps',                   'Follow-up',     'Medium', 'Day after');
+  T('Collect reflections and feedback from participants',           'Follow-up',     'Medium', 'Day after');
+  T('Document decisions, outputs, and commitments made',            'Follow-up',     'Medium', 'Within a week');
+
+  // ── Size-specific ──────────────────────────────────────────────
+  if (a.size === 'micro') {
+    T('Book space: Airbnb, house, cabin, or borrowed venue',        'Venue',         'High',   'ASAP');
+    T('Confirm all sleeping arrangements for everyone',             'Logistics',     'High',   'Week before');
+    T('Plan shared meals and kitchen responsibilities',             'Food',          'Medium', 'Week before');
+    T('Coordinate arrival and departure windows with everyone',     'Logistics',     'Medium', 'Week before');
+    T('Arrange carpools, directions, and parking',                  'Logistics',     'Medium', 'Week before');
+  } else if (a.size === 'contingent') {
+    T('Register the group with the host event',                     'Logistics',     'High',   'ASAP');
+    T('Coordinate group ticket or registration purchase',           'Finance',       'High',   'ASAP');
+    T('Plan camp or accommodation setup at the event site',         'Venue',         'High',   'Before event');
+    T('Build a shared pack list and communal supplies manifest',    'Logistics',     'Medium', 'Week before');
+    T('Assign camp roles: setup crew, food team, teardown, safety','Planning',      'Medium', 'Week before');
+    T('Arrange group carpool, van rental, or transit coordination', 'Logistics',     'Medium', 'Week before');
+    T('Create internal schedule alongside the host event program',  'Programming',   'Medium', 'Week before');
+    T('Plan leave-no-trace and full teardown process',             'Logistics',     'High',   'Last day');
+  } else if (a.size === 'initiation') {
+    T('Book and prepare the ceremony and gathering space',          'Venue',         'High',   'ASAP');
+    T('Prepare initiation sequence, materials, and facilitator guides','Programming','High',   'Weeks before');
+    T('Send pre-ceremony preparation materials to all participants','Communication', 'High',   'Week before');
+    T('Confirm and brief guides, elders, and ceremony holders',    'Programming',   'High',   'Weeks before');
+    T('Design integration support plan for post-ceremony period',  'Programming',   'High',   'Weeks before');
+    T('Prepare welcome resources for newly initiated members',     'Planning',      'Medium', 'Week before');
+    T('Document ceremony proceedings for community records',       'Follow-up',     'Low',    'After');
+  } else {
+    T('Book venue and confirm AV, catering, and all logistics',     'Venue',         'High',   'ASAP');
+    T('Build registration and ticketing system',                   'Logistics',     'High',   'ASAP');
+    T('Design full program, schedule, and session tracks',         'Programming',   'High',   'Weeks before');
+    T('Recruit and confirm speakers, facilitators, and performers','Programming',   'High',   'Weeks before');
+    T('Plan food and beverage for all meals and service points',   'Food',          'High',   'Weeks before');
+    T('Set up AV, sound, production, and tech needs',             'Venue',         'High',   'Day before');
+    T('Recruit, brief, and schedule volunteers',                   'Logistics',     'Medium', 'Weeks before');
+    T('Create signage, wayfinding, and printed materials',        'Logistics',     'Medium', 'Week before');
+    T('Plan accessibility and safety measures',                    'Logistics',     'High',   'Weeks before');
+  }
+
+  // ── Vibe / Purpose ─────────────────────────────────────────────
+  if (a.purpose === 'coworking') {
+    T('Co-create house rules, agreements, and shared norms',       'Planning',      'High',   'Day 1', 'Do this together — not imposed');
+    T('Create meal plan, cooking rotation, and grocery cadence',   'Food',          'High',   'Day 1');
+    T('Set up internet, workstations, and shared tech',            'Venue',         'High',   'Before start');
+    T('Establish daily standup or morning check-in ritual',        'Programming',   'Medium', 'Day 1');
+    T('Create household responsibility rotation (chores, cleaning)','Logistics',    'Medium', 'Day 1');
+    T('Define deep-work norms: quiet hours, "do not disturb" signals','Planning',   'Medium', 'Day 1');
+    T('Plan shared grocery runs and supply restocking cadence',    'Logistics',     'Medium', 'Ongoing');
+  } else if (a.purpose === 'nao') {
+    T('Define sprint goals, deliverables, and success metrics',    'Planning',      'High',   'Day 1');
+    T('Build focused daily schedule — protect deep work blocks',   'Programming',   'High',   'Day 1');
+    T('Set up shared tools, docs, repos, and digital workspaces',  'Logistics',     'High',   'Before start');
+    T('Define working groups, roles, and responsibilities',        'Planning',      'Medium', 'Day 1');
+    T('Run daily standup (morning) and end-of-day review',        'Programming',   'High',   'Daily');
+    T('Maintain shared decision log and action items document',    'Follow-up',     'High',   'Daily');
+    T('Plan and run sprint retrospective on final day',           'Programming',   'High',   'Last day');
+    T('Publish and distribute sprint outputs to the wider org',   'Follow-up',     'High',   'After');
+  } else if (a.purpose === 'dropin') {
+    T('Communicate anchor times and key gathering moments clearly','Communication', 'High',   'Before');
+    T('Set up self-serve hospitality station: snacks, drinks, info','Logistics',    'Medium', 'Day of');
+    T('Create visible schedule of optional activities',            'Programming',   'Medium', 'Day of');
+    T('Design easy and welcoming arrival experience',             'Logistics',     'Medium', 'Day of');
+    T('Prepare low-key activities for in-between moments',        'Programming',   'Low',    'Day of');
+  } else {
+    T('Design entertainment, speaker, or performance lineup',      'Programming',   'High',   'Weeks before');
+    T('Plan activities, structured fun, and gathering flow',       'Programming',   'High',   'Week before');
+    T('Arrange sound, lighting, and production',                   'Venue',         'High',   'Day before');
+    T('Build hype: invitations, outreach, word of mouth',         'Communication', 'High',   'Weeks before');
+    T('Plan safety, consent culture, and harm-reduction approach','Logistics',     'High',   'Weeks before');
+    T('Set up bar, beverage service, or mocktail station',        'Food',          'Medium', 'Day before');
+    T('Create MC or host plan with timing cues',                   'Programming',   'Medium', 'Day before');
+  }
+
+  // ── Location Needs ─────────────────────────────────────────────
+  if (locNeeds.includes('sleeping')) {
+    T('Audit space for sleeping capacity and make room assignments','Venue',        'High',   'Weeks before');
+    T('Arrange extra bedding, pillows, or cots as needed',         'Logistics',     'Medium', 'Week before');
+    T('Share room assignment map with all participants',           'Communication', 'Medium', 'Week before');
+  }
+  if (locNeeds.includes('cowork')) {
+    T('Test and upgrade internet connection if needed',            'Venue',         'High',   'Weeks before', 'Get fiber or hotspot backup');
+    T('Set up workstations: tables, power strips, monitors',      'Venue',         'Medium', 'Day before');
+  }
+  if (locNeeds.includes('movement')) {
+    T('Clear and prepare movement / dance floor space',           'Venue',         'Medium', 'Day before');
+    T('Source or set up sound system for movement sessions',      'Venue',         'Medium', 'Day before');
+  }
+  if (locNeeds.includes('ceremony')) {
+    T('Designate and prepare sacred or ceremony space',           'Venue',         'High',   'Day before', 'Keep this space clean and intentional');
+    T('Set up altar, candles, and ceremonial elements',           'Venue',         'Medium', 'Day of ceremony');
+  }
+  if (locNeeds.includes('outdoor')) {
+    T('Confirm outdoor space access and any permit requirements', 'Venue',         'High',   'ASAP');
+    T('Set up outdoor seating, fire pit, or gathering area',      'Venue',         'Medium', 'Day before');
+    T('Ensure designated smoking and fire area is safe and clear','Venue',         'Medium', 'Day of');
+  }
+  if (locNeeds.includes('kitchen')) {
+    T('Audit kitchen equipment: pots, pans, knives, appliances',  'Venue',         'Medium', 'Week before');
+    T('Stock pantry staples (oils, spices, condiments)',           'Food',          'Medium', 'Day before');
+  }
+  if (locNeeds.includes('quiet')) {
+    T('Designate quiet zones and communicate their purpose',      'Venue',         'Medium', 'Day 1');
+    T('Post "quiet zone" signage and share in group agreements',  'Communication', 'Low',    'Day 1');
+  }
+
+  // ── Food Plan ──────────────────────────────────────────────────
+  if (a.foodPlan === 'catered') {
+    T('Research and select a caterer or chef service',            'Food',          'High',   'ASAP');
+    T('Share dietary restrictions and headcount with caterer',    'Food',          'High',   'Weeks before');
+    T('Confirm menu, delivery schedule, and service logistics',   'Food',          'High',   'Week before');
+    T('Arrange any kitchen equipment or serving ware needed',     'Food',          'Medium', 'Day before');
+  } else if (a.foodPlan === 'collaborative') {
+    T('Build cooking rotation schedule (who cooks which meals)',  'Food',          'High',   'Week before');
+    T('Create shared grocery list and procurement plan',          'Food',          'High',   'Week before');
+    T('Collect all dietary restrictions and share with all cooks','Food',          'High',   'Week before');
+    T('Assign kitchen lead for each cooking day/meal',            'Food',          'Medium', 'Week before');
+    T('Plan grocery runs and shop in advance or on arrival',      'Food',          'Medium', 'Day before / Day of');
+    T('Create shared recipe suggestions or meal idea bank',       'Food',          'Low',    'Week before');
+  } else if (a.foodPlan === 'hybrid') {
+    T('Build hybrid meal calendar (cook nights vs. nights off)',  'Food',          'High',   'Week before');
+    T('Identify nearby restaurants or food options for nights out','Food',         'Medium', 'Week before');
+    T('Plan and schedule cooking rotation for in-house meals',    'Food',          'Medium', 'Week before');
+    T('Collect dietary restrictions for communal meals',          'Food',          'High',   'Week before');
+  } else {
+    T('⚠️ SELF-ORGANIZED FOOD: communicate clearly to all participants that meals are their own responsibility', 'Food', 'High', 'Early', 'Ensure everyone knows and has what they need');
+    T('Share info about nearby grocery stores and restaurants',   'Food',          'Medium', 'Before arrival');
+  }
+
+  // ── Ceremony & Ritual ──────────────────────────────────────────
+  if (ceremony.includes('embodiment')) {
+    T('Confirm daily embodiment facilitator (yoga, movement, breathwork)','Ceremony','High', 'Weeks before');
+    T('Prepare morning embodiment space: mats, music, open floor','Ceremony',       'Medium','Day before');
+    T('Create daily embodiment schedule and share with all',       'Communication', 'Medium', 'Week before');
+  }
+  if (ceremony.includes('openclose')) {
+    T('Design opening ceremony sequence and gather materials',     'Ceremony',      'High',   'Weeks before');
+    T('Design closing ceremony sequence (mirror of the opening)',  'Ceremony',      'High',   'Weeks before');
+    T('Confirm ceremony holder or officiant for opening/closing',  'Ceremony',      'High',   'Weeks before');
+    T('Set up ceremony space: altar, candles, circle seating',     'Ceremony',      'High',   'Day before');
+  }
+  if (ceremony.includes('circles')) {
+    T('Create sharing circle prompts for each planned circle',     'Ceremony',      'Medium', 'Week before');
+    T('Source a talking piece for circle work',                    'Ceremony',      'Low',    'Week before', 'A stone, feather, or meaningful object');
+    T('Identify rotating circle facilitators across the gathering','Ceremony',      'Medium', 'Week before');
+  }
+  if (ceremony.includes('medicine')) {
+    T('⚠️ MEDICINE: Source and confirm an experienced ceremony facilitator','Ceremony','High', 'ASAP', 'This is non-negotiable — do not proceed without qualified facilitation');
+    T('Conduct health screening for all participants',              'Ceremony',      'High',   'Weeks before', 'Screen for MAOIs, SSRIs, antidepressants, lithium, heart conditions, psychosis history');
+    T('Prepare ceremony space: music, blankets, basins, eye masks, water','Ceremony','High',  'Day before');
+    T('Confirm sober sitters / helpers for ceremony support',      'Ceremony',      'High',   'Week before', 'At minimum 1 sober support per 5 participants');
+    T('Run pre-ceremony preparation session with all participants','Ceremony',      'High',   'Day before', 'Intention setting, container agreements, logistics');
+    T('Hold post-ceremony integration circle (morning after)',     'Ceremony',      'High',   'Day after');
+    T('Plan integration rest day — no heavy scheduling after ceremony','Programming','High',  'Day after');
+    T('Offer 1:1 integration support in the days following',       'Follow-up',     'High',   'Following week');
+    T('Review legal and safety guidelines for your jurisdiction',  'Ceremony',      'High',   'ASAP', 'Laws vary widely — know your context');
+  }
+  if (ceremony.includes('initiation')) {
+    T('Prepare full initiation sequence with elders or guides',    'Ceremony',      'High',   'Weeks before');
+    T('Source all initiation materials and ceremonial objects',    'Ceremony',      'High',   'Week before');
+    T('Run pre-initiation preparation session with initiates',     'Ceremony',      'High',   'Day before');
+    T('Plan post-initiation welcoming ceremony and integration',   'Ceremony',      'High',   'After ceremony');
+    T('Prepare and share post-initiation resources and next steps','Follow-up',     'Medium', 'After ceremony');
+  }
+
+  // ── Funding Model ──────────────────────────────────────────────
+  if (funding.includes('pledges')) {
+    T('Set overall cost target and calculate per-person pledge',   'Finance',       'High',   'ASAP');
+    T('Build pledge tracker and share with participants',          'Finance',       'High',   'Early');
+    T('Collect pledges and confirm commitments in writing',        'Finance',       'High',   'Weeks before');
+    T('Follow up on unfulfilled pledges ahead of the gathering',  'Finance',       'Medium', 'Week before');
+    T('Reconcile total pledges vs. actual costs at close',        'Finance',       'High',   'After');
+  }
+  if (funding.includes('orgfunds')) {
+    T('Draft detailed budget proposal with all line items',        'Finance',       'High',   'ASAP');
+    T('Submit for organizational approval',                        'Finance',       'High',   'ASAP');
+    T('Set up expense tracking and receipt collection',            'Finance',       'High',   'Before start');
+    T('Track all expenses against approved budget in real time',  'Finance',       'Medium', 'Ongoing');
+    T('Submit final expense report and reconciliation',            'Finance',       'High',   'After');
+  }
+  if (funding.includes('produce')) {
+    T('Define revenue-generating activities: tickets, workshops, offerings','Finance','High', 'ASAP');
+    T('Set pricing to meet total cost targets (with buffer)',      'Finance',       'High',   'ASAP');
+    T('Build ticketing, registration, or sales infrastructure',   'Finance',       'High',   'ASAP');
+    T('Launch marketing and outreach for the public event',        'Communication', 'High',   'Weeks before');
+    T('Track revenue in real time and adjust if needed',           'Finance',       'High',   'Ongoing');
+    T('Create contingency plan if revenue falls short of target', 'Finance',       'Medium', 'Before event');
+    T('Reconcile all revenue and expenses at close',              'Finance',       'High',   'After');
+  }
+  if (funding.includes('sliding')) {
+    T('Define subsidy pool size and funding source',               'Finance',       'High',   'ASAP');
+    T('Design tiered pricing or sliding scale structure',          'Finance',       'High',   'Early');
+    T('Build scholarship or support application process',          'Finance',       'Medium', 'Early');
+    T('Review applications and award subsidies',                   'Finance',       'High',   'Weeks before');
+    T('Track full-pay vs. subsidized participants',                'Finance',       'Medium', 'Ongoing');
+  }
+
+  // ── Logistics Needs ────────────────────────────────────────────
+  if (logistics.includes('transport')) {
+    T('Collect all arrival and departure details from participants','Logistics',    'High',   'Week before');
+    T('Build airport / train station pickup schedule',             'Logistics',     'High',   'Week before');
+    T('Recruit and confirm volunteer drivers',                     'Logistics',     'High',   'Week before');
+    T('Share transport plan and pickup details with everyone',     'Communication', 'Medium', 'Week before');
+    T('Coordinate departure and drop-off plan for final day',     'Logistics',     'Medium', 'Day before last');
+  }
+  if (logistics.includes('sleeping')) {
+    T('Create full room and bed assignment chart',                 'Logistics',     'High',   'Week before');
+    T('Communicate sleeping assignments to all participants',      'Communication', 'Medium', 'Week before');
+    T('Ensure bedding, towels, and bathroom access for each person','Logistics',   'Medium', 'Day before');
+  }
+  if (logistics.includes('carpool')) {
+    T('Build carpool matching sheet: origins, timing, capacity',  'Logistics',     'High',   'Week before');
+    T('Share and finalize carpool arrangements with all drivers',  'Communication', 'Medium', 'Week before');
+  }
+  if (logistics.includes('dietary')) {
+    T('Collect all dietary restrictions, allergies, and preferences','Logistics',  'High',   'Weeks before');
+    T('Share dietary needs with whoever is responsible for food',  'Communication', 'High',   'Week before');
+    T('Ensure all communal meals respect collected restrictions',  'Food',          'High',   'Ongoing');
+  }
+  if (logistics.includes('access')) {
+    T('Audit venue for accessibility: mobility, sensory, other',  'Logistics',     'High',   'Weeks before');
+    T('Collect accessibility needs from each participant',        'Communication', 'High',   'Weeks before');
+    T('Arrange any accommodations or adaptations needed',         'Logistics',     'High',   'Weeks before');
+  }
+  if (logistics.includes('health')) {
+    T('Collect health and medication info from participants',      'Logistics',     'High',   'Weeks before', 'Especially important if medicine ceremony is planned');
+    T('Identify a health / wellness point of contact for the gathering','Planning', 'Medium', 'Weeks before');
+    T('Prepare and stock a first aid kit',                        'Logistics',     'High',   'Day before');
+    T('Collect emergency contact information from all participants','Logistics',   'High',   'Week before');
+  }
+
+  // ── Duration nudge ─────────────────────────────────────────────
+  if (days >= 30) {
+    T('Set up recurring weekly check-ins or planning calls',       'Programming',   'Medium', 'Ongoing');
+    T('Create a shared living calendar for all gatherings',        'Logistics',     'Medium', 'Before start');
+    T('Plan supply restocking and logistics for long duration',    'Logistics',     'Medium', 'Ongoing');
+  }
+  if (days >= 90) {
+    T('Define shared budget review cadence (monthly)',             'Finance',       'Medium', 'Ongoing');
+    T('Create a documented shared decision-making process',        'Planning',      'Medium', 'Early');
+    T('Plan mid-gathering check-in or re-commitment ceremony',    'Programming',   'Medium', 'Midpoint');
+  }
+
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BUDGET BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildBudget(a) {
+  const rows = [];
+  const B = (cat,item,est,notes) => rows.push([cat, item, est||0, '', 'No', notes||'']);
+  const funding   = a.fundingModel || [];
+  const ceremony  = a.ceremony     || [];
+  const locNeeds  = a.locationNeeds|| [];
+  const logistics = a.logisticsNeeds||[];
+  const days      = parseInt(a.duration)||3;
+  const hc        = {micro:7,contingent:25,initiation:30,conference:60}[a.size]||15;
+  const foodPlan  = a.foodPlan;
+  const foodPPday = {catered:80, collaborative:30, hybrid:45, self:0}[foodPlan]||35;
+  const mealDays  = Math.min(days, 30);
+
+  // ── Revenue section (if producing public event) ──
+  if (funding.includes('produce')) {
+    rows.push(['— REVENUE —','','','','','']);
+    B('Revenue','Ticket sales — public event',        0, 'Price × projected attendance');
+    B('Revenue','Workshop or workshop session fees',  0, 'If offering paid sessions or workshops');
+    B('Revenue','Offerings and love donations',       0, 'Optional — sliding scale or gratitude gifts');
+    B('Revenue','Sponsorships',                       0, 'Org, brand, or aligned community sponsors');
+    B('Revenue','Other income',                       0, '');
+    rows.push(['TOTAL REVENUE TARGET','', 0,'', '', '=SUM above']);
+    rows.push(['','','','','','']);
+    rows.push(['— EXPENSES —','','','','','']);
+  }
+
+  // ── Venue / Accommodation ──
+  const nightlyEst = {micro:150,contingent:50,initiation:400,conference:1200}[a.size]||250;
+  const nights = Math.max(1, Math.ceil(days * 0.9));
+  B('Venue','Space rental / Airbnb / venue fee', nightlyEst*nights, `${nights} nights × $${nightlyEst}/night est.`);
+  if (locNeeds.includes('sleeping')) {
+    B('Venue','Extra bedding, cots, or linens',  Math.round(hc*8), 'If venue needs supplementing');
+  }
+  if (locNeeds.includes('cowork')) {
+    B('Venue','Internet upgrade or hotspot',      0, 'If existing connection is insufficient');
+    B('Venue','Power strips, cables, workstation supplies', Math.round(hc*5), '');
+  }
+  if (locNeeds.includes('movement')) {
+    B('Venue','Sound system rental for movement space', 0, 'Bluetooth speaker or PA');
+  }
+  if (locNeeds.includes('outdoor')) {
+    B('Venue','Outdoor furniture, fire pit, or setup',   0, 'If not provided');
+  }
+  if (a.size === 'contingent') {
+    B('Venue','Host event group registration/tickets',   0, 'Varies widely by event');
+    B('Venue','Camping permit or hookup fees',           0, '');
+  }
+  if (a.size === 'conference') {
+    B('Venue','Venue security deposit (refundable)',     0, '');
+    B('Venue','AV and production rental',                0, 'Sound, lighting, screens, streaming');
+  }
+
+  // ── Food ──
+  if (foodPlan !== 'self') {
+    B('Food','Groceries and communal meals',     Math.round(hc*foodPPday*mealDays*0.7), `${hc} people × $${Math.round(foodPPday*0.7)}/day × ${mealDays} days`);
+    B('Food','Coffee, beverages, and snacks',    Math.round(hc*8*mealDays), '');
+    B('Food','Cooking supplies and pantry staples',Math.round(hc*4), 'Oils, spices, condiments, etc.');
+    if (foodPlan === 'catered') {
+      B('Food','Caterer or chef service fee',    0, 'Get a quote from your caterer');
+    }
+    if (foodPlan === 'hybrid') {
+      B('Food','Nights out / restaurants budget',Math.round(hc*35*Math.floor(days/4)), 'Estimate for group meals out');
+    }
+  }
+
+  // ── Ceremony ──
+  if (ceremony.length > 0) {
+    B('Ceremony','Ceremony supplies: candles, altarware, talking pieces', Math.round(hc*5), '');
+  }
+  if (ceremony.includes('embodiment')) {
+    B('Ceremony','Daily embodiment facilitator honorarium', 0, 'Negotiate with your facilitator');
+  }
+  if (ceremony.includes('medicine')) {
+    B('Ceremony','Medicine ceremony facilitator fee',       0, 'Do not compromise on this — pay well');
+    B('Ceremony','Ceremony supplies: basins, eye masks, music',Math.round(hc*15), '');
+    B('Ceremony','Integration support: circles, 1:1s',     0, 'May include facilitator follow-up time');
+  }
+  if (ceremony.includes('initiation')) {
+    B('Ceremony','Initiation ceremony materials',           0, 'Source with intention');
+    B('Ceremony','Elder or guide honorarium',               0, '');
+  }
+
+  // ── Logistics ──
+  if (logistics.includes('transport')) {
+    B('Logistics','Gas and transport reimbursement for drivers', Math.round(hc*20), 'Estimate — adjust by distances');
+    B('Logistics','Vehicle rental (van, bus) if needed',         0, '');
+  }
+  if (logistics.includes('health')) {
+    B('Logistics','First aid kit and health supplies',    75, '');
+  }
+
+  // ── Programming ──
+  if (a.purpose === 'nao') {
+    B('Programming','Shared tools, software, or subscriptions', 0, 'If any paid tools are needed');
+    B('Programming','Printed materials, notebooks, stationery', Math.round(hc*10), '');
+  }
+  if (a.purpose === 'gohard') {
+    B('Programming','Entertainment, performers, or speakers',   0, 'DJ, band, facilitators, etc.');
+    B('Programming','Sound and lighting (if not in venue)',     0, '');
+    B('Programming','Decorations and theming',                  0, '');
+    B('Programming','Bar and beverage service',                 0, '');
+  }
+  if (a.size === 'conference') {
+    B('Programming','Printed agendas and event materials',      Math.round(hc*4), '');
+    B('Programming','Speaker or facilitator honoraria',         0, '');
+  }
+
+  // ── Misc ──
+  B('Misc','General supplies: tape, batteries, extension cords, etc.',Math.round(hc*3),'');
+  B('Misc','Contingency buffer', 0, 'Add 10% of total estimated costs as buffer');
+
+  // ── Pledge Tracker (if pledges funding) ──
+  if (funding.includes('pledges')) {
+    rows.push(['','','','','','']);
+    rows.push(['— PLEDGE TRACKER —','','','','','']);
+    rows.push(['Name / Participant','Pledge Amount ($)','Received?','Date Received','Notes','']);
+    const pledgeCount = Math.min(hc, 15);
+    for (let i=1; i<=pledgeCount; i++) {
+      rows.push([`Participant ${i}`, '', 'No', '', '', '']);
+    }
+    rows.push(['TOTAL PLEDGED','=SUM(above)','','','Target vs. cost','']);
+  }
+
+  // ── Sliding Scale Breakdown ──
+  if (funding.includes('sliding')) {
+    rows.push(['','','','','','']);
+    rows.push(['— SLIDING SCALE PRICING —','','','','','']);
+    const totalEst = rows.reduce((s,r)=>s+(parseFloat(r[2])||0),0);
+    const perPerson = Math.round(totalEst / hc);
+    rows.push(['Full-pay price (sustainer)',Math.round(perPerson*1.15),'','','Sustains the subsidy pool','']);
+    rows.push(['Base price (self-support)', perPerson,'','','Covers one\'s own costs','']);
+    rows.push(['Reduced price (supported)', Math.round(perPerson*0.5),'','','From the subsidy pool','']);
+    rows.push(['Scholarship (fully covered)',0,'','','Define how many available','']);
+  }
+
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GUEST LIST & LOGISTICS BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildGuestList(a) {
+  const logistics = a.logisticsNeeds || [];
+  const headers = ['Name', 'Pronouns', 'Contact (email/phone)'];
+  if (logistics.includes('transport')) {
+    headers.push('Arrival Date','Arrival Time','Arrival Method (flight/train/car)','Pickup Needed?','Departure Date','Departure Time','Departure Method');
+  }
+  if (logistics.includes('sleeping')) {
+    headers.push('Sleeping Assignment');
+  }
+  if (logistics.includes('carpool')) {
+    headers.push('Carpool Match','Driver or Rider?');
+  }
+  if (logistics.includes('dietary')) {
+    headers.push('Dietary Restrictions','Food Preferences / Allergies');
+  }
+  if (logistics.includes('access')) {
+    headers.push('Accessibility Needs');
+  }
+  if (logistics.includes('health')) {
+    headers.push('Health Notes (medications, conditions)','Emergency Contact');
+  }
+  headers.push('RSVP Status','Notes');
+
+  const count = {micro:6,contingent:15,initiation:18,conference:25}[a.size]||10;
+  const rows  = [headers];
+  for (let i=1; i<=count; i++) {
+    rows.push(Array(headers.length).fill('').map((_,j)=>j===0?`Person ${i}`:j===headers.length-2?'Pending':''));
+  }
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MEAL CALENDAR BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildMealCalendar(a) {
+  const days     = parseInt(a.duration)||3;
+  const food     = a.foodPlan;
+  const showDays = Math.min(days, 30);
+  const rows     = [['Day','Date','Meal','Cook Team / Responsible','Menu Ideas','Dietary Notes','Shopping Items','Notes']];
+
+  for (let d=1; d<=showDays; d++) {
+    ['Breakfast','Lunch','Dinner'].forEach((meal, mi) => {
+      let notes = '';
+      if (food === 'hybrid') {
+        if (meal === 'Dinner' && d % 4 === 0) notes = '🍽️ Night out — choose your own';
+        if (meal === 'Lunch'  && d % 6 === 0) notes = '🏪 Self-organized today';
+      }
+      const responsible = food === 'catered' ? 'Caterer' : food === 'self' ? 'Self' : '';
+      rows.push([`Day ${d}`, '', meal, responsible, '', '', '', notes]);
+    });
+    if (d < showDays) rows.push(['','','','','','','','']); // spacer row
+  }
+
+  if (days > 30) {
+    rows.push(['','','','','','','','']);
+    rows.push([`... Days 31–${days}`,'','Continue this pattern for all remaining days','','','','','Adjust to the group\'s rhythm and needs']);
+  }
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CEREMONY PLAN BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildCeremonyPlan(a) {
+  const ceremony = a.ceremony || [];
+  const rows = [['Ceremony / Practice','Type','When / Timing','Duration','Facilitator','Materials Needed','Pre-Prep Required','Integration / Follow-up','Notes']];
+
+  if (ceremony.includes('embodiment')) {
+    rows.push(['Morning Embodiment Practice','Daily Ritual','Each morning, before meals','30–60 min','Embodiment facilitator','Yoga mats, music, open floor, props','Confirm facilitator and format. Post schedule.','Optional participation — make it easy to join','Keep it optional but consistent']);
+    rows.push(['Evening Wind-Down / Embodiment','Daily Ritual','After dinner, before circles','20–30 min','Rotating or same facilitator','Mats, calming music, dim lighting','','','Stretching, breathwork, or somatic work']);
+  }
+
+  if (ceremony.includes('openclose')) {
+    rows.push(['Opening Ceremony','Ceremony','Day 1 — after arrival and orientation','60–90 min','Ceremony holder','Candles, altarware, circle seating, talking piece, flowers or offerings','Prepare ceremony sequence. Rehearse. Set altar.','','This sets the container for the whole gathering — give it weight and beauty']);
+    rows.push(['Closing Ceremony','Ceremony','Last day — before departures','60–90 min','Ceremony holder','Mirror of opening — candles, altar, talking piece','Prepare closing sequence (appreciation, release, send-off)','Integration period after — no rushing out','Include gratitude, appreciations, and formal release']);
+  }
+
+  if (ceremony.includes('circles')) {
+    rows.push(['Evening Sharing Circle','Daily Ritual','Each evening, after dinner','45–60 min','Rotating facilitation','Talking piece, candle, optional tea','Prepare prompts in advance for each day','','Guiding question or prompt. Hold space without fixing.']);
+    rows.push(['Morning Check-In Circle (optional)','Daily Ritual','Morning, after embodiment','15–20 min','Rotating','Talking piece','Brief prompt: how are you arriving today?','','Keep it short — one round, no cross-talk']);
+  }
+
+  if (ceremony.includes('medicine')) {
+    rows.push(['— ⚠️ DEEP MEDICINE CEREMONY ⚠️ —','','','','REQUIRES EXPERIENCED FACILITATION','','','','Do not proceed without qualified facilitation. Laws vary by jurisdiction.']);
+    rows.push(['Participant Health Screening','Medicine Prep','1–3 weeks before','Individual check-ins','Facilitator','Intake form','Screen for: MAOIs, SSRIs, lithium, antipsychotics, heart conditions, psychosis history, pregnancy','Respond individually to each person\'s situation','This is required — do not skip it']);
+    rows.push(['Pre-Ceremony Preparation Session','Medicine Prep','Evening before ceremony','60–90 min','Facilitator + all participants','Intention-setting prompts, journal, candles, circle space','Prepare facilitation guide for this session','','Set agreements, address fears, share logistics of the ceremony day']);
+    rows.push(['Ceremony Space Setup','Medicine Prep','Day of — 2–4 hours before','2–4 hours','Setup team','Music system, blankets and pillows, eye masks, basins, water, tissues, candles, ceremony altar','Test music, prepare safety items, clear space with care','','Plan for the unexpected — have warmth, water, and support nearby']);
+    rows.push(['Medicine Ceremony','Deep Medicine','As planned','4–8 hours','Experienced facilitator (required) + sober sitters','See above — prepare everything in advance','Full facilitator preparation. Sober sitters briefed. Space fully set.','Integration circle the morning after. Rest day follows.','1:1 support available throughout. No agenda or obligations during or after.']);
+    rows.push(['Post-Ceremony Integration Circle','Integration','Morning after ceremony','90 min','Facilitator','Journals, tissues, tea, circle space','Prepare gentle prompts — how are you landing?','1:1 check-ins over following days as needed','Rest and spaciousness are the medicine after the medicine']);
+    rows.push(['Ongoing Integration Support','Integration','Days to weeks following','Ongoing','Facilitator + community','','Prepare follow-up resources, journaling prompts, or call option','','Integration is where the real work happens — resource it generously']);
+  }
+
+  if (ceremony.includes('initiation')) {
+    rows.push(['Pre-Initiation Preparation','Initiation','Day(s) before ceremony','60–90 min','Guides / Elders','Preparation materials, journal prompts, physical symbols','Design sequence with guides. Prepare initiates emotionally.','','What are they releasing? What are they stepping into?']);
+    rows.push(['Initiation Ceremony','Initiation','As planned — the heart of the gathering','As long as needed','Guides / Elders / Community','Ceremony materials, altarware, threshold objects, ritual items','Full sequence prepared and rehearsed. Roles clear. Space consecrated.','Post-initiation welcoming ceremony immediately after','This is the most important part of the entire gathering — plan with full care and reverence']);
+    rows.push(['Post-Initiation Welcoming In','Initiation','Immediately after ceremony','30–60 min','Whole community','Celebration items, food, flowers, music','Plan celebration — the community welcomes in the newly initiated','Ongoing integration support in the days following','Joy, recognition, belonging — they made it through']);
+  }
+
+  if (ceremony.includes('other')) {
+    rows.push(['Custom Ritual or Practice','Other','As planned','As needed','TBD','TBD','Add your own description and preparation notes','','Bring your traditions, your lineage, your gifts']);
+  }
+
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DAILY SCHEDULE BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function buildSchedule(a) {
+  const rows = [];
+  const days     = parseInt(a.duration)||3;
+  const ceremony = a.ceremony || [];
+  const R = (day,time,act,who,notes) => rows.push([day,time,act,who||'',notes||'']);
+  const multi    = days > 1;
+  const d1       = multi ? 'Day 1' : 'Today';
+  const dn       = multi ? `Day ${Math.min(days,3)}+` : 'Today';
+  const mid      = multi && days >= 3 ? `Day ${Math.floor(days/2)+1}` : null;
+
+  R(d1,'Morning','Arrival, check-in, and settling in','Welcomers','Greet each person warmly as they arrive');
+  R(d1,'Midday','Shared meal and introductions','All','Create space for everyone to land');
+  R(d1,'Afternoon','Orientation: space, agreements, schedule','Organizer','Walk through the space, share the plan');
+  if (ceremony.includes('openclose'))
+    R(d1,'Evening','Opening Ceremony','Ceremony holder','See Ceremony Plan sheet for full sequence');
+  else
+    R(d1,'Evening','Welcome gathering and social time','All','Low-key, let people connect organically');
+
+  if (a.purpose === 'coworking') {
+    if (mid) {
+      if (ceremony.includes('embodiment')) R(mid,'Morning','Morning embodiment practice (optional)','Facilitator','30–60 min');
+      R(mid,'Morning','Daily standup — what are you working on today?','All','15 min max');
+      R(mid,'Morning','Deep work block','All','Quiet focus — no interruptions');
+      R(mid,'Midday','Shared lunch','All','');
+      R(mid,'Afternoon','Deep work block continued','All','');
+      R(mid,'Evening','Optional show & tell or check-in','All','Share what you made today');
+      if (ceremony.includes('circles')) R(mid,'Evening','Evening sharing circle','Facilitator','See Ceremony Plan sheet');
+      R(mid,'Evening','Shared dinner','All','');
+    }
+    if (ceremony.includes('embodiment')) R(dn,'Morning','Morning embodiment practice','Facilitator','');
+    R(dn,'Morning','Final work block + wrap outputs','All','');
+    if (ceremony.includes('openclose')) R(dn,'Afternoon','Closing Ceremony','Ceremony holder','See Ceremony Plan sheet');
+    else R(dn,'Afternoon','Closing circle: reflections and appreciations','All','');
+    R(dn,'Afternoon','Clean up and departures','All','');
+
+  } else if (a.purpose === 'nao') {
+    if (mid) {
+      if (ceremony.includes('embodiment')) R(mid,'Morning','Morning embodiment practice','Facilitator','');
+      R(mid,'Morning','Daily standup (15 min)','All','What are you working on? Any blockers?');
+      R(mid,'Morning','Deep work block','Working groups','Focused sprint work');
+      R(mid,'Midday','Lunch + optional open share','All','');
+      R(mid,'Afternoon','Deep work block continued','Working groups','');
+      R(mid,'Evening','End-of-day review and demo','All','Share progress, decisions made, next steps');
+      if (ceremony.includes('circles')) R(mid,'Evening','Evening sharing circle','Facilitator','');
+    }
+    if (ceremony.includes('embodiment')) R(dn,'Morning','Morning embodiment practice','Facilitator','');
+    R(dn,'Morning','Final work block — wrap and publish outputs','All','');
+    R(dn,'Afternoon','Sprint retrospective','All','What worked, what didn\'t, what we carry forward');
+    if (ceremony.includes('openclose')) R(dn,'Afternoon','Closing Ceremony','Ceremony holder','See Ceremony Plan sheet');
+
+  } else if (a.purpose === 'dropin') {
+    if (mid) {
+      if (ceremony.includes('embodiment')) R(mid,'Morning','Morning anchor: embodiment practice','Facilitator','Optional');
+      R(mid,'Morning','Open doors — come and go freely','All','');
+      R(mid,'Midday','Shared meal (anchor point)','All','The most reliable gathering moment');
+      R(mid,'Afternoon','Self-directed time: work, rest, explore, connect','All','');
+      if (ceremony.includes('circles')) R(mid,'Evening','Evening anchor: sharing circle or gathering','Facilitator','');
+      else R(mid,'Evening','Evening anchor: casual gathering','All','');
+    }
+    R(dn,'Midday','Final shared meal together','All','');
+    if (ceremony.includes('openclose')) R(dn,'Afternoon','Closing Ceremony','Ceremony holder','');
+    else R(dn,'Afternoon','Closing circle and send-off','All','');
+
+  } else { // gohard
+    R(d1,'Afternoon','Setup and production preparation','Setup crew','');
+    if (ceremony.includes('openclose')) R(d1,'Evening','Opening Ceremony','Ceremony holder','');
+    R(d1,'Evening','Main programming begins','All','');
+    R(d1,'Night','Party / performance / social','All','Define a clear end time and stick to it');
+    if (mid) {
+      R(mid,'Morning','Recovery / brunch / integration','All','Give space — no rushing the morning');
+      if (ceremony.includes('embodiment')) R(mid,'Morning','Optional embodiment practice','Facilitator','');
+      R(mid,'Afternoon','Afternoon sessions or activities','All','');
+      R(mid,'Evening','Main event evening','All','');
+    }
+    R(dn,'Morning','Closing session or retrospective','All','');
+    R(dn,'Midday','Final meal together','All','');
+    if (ceremony.includes('openclose')) R(dn,'Afternoon','Closing Ceremony','Ceremony holder','');
+    R(dn,'Afternoon','Teardown, clean up, and departures','All','Leave no trace');
+  }
+
+  if (ceremony.includes('medicine')) {
+    rows.push(['','','','','']);
+    rows.push(['⚠️ MEDICINE CEREMONY DAY','','Block the FULL day + following day for ceremony and integration','','See Ceremony Plan sheet for full sequence']);
+  }
+  if (days > 3) {
+    rows.push(['','','','','']);
+    rows.push([`Days 4–${days}`,'','Repeat the daily rhythm above — adapt as you go','','Adjust timing, energy, and programming to the group\'s needs and flow']);
+  }
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GENERATE SPREADSHEET
+// ═══════════════════════════════════════════════════════════════════
+function generate() {
+  if (typeof XLSX === 'undefined') {
+    alert('Spreadsheet library not loaded. Check your internet connection and try again.');
+    return;
+  }
+
+  const a   = S.answers;
+  const wb  = XLSX.utils.book_new();
+  const days = parseInt(a.duration)||3;
+
+  function ws(data, widths) {
+    const sheet = XLSX.utils.aoa_to_sheet(data);
+    sheet['!cols'] = widths.map(w=>({wch:w}));
+    return sheet;
+  }
+
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const ceremony = a.ceremony || [];
+  const funding  = a.fundingModel || [];
+  const locNeeds = a.locationNeeds || [];
+
+  // ── 1. Overview ──
+  const overviewData = [
+    ['GATHERING PLANNER — FULL PLANNING DOCUMENT',''],
+    ['Generated on:', today],
+    ['',''],
+    ['YOUR GATHERING — PART 1: THE BASICS',''],
+    ['Size / Type',       sizeLabel(a.size)],
+    ['Vibe / Purpose',    purposeLabel(a.purpose)],
+    ['Duration',          durationLabel(days)],
+    ['Location',          a.location||'TBD'],
+    ['Funding Model',     budgetLabel(a.budget)],
+    ['',''],
+    ['YOUR GATHERING — PART 2: THE DETAILS',''],
+    ['Location Needs',    (locNeeds).join(', ')||'—'],
+    ['Food Plan',         foodLabel(a.foodPlan)],
+    ['Ceremonies',        ceremony.join(', ')||'None planned'],
+    ['Funding Structure', (funding).join(', ')||'—'],
+    ['',''],
+    ['FILL IN YOUR DETAILS',''],
+    ['Gathering Name',    eventName(a) + ' — (rename this!)'],
+    ['Start Date',        ''],
+    ['End Date',          ''],
+    ['Full Address',      a.location||''],
+    ['Headcount',         {micro:'~7–10',contingent:'~15–40',initiation:'~20–40',conference:'40+'}[a.size]||''],
+    ['Lead Organizer',    ''],
+    ['Contact',           ''],
+    ['',''],
+    ['SHEET GUIDE',''],
+    ['Checklist',         'All tasks from planning to follow-up — update Status and Owner as you go'],
+    ['Budget & Funding',  'Line-item budget with funding model built in'],
+    ['Guest List & Logistics','Participants + all logistics columns selected'],
+    ['Daily Schedule',    'Day-by-day agenda — customize times and activities'],
+    ...(a.foodPlan && a.foodPlan !== 'self' ? [['Meal Calendar','Day × meal grid for planning and coordination']] : []),
+    ...(ceremony.length > 0 ? [['Ceremony Plan','Ceremony-by-ceremony planning guide with prep and integration notes']] : []),
+  ];
+  XLSX.utils.book_append_sheet(wb, ws(overviewData,[32,55]), 'Overview');
+
+  // ── 2. Checklist ──
+  const clRows = buildChecklist(a);
+  XLSX.utils.book_append_sheet(wb, ws([['Task','Category','Priority','When','Status','Owner','Notes'],...clRows],[56,16,10,14,10,20,42]), 'Checklist');
+
+  // ── 3. Budget & Funding ──
+  const budRows  = buildBudget(a);
+  const lastBRow = budRows.length + 1;
+  const estTotal = budRows.reduce((s,r)=>s+(parseFloat(r[2])||0),0);
+  const budData  = [['Category','Line Item','Estimated ($)','Actual ($)','Paid?','Notes'],...budRows,['','','','','',''],['','TOTAL ESTIMATED',estTotal,`=SUM(D2:D${lastBRow})`,'','Actual column auto-calculates as you fill it in']];
+  XLSX.utils.book_append_sheet(wb, ws(budData,[20,48,15,14,10,44]), 'Budget & Funding');
+
+  // ── 4. Guest List & Logistics ──
+  const glRows = buildGuestList(a);
+  XLSX.utils.book_append_sheet(wb, ws(glRows, Array(glRows[0].length).fill(22)), 'Guest List & Logistics');
+
+  // ── 5. Daily Schedule ──
+  const schRows = buildSchedule(a);
+  XLSX.utils.book_append_sheet(wb, ws([['Day','Time / Block','Activity','Who','Notes'],...schRows],[12,16,42,22,40]), 'Daily Schedule');
+
+  // ── 6. Meal Calendar (conditional) ──
+  if (a.foodPlan && a.foodPlan !== 'self') {
+    const mealRows = buildMealCalendar(a);
+    XLSX.utils.book_append_sheet(wb, ws(mealRows,[8,14,14,22,26,22,26,24]), 'Meal Calendar');
+  }
+
+  // ── 7. Ceremony Plan (conditional) ──
+  if (ceremony.length > 0) {
+    const cerRows = buildCeremonyPlan(a);
+    XLSX.utils.book_append_sheet(wb, ws(cerRows,[28,16,22,14,22,30,38,34,36]), 'Ceremony Plan');
+  }
+
+  XLSX.writeFile(wb, `gathering-planner-${(a.purpose||'event')}.xlsx`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
