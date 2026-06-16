@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAO Comms Persona Rings</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e8e8e6; min-height: 100vh; padding: 2rem 1rem; }
+  h1 { font-size: 18px; font-weight: 500; text-align: center; margin-bottom: 4px; color: #e8e8e6; }
+  .subtitle { font-size: 13px; color: #666; text-align: center; margin-bottom: 1.5rem; }
+  .layout { display: flex; gap: 2rem; align-items: flex-start; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
+  .ring-wrap { flex: 0 0 340px; }
+  svg { width: 100%; }
+  .detail { flex: 1; min-width: 260px; }
+  .hint { font-size: 12px; color: #555; text-align: center; margin-bottom: 0.75rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .panel-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .panel-sub { font-size: 12px; color: #888; margin-bottom: 1rem; }
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .q-item { background: #161616; border: 0.5px solid #2a2a2a; border-radius: 10px; padding: 12px; }
+  .q-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .q-value { font-size: 12px; color: #b0b0aa; line-height: 1.6; }
+  .empty { display: flex; align-items: center; justify-content: center; height: 200px; color: #444; font-size: 13px; }
+  ring-circle { cursor: pointer; }
+  .legend { display: flex; flex-direction: column; gap: 6px; margin-top: 1rem; }
+  .leg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #888; cursor: pointer; padding: 4px 0; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<h1>NAO — Comms Persona Model</h1>
+<p class="subtitle">Three bands radiating outward from core. Click a ring to explore.</p>
+
+<div class="layout">
+  <div class="ring-wrap">
+    <div class="hint">tap a ring</div>
+    <svg viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer: Band 3 -->
+      <circle cx="170" cy="170" r="158" fill="#1a130a" stroke="#BA7517" stroke-width="0.5" style="cursor:pointer" onclick="select(3)"/>
+      <!-- Mid: Band 2 -->
+      <circle cx="170" cy="170" r="106" fill="#071210" stroke="#0F6E56" stroke-width="0.5" style="cursor:pointer" onclick="select(2)"/>
+      <!-- Inner: Band 1 -->
+      <circle cx="170" cy="170" r="56" fill="#0e0c1f" stroke="#534AB7" stroke-width="0.5" style="cursor:pointer" onclick="select(1)"/>
+
+      <!-- Quadrant lines -->
+      <line x1="170" y1="12" x2="170" y2="328" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
+      <line x1="12" y1="170" x2="328" y2="170" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
+
+      <!-- Quadrant labels -->
+      <text x="90" y="100" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">interests</text>
+      <text x="250" y="100" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">where now</text>
+      <text x="90" y="248" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">channels</text>
+      <text x="250" y="248" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">journey</text>
+
+      <!-- Band labels -->
+      <text x="170" y="167" text-anchor="middle" font-size="11" font-weight="500" fill="#AFA9EC" font-family="sans-serif" style="pointer-events:none">Builders</text>
+      <text x="170" y="180" text-anchor="middle" font-size="9" fill="#534AB7" font-family="sans-serif" style="pointer-events:none">Band 1</text>
+
+      <text x="170" y="91" text-anchor="middle" font-size="10" font-weight="500" fill="#5DCAA5" font-family="sans-serif" style="pointer-events:none">Network</text>
+      <text x="170" y="103" text-anchor="middle" font-size="9" fill="#0F6E56" font-family="sans-serif" style="pointer-events:none">Band 2</text>
+
+      <text x="170" y="28" text-anchor="middle" font-size="10" font-weight="500" fill="#FAC775" font-family="sans-serif" style="pointer-events:none">Extended community</text>
+      <text x="170" y="40" text-anchor="middle" font-size="9" fill="#BA7517" font-family="sans-serif" style="pointer-events:none">Band 3</text>
+
+      <!-- Selection rings -->
+      <circle cx="170" cy="170" r="56"  fill="none" stroke="#534AB7" stroke-width="2.5" opacity="0" id="sel1"/>
+      <circle cx="170" cy="170" r="106" fill="none" stroke="#0F6E56" stroke-width="2.5" opacity="0" id="sel2"/>
+      <circle cx="170" cy="170" r="158" fill="none" stroke="#BA7517" stroke-width="2.5" opacity="0" id="sel3"/>
+    </svg>
+
+    <div class="legend">
+      <div class="leg" onclick="select(1)"><div class="leg-dot" style="background:#534AB7"></div>Band 1 — Builders</div>
+      <div class="leg" onclick="select(2)"><div class="leg-dot" style="background:#0F6E56"></div>Band 2 — Network</div>
+      <div class="leg" onclick="select(3)"><div class="leg-dot" style="background:#BA7517"></div>Band 3 — Extended community</div>
+    </div>
+  </div>
+
+  <div class="detail">
+    <div class="panel" id="panel0">
+      <div class="empty">← Select a band to explore</div>
+    </div>
+
+    <div class="panel" id="panel1">
+      <div class="panel-title" style="color:#AFA9EC">Band 1 — Builders</div>
+      <div class="panel-sub">Core contributors · Module collaborators · Package builders</div>
+      <div class="q-grid">
+        <div class="q-item">
+          <div class="q-label" style="color:#534AB7">Interests</div>
+          <div class="q-value">Elegant p2p architecture, local-first tech, sovereignty as a first principle, novel technical problems, peer recognition in builder communities</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#534AB7">Where they are now</div>
+          <div class="q-value">Scattered across Holochain, open source, crypto/web3 — already frustrated with centralized tooling, reachable through NAO's extended network</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#534AB7">Channels</div>
+          <div class="q-value">GitHub, Signal, direct personal invitation, developer-focused blog, async technical docs</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#534AB7">Journey</div>
+          <div class="q-value">Awareness of NAOMS → curiosity about architecture → hands-on access (package or module) → ongoing contributor with stake in the vision</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel2">
+      <div class="panel-title" style="color:#5DCAA5">Band 2 — Network</div>
+      <div class="panel-sub">NAO members · Peer orgs: Holochain, Coasis, Hypha</div>
+      <div class="q-grid">
+        <div class="q-item">
+          <div class="q-label" style="color:#0F6E56">Interests</div>
+          <div class="q-value">Interoperability, shared values, tools that strengthen community fabric, not reinventing the wheel, being part of something larger without losing their identity</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#0F6E56">Where they are now</div>
+          <div class="q-value">NAO members on Signal/Obsidian — waiting for something better. Peer orgs aware of similar problems, open if trust is established through shared contacts</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#0F6E56">Channels</div>
+          <div class="q-value">Existing NAO Signal comms, gatherings and events, org-to-org outreach, vision/philosophy blog, word of mouth through trusted contacts</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#0F6E56">Journey</div>
+          <div class="q-value">Recognition that NAOMS solves a real problem → invitation to explore → active use in their context → co-evolution and feedback loop with the project</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel3">
+      <div class="panel-title" style="color:#FAC775">Band 3 — Extended Community</div>
+      <div class="panel-sub">Friends & family of members · Investors · External roles</div>
+      <div class="q-grid">
+        <div class="q-item">
+          <div class="q-label" style="color:#BA7517">Interests</div>
+          <div class="q-value">Connection through someone they trust inside NAO, simplicity of use, feeling included without needing to understand the tech; investors: social impact with real return</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#BA7517">Where they are now</div>
+          <div class="q-value">Completely outside — no context for NAOMS. Relationship is entirely through a NAO member or the project's media and public presence</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#BA7517">Channels</div>
+          <div class="q-value">Personal invitation only. For investors: structured pitch moments, events, the TV show as a front door</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:#BA7517">Journey</div>
+          <div class="q-value">Trusted person invites them → frictionless onboarding → light ongoing use (sharing, connecting) → optional deeper engagement if appetite grows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let current = 0;
+document.getElementById('panel0').classList.add('active');
+function select(n) {
+  [0,1,2,3].forEach(i => {
+    const p = document.getElementById('panel'+i);
+    if (p) p.classList.remove('active');
+  });
+  [1,2,3].forEach(i => document.getElementById('sel'+i).setAttribute('opacity','0'));
+  if (current === n) {
+    current = 0;
+    document.getElementById('panel0').classList.add('active');
+    return;
+  }
+  current = n;
+  document.getElementById('sel'+n).setAttribute('opacity','0.9');
+  document.getElementById('panel'+n).classList.add('active');
+}
+</script>
+</body>
+</html>
