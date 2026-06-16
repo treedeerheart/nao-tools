@@ -6,27 +6,26 @@
 <title>NAO Comms Persona Rings</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e8e8e6; min-height: 100vh; padding: 2rem 1rem; }
-  h1 { font-size: 18px; font-weight: 500; text-align: center; margin-bottom: 4px; color: #e8e8e6; }
-  .subtitle { font-size: 13px; color: #666; text-align: center; margin-bottom: 1.5rem; }
-  .layout { display: flex; gap: 2rem; align-items: flex-start; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
-  .ring-wrap { flex: 0 0 340px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e8e8e6; min-height: 100vh; padding: 2.5rem 1.5rem; }
+  h1 { font-size: 24px; font-weight: 500; text-align: center; margin-bottom: 6px; color: #e8e8e6; }
+  .subtitle { font-size: 15px; color: #666; text-align: center; margin-bottom: 2rem; }
+  .layout { display: flex; gap: 3rem; align-items: flex-start; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
+  .ring-wrap { flex: 0 0 440px; }
   svg { width: 100%; }
-  .detail { flex: 1; min-width: 260px; }
-  .hint { font-size: 12px; color: #555; text-align: center; margin-bottom: 0.75rem; }
+  .detail { flex: 1; min-width: 320px; }
+  .hint { font-size: 13px; color: #555; text-align: center; margin-bottom: 1rem; }
   .panel { display: none; }
   .panel.active { display: block; }
-  .panel-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .panel-sub { font-size: 12px; color: #888; margin-bottom: 1rem; }
-  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .q-item { background: #161616; border: 0.5px solid #2a2a2a; border-radius: 10px; padding: 12px; }
-  .q-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
-  .q-value { font-size: 12px; color: #b0b0aa; line-height: 1.6; }
-  .empty { display: flex; align-items: center; justify-content: center; height: 200px; color: #444; font-size: 13px; }
-  ring-circle { cursor: pointer; }
-  .legend { display: flex; flex-direction: column; gap: 6px; margin-top: 1rem; }
-  .leg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #888; cursor: pointer; padding: 4px 0; }
-  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .panel-title { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+  .panel-sub { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .q-item { background: #161616; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 16px; }
+  .q-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .q-value { font-size: 14px; color: #b0b0aa; line-height: 1.7; }
+  .empty { display: flex; align-items: center; justify-content: center; height: 240px; color: #444; font-size: 15px; }
+  .legend { display: flex; flex-direction: column; gap: 8px; margin-top: 1.25rem; }
+  .leg { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #888; cursor: pointer; padding: 5px 0; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -36,38 +35,40 @@
 <div class="layout">
   <div class="ring-wrap">
     <div class="hint">tap a ring</div>
-    <svg viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
       <!-- Outer: Band 3 -->
-      <circle cx="170" cy="170" r="158" fill="#1a130a" stroke="#BA7517" stroke-width="0.5" style="cursor:pointer" onclick="select(3)"/>
+      <circle cx="220" cy="220" r="205" fill="#1a130a" stroke="#BA7517" stroke-width="0.5" style="cursor:pointer" onclick="select(3)"/>
       <!-- Mid: Band 2 -->
-      <circle cx="170" cy="170" r="106" fill="#071210" stroke="#0F6E56" stroke-width="0.5" style="cursor:pointer" onclick="select(2)"/>
+      <circle cx="220" cy="220" r="138" fill="#071210" stroke="#0F6E56" stroke-width="0.5" style="cursor:pointer" onclick="select(2)"/>
       <!-- Inner: Band 1 -->
-      <circle cx="170" cy="170" r="56" fill="#0e0c1f" stroke="#534AB7" stroke-width="0.5" style="cursor:pointer" onclick="select(1)"/>
+      <circle cx="220" cy="220" r="72" fill="#0e0c1f" stroke="#534AB7" stroke-width="0.5" style="cursor:pointer" onclick="select(1)"/>
 
       <!-- Quadrant lines -->
-      <line x1="170" y1="12" x2="170" y2="328" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
-      <line x1="12" y1="170" x2="328" y2="170" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
+      <line x1="220" y1="15" x2="220" y2="425" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
+      <line x1="15" y1="220" x2="425" y2="220" stroke="#333" stroke-width="0.5" stroke-dasharray="3 4"/>
 
       <!-- Quadrant labels -->
-      <text x="90" y="100" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">interests</text>
-      <text x="250" y="100" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">where now</text>
-      <text x="90" y="248" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">channels</text>
-      <text x="250" y="248" text-anchor="middle" font-size="9" fill="#444" font-family="sans-serif">journey</text>
+      <text x="116" y="136" text-anchor="middle" font-size="11" fill="#444" font-family="sans-serif">interests</text>
+      <text x="324" y="136" text-anchor="middle" font-size="11" fill="#444" font-family="sans-serif">where now</text>
+      <text x="116" y="318" text-anchor="middle" font-size="11" fill="#444" font-family="sans-serif">channels</text>
+      <text x="324" y="318" text-anchor="middle" font-size="11" fill="#444" font-family="sans-serif">journey</text>
 
-      <!-- Band labels -->
-      <text x="170" y="167" text-anchor="middle" font-size="11" font-weight="500" fill="#AFA9EC" font-family="sans-serif" style="pointer-events:none">Builders</text>
-      <text x="170" y="180" text-anchor="middle" font-size="9" fill="#534AB7" font-family="sans-serif" style="pointer-events:none">Band 1</text>
+      <!-- Band 1 labels -->
+      <text x="220" y="215" text-anchor="middle" font-size="14" font-weight="500" fill="#AFA9EC" font-family="sans-serif" style="pointer-events:none">Builders</text>
+      <text x="220" y="231" text-anchor="middle" font-size="11" fill="#534AB7" font-family="sans-serif" style="pointer-events:none">Band 1</text>
 
-      <text x="170" y="91" text-anchor="middle" font-size="10" font-weight="500" fill="#5DCAA5" font-family="sans-serif" style="pointer-events:none">Network</text>
-      <text x="170" y="103" text-anchor="middle" font-size="9" fill="#0F6E56" font-family="sans-serif" style="pointer-events:none">Band 2</text>
+      <!-- Band 2 labels — sitting in the green ring -->
+      <text x="220" y="118" text-anchor="middle" font-size="13" font-weight="500" fill="#5DCAA5" font-family="sans-serif" style="pointer-events:none">Network</text>
+      <text x="220" y="133" text-anchor="middle" font-size="11" fill="#0F6E56" font-family="sans-serif" style="pointer-events:none">Band 2</text>
 
-      <text x="170" y="28" text-anchor="middle" font-size="10" font-weight="500" fill="#FAC775" font-family="sans-serif" style="pointer-events:none">Extended community</text>
-      <text x="170" y="40" text-anchor="middle" font-size="9" fill="#BA7517" font-family="sans-serif" style="pointer-events:none">Band 3</text>
+      <!-- Band 3 labels -->
+      <text x="220" y="34" text-anchor="middle" font-size="13" font-weight="500" fill="#FAC775" font-family="sans-serif" style="pointer-events:none">Extended community</text>
+      <text x="220" y="50" text-anchor="middle" font-size="11" fill="#BA7517" font-family="sans-serif" style="pointer-events:none">Band 3</text>
 
       <!-- Selection rings -->
-      <circle cx="170" cy="170" r="56"  fill="none" stroke="#534AB7" stroke-width="2.5" opacity="0" id="sel1"/>
-      <circle cx="170" cy="170" r="106" fill="none" stroke="#0F6E56" stroke-width="2.5" opacity="0" id="sel2"/>
-      <circle cx="170" cy="170" r="158" fill="none" stroke="#BA7517" stroke-width="2.5" opacity="0" id="sel3"/>
+      <circle cx="220" cy="220" r="72"  fill="none" stroke="#534AB7" stroke-width="3" opacity="0" id="sel1"/>
+      <circle cx="220" cy="220" r="138" fill="none" stroke="#0F6E56" stroke-width="3" opacity="0" id="sel2"/>
+      <circle cx="220" cy="220" r="205" fill="none" stroke="#BA7517" stroke-width="3" opacity="0" id="sel3"/>
     </svg>
 
     <div class="legend">
