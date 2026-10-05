@@ -1,0 +1,3572 @@
+{
+  "title": "The Realm of the NAO: the script",
+  "build": "Plan v1.8: phases 3b, 3c, 3d, 4 and 5 (no publishing)",
+  "generated": "2026-10-05",
+  "how": "One clip per item. Record \"spoken\" where it is given, otherwise \"text\", with the item's voice, and save it as <id>.wav; convert to mono mp3 at about 64 kbps and place it at the item's \"audio\" path beside the HTML. Designed voices: first call design_voice with the description and save_as the name on the voice's test item, then use speak with that name for every item. Items marked dynamic change with the visitor's choices: their clip is used only while the words match the text here, and the browser's voice reads them otherwise.",
+  "voices": [
+    {
+      "speaker": "narrator",
+      "name": "The narrator",
+      "role": "Narrator",
+      "tool": "speak",
+      "voice": "Tree",
+      "test_item": "welcome-1",
+      "items": 215
+    },
+    {
+      "speaker": "wren",
+      "name": "Wren",
+      "role": "Hive Instigator",
+      "tool": "design_voice",
+      "description": "a bright, quick woman in her thirties, light Irish lilt, energetic, smiling",
+      "save_as": "Wren",
+      "test_item": "cast-wren-says",
+      "items": 13
+    },
+    {
+      "speaker": "taavi",
+      "name": "Taavi",
+      "role": "Artisan",
+      "tool": "speak",
+      "voice": "aiden",
+      "style": "cheerful, relaxed",
+      "test_item": "cast-taavi-says",
+      "items": 8
+    },
+    {
+      "speaker": "noor",
+      "name": "Noor",
+      "role": "Member",
+      "tool": "design_voice",
+      "description": "a calm young woman, soft, unhurried, gently amused",
+      "save_as": "Noor",
+      "test_item": "cast-noor-says",
+      "items": 6
+    },
+    {
+      "speaker": "ilse",
+      "name": "Ilse",
+      "role": "The Forge team",
+      "tool": "design_voice",
+      "description": "a steady older woman, Dutch-accented English, dry humour, patient",
+      "save_as": "Ilse",
+      "test_item": "cast-ilse-says",
+      "items": 2
+    },
+    {
+      "speaker": "bram",
+      "name": "Bram",
+      "role": "The Forge team",
+      "tool": "design_voice",
+      "description": "a deep, slow, kind man, a little gravel, Dutch-accented English",
+      "save_as": "Bram",
+      "test_item": "cast-bram-says",
+      "items": 2
+    },
+    {
+      "speaker": "council",
+      "name": "The Council",
+      "role": "The Council",
+      "tool": "design_voice",
+      "description": "a measured woman in her fifties, thoughtful, pausing, kind authority",
+      "save_as": "Council",
+      "test_item": "cast-council-says",
+      "items": 5
+    },
+    {
+      "speaker": "dagny",
+      "name": "Dagny",
+      "role": "Backer",
+      "tool": "design_voice",
+      "description": "a sharp, playful woman, Scandinavian-accented English, quick, delighted by numbers",
+      "save_as": "Dagny",
+      "test_item": "cast-dagny-says",
+      "items": 8
+    },
+    {
+      "speaker": "osei",
+      "name": "Osei",
+      "role": "Investor",
+      "tool": "design_voice",
+      "description": "a warm, unhurried man, West African-accented English, deep, courteous",
+      "save_as": "Osei",
+      "test_item": "cast-osei-says",
+      "items": 3
+    },
+    {
+      "speaker": "priya",
+      "name": "Priya",
+      "role": "Fund manager",
+      "tool": "design_voice",
+      "description": "a precise, friendly woman, Indian-English accent, brisk, organised",
+      "save_as": "Priya",
+      "test_item": "cast-priya-says",
+      "items": 3
+    },
+    {
+      "speaker": "ferran",
+      "name": "Ferran",
+      "role": "Connector",
+      "tool": "speak",
+      "voice": "ryan",
+      "style": "jovial storyteller, unhurried",
+      "test_item": "cast-ferran-says",
+      "items": 5
+    },
+    {
+      "speaker": "mireille",
+      "name": "Mireille",
+      "role": "Guild member",
+      "tool": "design_voice",
+      "description": "a confident woman, French-accented English, practical, encouraging",
+      "save_as": "Mireille",
+      "test_item": "cast-mireille-says",
+      "items": 7
+    },
+    {
+      "speaker": "agnes",
+      "name": "Agnes",
+      "role": "Ancestor",
+      "tool": "design_voice",
+      "description": "an elderly woman, soft British, slow, twinkling",
+      "save_as": "Agnes",
+      "test_item": "cast-agnes-says",
+      "items": 4
+    }
+  ],
+  "count": 281,
+  "items": [
+    {
+      "id": "welcome-1",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "What this is. This is a living map of how the NAOMS cooperative moves money and work. You'll walk it in eight short chapters, with the people who live here.",
+      "audio": "audio/welcome-1.wav",
+      "where": "Welcome, page 1: What this is"
+    },
+    {
+      "id": "welcome-2",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "What you're looking at. The land is the cooperative, a boundaried commons. Water is money: where it rains, money arrives, and where it runs, money moves. Each building is a role, and each role has a person you can follow.",
+      "audio": "audio/welcome-2.wav",
+      "where": "Welcome, page 2: What you're looking at"
+    },
+    {
+      "id": "welcome-3",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Who the players are. Meet the troupe. Each of them leads you through a part of the realm.",
+      "audio": "audio/welcome-3.wav",
+      "where": "Welcome, page 3: Who the players are"
+    },
+    {
+      "id": "welcome-4",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Where to start. Begin with the artisans who are opening hives right now.",
+      "audio": "audio/welcome-4.wav",
+      "where": "Welcome, page 4: Where to start"
+    },
+    {
+      "id": "cast-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The narrator is the voice of the map, and tells the story as you walk.",
+      "audio": "audio/cast-narrator.wav",
+      "where": "Welcome, page 3: the cast, The narrator"
+    },
+    {
+      "id": "cast-wren",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Wren is a Hive Instigator: she opens hives and invites artisans in.",
+      "audio": "audio/cast-wren.wav",
+      "where": "Welcome, page 3: the cast, Wren"
+    },
+    {
+      "id": "cast-wren-says",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "I've a project ready and a hill picked out. Who's with me?",
+      "audio": "audio/cast-wren-says.wav",
+      "where": "Welcome, page 3: the cast, Wren"
+    },
+    {
+      "id": "cast-taavi",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Taavi is an artisan: he builds on NAOMS and does quests.",
+      "audio": "audio/cast-taavi.wav",
+      "where": "Welcome, page 3: the cast, Taavi"
+    },
+    {
+      "id": "cast-taavi-says",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "A quest, a fair price, and patronage points in my jar. Perfect.",
+      "audio": "audio/cast-taavi-says.wav",
+      "where": "Welcome, page 3: the cast, Taavi"
+    },
+    {
+      "id": "cast-noor",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Noor is a member: she pays her dues and uses the free apps.",
+      "audio": "audio/cast-noor.wav",
+      "where": "Welcome, page 3: the cast, Noor"
+    },
+    {
+      "id": "cast-noor-says",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "Twenty euros a month, and the apps just work. Tea?",
+      "audio": "audio/cast-noor-says.wav",
+      "where": "Welcome, page 3: the cast, Noor"
+    },
+    {
+      "id": "cast-ilse",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Ilse and Bram are the Forge team: they build and run the NAOMS infrastructure.",
+      "audio": "audio/cast-ilse.wav",
+      "where": "Welcome, page 3: the cast, Ilse"
+    },
+    {
+      "id": "cast-ilse-says",
+      "speaker": "ilse",
+      "name": "Ilse",
+      "voice": {
+        "tool": "speak",
+        "voice": "Ilse"
+      },
+      "text": "We keep the fires lit so everyone else can build.",
+      "audio": "audio/cast-ilse-says.wav",
+      "where": "Welcome, page 3: the cast, Ilse"
+    },
+    {
+      "id": "cast-bram-says",
+      "speaker": "bram",
+      "name": "Bram",
+      "voice": {
+        "tool": "speak",
+        "voice": "Bram"
+      },
+      "text": "And the coffee never runs out.",
+      "audio": "audio/cast-bram-says.wav",
+      "where": "Welcome, page 3: the cast, Bram"
+    },
+    {
+      "id": "cast-council",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Council is a circle of five: it divides the dues with discernment.",
+      "audio": "audio/cast-council.wav",
+      "where": "Welcome, page 3: the cast, The Council"
+    },
+    {
+      "id": "cast-council-says",
+      "speaker": "council",
+      "name": "The Council",
+      "voice": {
+        "tool": "speak",
+        "voice": "Council"
+      },
+      "text": "We look, we talk, and we choose. No fixed rule.",
+      "audio": "audio/cast-council-says.wav",
+      "where": "Welcome, page 3: the cast, The Council"
+    },
+    {
+      "id": "cast-dagny",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Dagny is a backer: she brings water and steers it with tokens.",
+      "audio": "audio/cast-dagny.wav",
+      "where": "Welcome, page 3: the cast, Dagny"
+    },
+    {
+      "id": "cast-dagny-says",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Squares! I do love a good square.",
+      "audio": "audio/cast-dagny-says.wav",
+      "where": "Welcome, page 3: the cast, Dagny"
+    },
+    {
+      "id": "cast-osei",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Osei is an investor: he brings larger capital into a fund.",
+      "audio": "audio/cast-osei.wav",
+      "where": "Welcome, page 3: the cast, Osei"
+    },
+    {
+      "id": "cast-osei-says",
+      "speaker": "osei",
+      "name": "Osei",
+      "voice": {
+        "tool": "speak",
+        "voice": "Osei"
+      },
+      "text": "A fine river, and a fine place for my trunk to land.",
+      "audio": "audio/cast-osei-says.wav",
+      "where": "Welcome, page 3: the cast, Osei"
+    },
+    {
+      "id": "cast-priya",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Priya is a fund manager: she decides how her fund is spent.",
+      "audio": "audio/cast-priya.wav",
+      "where": "Welcome, page 3: the cast, Priya"
+    },
+    {
+      "id": "cast-priya-says",
+      "speaker": "priya",
+      "name": "Priya",
+      "voice": {
+        "tool": "speak",
+        "voice": "Priya"
+      },
+      "text": "Neat piles, many streams. That's how a fund becomes a river.",
+      "audio": "audio/cast-priya-says.wav",
+      "where": "Welcome, page 3: the cast, Priya"
+    },
+    {
+      "id": "cast-ferran",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Ferran is a connector: he brings investors to a fund.",
+      "audio": "audio/cast-ferran.wav",
+      "where": "Welcome, page 3: the cast, Ferran"
+    },
+    {
+      "id": "cast-ferran-says",
+      "speaker": "ferran",
+      "name": "Ferran",
+      "voice": {
+        "tool": "speak",
+        "voice": "ryan",
+        "style": "jovial storyteller, unhurried"
+      },
+      "text": "I know every bend of the mountain road, and everyone on it.",
+      "audio": "audio/cast-ferran-says.wav",
+      "where": "Welcome, page 3: the cast, Ferran"
+    },
+    {
+      "id": "cast-mireille",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Mireille is a guild member: her craft travels from hive to hive.",
+      "audio": "audio/cast-mireille.wav",
+      "where": "Welcome, page 3: the cast, Mireille"
+    },
+    {
+      "id": "cast-mireille-says",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "Have toolkit, will travel. Which hive needs me today?",
+      "audio": "audio/cast-mireille-says.wav",
+      "where": "Welcome, page 3: the cast, Mireille"
+    },
+    {
+      "id": "cast-agnes",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Agnes is an ancestor: she built a part of all this, long ago.",
+      "audio": "audio/cast-agnes.wav",
+      "where": "Welcome, page 3: the cast, Agnes"
+    },
+    {
+      "id": "cast-agnes-says",
+      "speaker": "agnes",
+      "name": "Agnes",
+      "voice": {
+        "tool": "speak",
+        "voice": "Agnes"
+      },
+      "text": "Goodness. Did all that grow from my little sketch?",
+      "audio": "audio/cast-agnes-says.wav",
+      "where": "Welcome, page 3: the cast, Agnes"
+    },
+    {
+      "id": "cast-traveller",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "And the traveller at the Gate is you.",
+      "audio": "audio/cast-traveller.wav",
+      "where": "Welcome, page 3: the cast, You"
+    },
+    {
+      "id": "ch1-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 1. The artisans arrive. A Hive Instigator opens a hive and invites an artisan in. Quests, patronage points, and a hive's own rules.",
+      "audio": "audio/ch1-card.wav",
+      "where": "Chapter 1: card"
+    },
+    {
+      "id": "ch1-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Artisans are arriving in the realm, and many bring a project already in hand.",
+      "audio": "audio/ch1-b01-narrator.wav",
+      "where": "Chapter 1, step b01: caption"
+    },
+    {
+      "id": "ch1-b01-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "I'm Wren. I've a project ready, and I'm here to build it on NAOMS.",
+      "audio": "audio/ch1-b01-wren.wav",
+      "where": "Chapter 1, step b01: line"
+    },
+    {
+      "id": "ch1-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Wren buys in to build on NAOMS, and walks in to choose a site for a new hive.",
+      "audio": "audio/ch1-b02-narrator.wav",
+      "where": "Chapter 1, step b02: caption"
+    },
+    {
+      "id": "ch1-b02-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "This hill catches the light. It'll do nicely.",
+      "audio": "audio/ch1-b02-wren.wav",
+      "where": "Chapter 1, step b02: line"
+    },
+    {
+      "id": "ch1-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "She opens a hive: a team of artisans with one chest for all its money.",
+      "audio": "audio/ch1-b03-narrator.wav",
+      "where": "Chapter 1, step b03: caption"
+    },
+    {
+      "id": "ch1-b03-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "One chest, so we always know what we have.",
+      "audio": "audio/ch1-b03-wren.wav",
+      "where": "Chapter 1, step b03: line"
+    },
+    {
+      "id": "ch1-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "As its Hive Instigator, she invites other artisans to work with her.",
+      "audio": "audio/ch1-b04-narrator.wav",
+      "where": "Chapter 1, step b04: caption"
+    },
+    {
+      "id": "ch1-b04-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Taavi! Come and build with us.",
+      "audio": "audio/ch1-b04-wren.wav",
+      "where": "Chapter 1, step b04: line"
+    },
+    {
+      "id": "ch1-b04-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "Taavi, at your service. Where do I start?",
+      "audio": "audio/ch1-b04-taavi.wav",
+      "where": "Chapter 1, step b04: line"
+    },
+    {
+      "id": "ch1-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Work is offered as quests, each sized in euros before it begins.",
+      "audio": "audio/ch1-b05-narrator.wav",
+      "where": "Chapter 1, step b05: caption"
+    },
+    {
+      "id": "ch1-b05-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "This quest is worth a hundred euros. Agreed?",
+      "audio": "audio/ch1-b05-wren.wav",
+      "where": "Chapter 1, step b05: line"
+    },
+    {
+      "id": "ch1-b05-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "Agreed!",
+      "audio": "audio/ch1-b05-taavi.wav",
+      "where": "Chapter 1, step b05: line"
+    },
+    {
+      "id": "ch1-b06-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A quest of 100 euros earns 100 patronage points, one for one, agreed before the work.",
+      "audio": "audio/ch1-b06-narrator.wav",
+      "where": "Chapter 1, step b06: caption"
+    },
+    {
+      "id": "ch1-b06-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "A hundred patronage points in my jar. Listen to them rattle.",
+      "audio": "audio/ch1-b06-taavi.wav",
+      "where": "Chapter 1, step b06: line"
+    },
+    {
+      "id": "ch1-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The hive sets its own rules: how it pays out from its chest, how it organises its patronage points, and what caps it offers.",
+      "audio": "audio/ch1-b07-narrator.wav",
+      "where": "Chapter 1, step b07: caption"
+    },
+    {
+      "id": "ch1-b07-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Our cap starts high while the work is new and risky, and comes down once our app is selling.",
+      "audio": "audio/ch1-b07-wren.wav",
+      "where": "Chapter 1, step b07: line"
+    },
+    {
+      "id": "ch1-b08-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Taavi's rent is due this week. What does he do? Cash now from the chest, set against a later patronage point payout. Or: Patronage points and patience, patronage point payouts will fill his patronage points as the hive earns.",
+      "audio": "audio/ch1-b08-fork.wav",
+      "where": "Chapter 1, step b08: the choice"
+    },
+    {
+      "id": "ch1-b08-cash-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The hive pays him from its chest now, and sets it against a later patronage point payout.",
+      "audio": "audio/ch1-b08-cash-b01-narrator.wav",
+      "where": "Chapter 1, step b08, if \"Cash now from the chest\", b01: caption"
+    },
+    {
+      "id": "ch1-b08-cash-b01-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "Rent sorted. Thanks, Wren!",
+      "audio": "audio/ch1-b08-cash-b01-taavi.wav",
+      "where": "Chapter 1, step b08, if \"Cash now from the chest\", b01: line"
+    },
+    {
+      "id": "ch1-b08-patience-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "His patronage points wait in the jar, to be filled by patronage point payouts as the hive earns.",
+      "audio": "audio/ch1-b08-patience-b01-narrator.wav",
+      "where": "Chapter 1, step b08, if \"Patronage points and patience\", b01: caption"
+    },
+    {
+      "id": "ch1-b08-patience-b01-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "I can wait. The jar isn't going anywhere.",
+      "audio": "audio/ch1-b08-patience-b01-taavi.wav",
+      "where": "Chapter 1, step b08, if \"Patronage points and patience\", b01: line"
+    },
+    {
+      "id": "ch1-b09-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A hive has opened, an artisan has joined it, and the first patronage points are in a jar.",
+      "audio": "audio/ch1-b09-narrator.wav",
+      "where": "Chapter 1, step b09: caption"
+    },
+    {
+      "id": "ch1-b09-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Now, let's see where the members' money goes.",
+      "audio": "audio/ch1-b09-wren.wav",
+      "where": "Chapter 1, step b09: line"
+    },
+    {
+      "id": "ch1-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 1 walked. Next comes chapter 2: The members' 20 euros.",
+      "audio": "audio/ch1-done.wav",
+      "where": "Chapter 1: end"
+    },
+    {
+      "id": "ch2-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 2. The members' 20 euros. A member's dues pool in the Treasury, and the Council divides them with discernment. The Forge team, the millraces, the line, the surplus.",
+      "audio": "audio/ch2-card.wav",
+      "where": "Chapter 2: card"
+    },
+    {
+      "id": "ch2-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Noor is a member: she pays 20 euros a month and uses the free apps.",
+      "audio": "audio/ch2-b01-narrator.wav",
+      "where": "Chapter 2, step b01: caption"
+    },
+    {
+      "id": "ch2-b01-noor",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "Tea, headphones, and apps that simply work. Lovely.",
+      "audio": "audio/ch2-b01-noor.wav",
+      "where": "Chapter 2, step b01: line"
+    },
+    {
+      "id": "ch2-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Her 20 euros fall as rain on the springs and pool in the Treasury.",
+      "audio": "audio/ch2-b02-narrator.wav",
+      "where": "Chapter 2, step b02: caption"
+    },
+    {
+      "id": "ch2-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Here the Council looks at what has arrived and at the whole realm, and decides with discernment where the water goes.",
+      "audio": "audio/ch2-b03-narrator.wav",
+      "where": "Chapter 2, step b03: caption"
+    },
+    {
+      "id": "ch2-b03-council",
+      "speaker": "council",
+      "name": "The Council",
+      "voice": {
+        "tool": "speak",
+        "voice": "Council"
+      },
+      "text": "There is no fixed rule. Each month we look, we talk, and we choose what serves the greatest good.",
+      "audio": "audio/ch2-b03-council.wav",
+      "where": "Chapter 2, step b03: line"
+    },
+    {
+      "id": "ch2-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Its hand moves over several gates in no set order: sometimes the Forge fills first, sometimes the millraces run first.",
+      "audio": "audio/ch2-b04-narrator.wav",
+      "where": "Chapter 2, step b04: caption"
+    },
+    {
+      "id": "ch2-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Water goes to the Forge team, who build and run the NAOMS infrastructure, up to the floor the Council has set.",
+      "audio": "audio/ch2-b05-narrator.wav",
+      "where": "Chapter 2, step b05: caption"
+    },
+    {
+      "id": "ch2-b05-ilse",
+      "speaker": "ilse",
+      "name": "Ilse",
+      "voice": {
+        "tool": "speak",
+        "voice": "Ilse"
+      },
+      "text": "The Council presses from above, we say what we need from below, and we meet in the middle.",
+      "audio": "audio/ch2-b05-ilse.wav",
+      "where": "Chapter 2, step b05: line"
+    },
+    {
+      "id": "ch2-b05-bram",
+      "speaker": "bram",
+      "name": "Bram",
+      "voice": {
+        "tool": "speak",
+        "voice": "Bram"
+      },
+      "text": "And we pay each other from the Forge's chest. Coffee?",
+      "audio": "audio/ch2-b05-bram.wav",
+      "where": "Chapter 2, step b05: line"
+    },
+    {
+      "id": "ch2-b06-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Water runs down the millraces to the hives whose apps are free to members, wider for the apps that are used more.",
+      "audio": "audio/ch2-b06-narrator.wav",
+      "where": "Chapter 2, step b06: caption"
+    },
+    {
+      "id": "ch2-b06-noor",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "I use the planting calendar every day, so its wheel spins fastest.",
+      "audio": "audio/ch2-b06-noor.wav",
+      "where": "Chapter 2, step b06: line"
+    },
+    {
+      "id": "ch2-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Water flows along the payout and appreciation line, to those who already hold NAOMS's patronage points and to NAOMS's own ancestors in the Grove.",
+      "audio": "audio/ch2-b07-narrator.wav",
+      "where": "Chapter 2, step b07: caption"
+    },
+    {
+      "id": "ch2-b08-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Once the Forge and the free apps have what they need, the Council decides where the surplus goes. Sit in the circle: where would you send it? Invest in Thistledown, a new hive whose water waits in the Marshes. Or: Match what Lanternhill's backers put in, into Lanternhill's chest, through its gate.",
+      "audio": "audio/ch2-b08-fork.wav",
+      "where": "Chapter 2, step b08: the choice"
+    },
+    {
+      "id": "ch2-b08-thistledown-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The surplus flows into Thistledown's chest: the decision is made, and the hive's water leaves the Marshes.",
+      "audio": "audio/ch2-b08-thistledown-b01-narrator.wav",
+      "where": "Chapter 2, step b08, if \"Invest in Thistledown\", b01: caption"
+    },
+    {
+      "id": "ch2-b08-thistledown-b01-council",
+      "speaker": "council",
+      "name": "The Council",
+      "voice": {
+        "tool": "speak",
+        "voice": "Council"
+      },
+      "text": "The cooperative holds Thistledown's patronage points now, like any investor.",
+      "audio": "audio/ch2-b08-thistledown-b01-council.wav",
+      "where": "Chapter 2, step b08, if \"Invest in Thistledown\", b01: line"
+    },
+    {
+      "id": "ch2-b08-lanternhill-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The surplus matches what Lanternhill's backers bring, and flows through its gate into the hive's chest.",
+      "audio": "audio/ch2-b08-lanternhill-b01-narrator.wav",
+      "where": "Chapter 2, step b08, if \"Match what Lanternhill's backers put in\", b01: caption"
+    },
+    {
+      "id": "ch2-b08-lanternhill-b01-council",
+      "speaker": "council",
+      "name": "The Council",
+      "voice": {
+        "tool": "speak",
+        "voice": "Council"
+      },
+      "text": "The cooperative holds Lanternhill's patronage points now, like any investor.",
+      "audio": "audio/ch2-b08-lanternhill-b01-council.wav",
+      "where": "Chapter 2, step b08, if \"Match what Lanternhill's backers put in\", b01: line"
+    },
+    {
+      "id": "ch2-b09-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "After 31 months of dues, Noor is a lifetime member, and the rain from her stops.",
+      "audio": "audio/ch2-b09-narrator.wav",
+      "where": "Chapter 2, step b09: caption"
+    },
+    {
+      "id": "ch2-b09-noor",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "Lifetime! I'll still be here, with my tea.",
+      "audio": "audio/ch2-b09-noor.wav",
+      "where": "Chapter 2, step b09: line"
+    },
+    {
+      "id": "ch2-b10-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Noor's friend joins too. How does he pay? 20 euros a month, lifetime after 31 months. Or: 460 euros at once, on Hearthfield's referral, lifetime from the first day.",
+      "audio": "audio/ch2-b10-fork.wav",
+      "where": "Chapter 2, step b10: the choice"
+    },
+    {
+      "id": "ch2-b10-monthly-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "His 20 euros a month join the rain, and in 31 months he is lifetime too.",
+      "audio": "audio/ch2-b10-monthly-b01-narrator.wav",
+      "where": "Chapter 2, step b10, if \"20 euros a month\", b01: caption"
+    },
+    {
+      "id": "ch2-b10-lifetime-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "92 of his 460 euros go straight into Hearthfield's chest, and the rest pools in the Treasury.",
+      "audio": "audio/ch2-b10-lifetime-b01-narrator.wav",
+      "where": "Chapter 2, step b10, if \"460 euros at once, on Hearthfield's referral\", b01: caption"
+    },
+    {
+      "id": "ch2-b10-lifetime-b01-noor",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "Hearthfield told him about it, so Hearthfield gets the thanks.",
+      "audio": "audio/ch2-b10-lifetime-b01-noor.wav",
+      "where": "Chapter 2, step b10, if \"460 euros at once, on Hearthfield's referral\", b01: line"
+    },
+    {
+      "id": "ch2-b11-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The members' money pools in the Treasury, and the Council divides it with discernment.",
+      "audio": "audio/ch2-b11-narrator.wav",
+      "where": "Chapter 2, step b11: caption"
+    },
+    {
+      "id": "ch2-b11-council",
+      "speaker": "council",
+      "name": "The Council",
+      "voice": {
+        "tool": "speak",
+        "voice": "Council"
+      },
+      "text": "And next month, we'll look again.",
+      "audio": "audio/ch2-b11-council.wav",
+      "where": "Chapter 2, step b11: line"
+    },
+    {
+      "id": "ch2-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 2 walked. Next comes chapter 3: An app's life.",
+      "audio": "audio/ch2-done.wav",
+      "where": "Chapter 2: end"
+    },
+    {
+      "id": "ch3-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 3. An app's life. From the workshop to the Harbour Market, out of the chest in organised flows, and into the Open Sea.",
+      "audio": "audio/ch3-card.wav",
+      "where": "Chapter 3: card"
+    },
+    {
+      "id": "ch3-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "In Lanternhill's workshop, Wren's hive finishes version 1 of its app.",
+      "audio": "audio/ch3-b01-narrator.wav",
+      "where": "Chapter 3, step b01: caption"
+    },
+    {
+      "id": "ch3-b01-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Version 1 of the lamp-lighter. It's ready!",
+      "audio": "audio/ch3-b01-wren.wav",
+      "where": "Chapter 3, step b01: line"
+    },
+    {
+      "id": "ch3-b01-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "I still have ink on my hands.",
+      "audio": "audio/ch3-b01-taavi.wav",
+      "where": "Chapter 3, step b01: line"
+    },
+    {
+      "id": "ch3-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The app is released into the Harbour Market, the realm's app store.",
+      "audio": "audio/ch3-b02-narrator.wav",
+      "where": "Chapter 3, step b02: caption"
+    },
+    {
+      "id": "ch3-b03-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "How does Lanternhill offer its app? Free to members, the millrace runs, in proportion to use. Or: For sale, each sale sends 80% to the chest and 20% to the Treasury.",
+      "audio": "audio/ch3-b03-fork.wav",
+      "where": "Chapter 3, step b03: the choice"
+    },
+    {
+      "id": "ch3-b03-free-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A millrace opens to Lanternhill, and the more members use the app, the faster its wheel turns.",
+      "audio": "audio/ch3-b03-free-b01-narrator.wav",
+      "where": "Chapter 3, step b03, if \"Free to members\", b01: caption"
+    },
+    {
+      "id": "ch3-b03-free-b01-noor",
+      "speaker": "noor",
+      "name": "Noor",
+      "voice": {
+        "tool": "speak",
+        "voice": "Noor"
+      },
+      "text": "I'm trying it tonight.",
+      "audio": "audio/ch3-b03-free-b01-noor.wav",
+      "where": "Chapter 3, step b03, if \"Free to members\", b01: line"
+    },
+    {
+      "id": "ch3-b03-sale-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A buyer pays Lanternhill's price: 80% flows into the hive's chest and 20% into the Treasury.",
+      "audio": "audio/ch3-b03-sale-b01-narrator.wav",
+      "where": "Chapter 3, step b03, if \"For sale\", b01: caption"
+    },
+    {
+      "id": "ch3-b03-sale-b01-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Sold apps draw no millrace. Our buyers carry us instead.",
+      "audio": "audio/ch3-b03-sale-b01-wren.wav",
+      "where": "Chapter 3, step b03, if \"For sale\", b01: line"
+    },
+    {
+      "id": "ch3-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Out of its chest, the hive organises its flows: patronage point payouts first, then appreciation.",
+      "audio": "audio/ch3-b04-narrator.wav",
+      "where": "Chapter 3, step b04: caption"
+    },
+    {
+      "id": "ch3-b04-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Patronage point payouts, then the Grove, then the aqueducts. Every month, in that order.",
+      "audio": "audio/ch3-b04-wren.wav",
+      "where": "Chapter 3, step b04: line"
+    },
+    {
+      "id": "ch3-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A patronage point payout is shared in proportion to patronage points held: 100 of 5,000 patronage points means 2% of the payout.",
+      "audio": "audio/ch3-b05-narrator.wav",
+      "where": "Chapter 3, step b05: caption"
+    },
+    {
+      "id": "ch3-b05-taavi",
+      "speaker": "taavi",
+      "name": "Taavi",
+      "voice": {
+        "tool": "speak",
+        "voice": "aiden",
+        "style": "cheerful, relaxed"
+      },
+      "text": "Two percent of a thousand euros is twenty euros, and my patronage points fill a little.",
+      "audio": "audio/ch3-b05-taavi.wav",
+      "where": "Chapter 3, step b05: line"
+    },
+    {
+      "id": "ch3-b06-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Appreciation flows to the ancestors whose work the app grew from, through the Grove.",
+      "audio": "audio/ch3-b06-narrator.wav",
+      "where": "Chapter 3, step b06: caption"
+    },
+    {
+      "id": "ch3-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Along the aqueducts, appreciation flows to the partners and foundations the app stands on.",
+      "audio": "audio/ch3-b07-narrator.wav",
+      "where": "Chapter 3, step b07: caption"
+    },
+    {
+      "id": "ch3-b08-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Month by month the granary fills, until the app needs no more revenue.",
+      "audio": "audio/ch3-b08-narrator.wav",
+      "where": "Chapter 3, step b08: caption"
+    },
+    {
+      "id": "ch3-b09-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Then version 1 sails into the Open Sea, free for all, and the water it drew stops.",
+      "audio": "audio/ch3-b09-narrator.wav",
+      "where": "Chapter 3, step b09: caption"
+    },
+    {
+      "id": "ch3-b09-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Off you go. Light up the world.",
+      "audio": "audio/ch3-b09-wren.wav",
+      "where": "Chapter 3, step b09: line"
+    },
+    {
+      "id": "ch3-b10-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The workshop is already at work on version 2, which issues new patronage points and needs the water again.",
+      "audio": "audio/ch3-b10-narrator.wav",
+      "where": "Chapter 3, step b10: caption"
+    },
+    {
+      "id": "ch3-b10-wren",
+      "speaker": "wren",
+      "name": "Wren",
+      "voice": {
+        "tool": "speak",
+        "voice": "Wren"
+      },
+      "text": "Version 2 has a great many more lamps.",
+      "audio": "audio/ch3-b10-wren.wav",
+      "where": "Chapter 3, step b10: line"
+    },
+    {
+      "id": "ch3-b11-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "And when a decision is pending, the water waits in the Marshes until it clears.",
+      "audio": "audio/ch3-b11-narrator.wav",
+      "where": "Chapter 3, step b11: caption"
+    },
+    {
+      "id": "ch3-b12-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "That is an app's life: built, released, filled, and given to the commons. Back in the present, all of it lies ahead.",
+      "audio": "audio/ch3-b12-narrator.wav",
+      "where": "Chapter 3, step b12: caption"
+    },
+    {
+      "id": "ch3-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 3 walked. Next comes chapter 4: Steering.",
+      "audio": "audio/ch3-done.wav",
+      "where": "Chapter 3: end"
+    },
+    {
+      "id": "ch4-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 4. Steering. A backer brings water and receives tokens, then votes at the gates. Stack or spread.",
+      "audio": "audio/ch4-card.wav",
+      "where": "Chapter 4: card"
+    },
+    {
+      "id": "ch4-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Dagny is a backer, and she brings water to the realm.",
+      "audio": "audio/ch4-b01-narrator.wav",
+      "where": "Chapter 4, step b01: caption"
+    },
+    {
+      "id": "ch4-b01-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Seven euros a token, and I'll take the full 144.",
+      "audio": "audio/ch4-b01-dagny.wav",
+      "where": "Chapter 4, step b01: line"
+    },
+    {
+      "id": "ch4-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Her 1,008 euros flow into the Treasury, and she walks away with 144 tokens.",
+      "audio": "audio/ch4-b02-narrator.wav",
+      "where": "Chapter 4, step b02: caption"
+    },
+    {
+      "id": "ch4-b02-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "They never turn into cash again, and holding them longer earns me nothing. So I'll use them.",
+      "audio": "audio/ch4-b02-dagny.wav",
+      "where": "Chapter 4, step b02: line"
+    },
+    {
+      "id": "ch4-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "At the gates she spends tokens as votes: n votes on one hive cost n squared tokens, so 1, 4, 9, 16.",
+      "audio": "audio/ch4-b03-narrator.wav",
+      "where": "Chapter 4, step b03: caption"
+    },
+    {
+      "id": "ch4-b03-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Squares! Many small voices outweigh one loud one.",
+      "audio": "audio/ch4-b03-dagny.wav",
+      "where": "Chapter 4, step b03: line"
+    },
+    {
+      "id": "ch4-b04-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "How does Dagny spend her 144 tokens? Twelve votes on Lanternhill, 144 tokens, twelve lots of patronage points. Or: One vote each on twelve hives, 12 tokens, twelve lots of patronage points, 132 kept for hives still to come.",
+      "audio": "audio/ch4-b04-fork.wav",
+      "where": "Chapter 4, step b04: the choice"
+    },
+    {
+      "id": "ch4-b04-stack-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Lanternhill's gate opens wide, and Treasury water flows into its chest in proportion to the votes.",
+      "audio": "audio/ch4-b04-stack-b01-narrator.wav",
+      "where": "Chapter 4, step b04, if \"Twelve votes on Lanternhill\", b01: caption"
+    },
+    {
+      "id": "ch4-b04-stack-b01-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Wren's lamps deserve it.",
+      "audio": "audio/ch4-b04-stack-b01-dagny.wav",
+      "where": "Chapter 4, step b04, if \"Twelve votes on Lanternhill\", b01: line"
+    },
+    {
+      "id": "ch4-b04-spread-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Twelve gates open a little, and 132 tokens stay in her satchel for hives still to come.",
+      "audio": "audio/ch4-b04-spread-b01-narrator.wav",
+      "where": "Chapter 4, step b04, if \"One vote each on twelve hives\", b01: caption"
+    },
+    {
+      "id": "ch4-b04-spread-b01-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "A little water everywhere, and plenty left over.",
+      "audio": "audio/ch4-b04-spread-b01-dagny.wav",
+      "where": "Chapter 4, step b04, if \"One vote each on twelve hives\", b01: line"
+    },
+    {
+      "id": "ch4-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Each hive answers her votes with its patronage points, the number decided by the hive.",
+      "audio": "audio/ch4-b05-narrator.wav",
+      "where": "Chapter 4, step b05: caption"
+    },
+    {
+      "id": "ch4-b05-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Twelve lots of patronage points either way, and spreading costs a fraction of the tokens.",
+      "audio": "audio/ch4-b05-dagny.wav",
+      "where": "Chapter 4, step b05: line"
+    },
+    {
+      "id": "ch4-b06-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A friend sees a hive Dagny cannot. Does she gift her some tokens? Gift 16 tokens, her friend casts 4 votes. Or: Keep them for hives still to come.",
+      "audio": "audio/ch4-b06-fork.wav",
+      "where": "Chapter 4, step b06: the choice"
+    },
+    {
+      "id": "ch4-b06-gift-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Her friend spends them on a farther hive Dagny had never heard of, and its gate opens a little.",
+      "audio": "audio/ch4-b06-gift-b01-narrator.wav",
+      "where": "Chapter 4, step b06, if \"Gift 16 tokens\", b01: caption"
+    },
+    {
+      "id": "ch4-b06-keep-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "They wait in her satchel; new hives keep arriving.",
+      "audio": "audio/ch4-b06-keep-b01-narrator.wav",
+      "where": "Chapter 4, step b06, if \"Keep them for hives still to come\", b01: caption"
+    },
+    {
+      "id": "ch4-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Her satchel is empty now; next time she might gift a few tokens before she votes.",
+      "audio": "audio/ch4-b07-narrator.wav",
+      "where": "Chapter 4, step b07: caption"
+    },
+    {
+      "id": "ch4-b08-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Backers steer their own water: the gates open by their votes, and the hives' patronage points come back to them.",
+      "audio": "audio/ch4-b08-narrator.wav",
+      "where": "Chapter 4, step b08: caption"
+    },
+    {
+      "id": "ch4-b08-dagny",
+      "speaker": "dagny",
+      "name": "Dagny",
+      "voice": {
+        "tool": "speak",
+        "voice": "Dagny"
+      },
+      "text": "Same time next month?",
+      "audio": "audio/ch4-b08-dagny.wav",
+      "where": "Chapter 4, step b08: line"
+    },
+    {
+      "id": "ch4-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 4 walked. Next comes chapter 5: Investing.",
+      "audio": "audio/ch4-done.wav",
+      "where": "Chapter 4: end"
+    },
+    {
+      "id": "ch5-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 5. Investing. An investor, a connector's 7%, and a fund that spreads its water many ways.",
+      "audio": "audio/ch5-card.wav",
+      "where": "Chapter 5: card"
+    },
+    {
+      "id": "ch5-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Osei is an investor, and Ferran the connector has walked him down from the mountains.",
+      "audio": "audio/ch5-b01-narrator.wav",
+      "where": "Chapter 5, step b01: caption"
+    },
+    {
+      "id": "ch5-b01-ferran",
+      "speaker": "ferran",
+      "name": "Ferran",
+      "voice": {
+        "tool": "speak",
+        "voice": "ryan",
+        "style": "jovial storyteller, unhurried"
+      },
+      "text": "Best view in the realm, and the best fund at the end of it.",
+      "audio": "audio/ch5-b01-ferran.wav",
+      "where": "Chapter 5, step b01: line"
+    },
+    {
+      "id": "ch5-b01-osei",
+      "speaker": "osei",
+      "name": "Osei",
+      "voice": {
+        "tool": "speak",
+        "voice": "Osei"
+      },
+      "text": "I can see why you walk this road.",
+      "audio": "audio/ch5-b01-osei.wav",
+      "where": "Chapter 5, step b01: line"
+    },
+    {
+      "id": "ch5-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Osei's 10,000 euros come down the Great River into a fund.",
+      "audio": "audio/ch5-b02-narrator.wav",
+      "where": "Chapter 5, step b02: caption"
+    },
+    {
+      "id": "ch5-b02-osei",
+      "speaker": "osei",
+      "name": "Osei",
+      "voice": {
+        "tool": "speak",
+        "voice": "Osei"
+      },
+      "text": "Here you are. I trust you to choose well.",
+      "audio": "audio/ch5-b02-osei.wav",
+      "where": "Chapter 5, step b02: line"
+    },
+    {
+      "id": "ch5-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Ferran receives 7% of the investment along the road in: 700 euros.",
+      "audio": "audio/ch5-b03-narrator.wav",
+      "where": "Chapter 5, step b03: caption"
+    },
+    {
+      "id": "ch5-b03-ferran",
+      "speaker": "ferran",
+      "name": "Ferran",
+      "voice": {
+        "tool": "speak",
+        "voice": "ryan",
+        "style": "jovial storyteller, unhurried"
+      },
+      "text": "Bringing a member through the Gate earns no coin, and that keeps our trust real. Investors are another matter.",
+      "audio": "audio/ch5-b03-ferran.wav",
+      "where": "Chapter 5, step b03: line"
+    },
+    {
+      "id": "ch5-b04-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "What does Ferran do with his 700 euros? Keep it. Or: Share it onward, with the friend who helped him make the introduction.",
+      "audio": "audio/ch5-b04-fork.wav",
+      "where": "Chapter 5, step b04: the choice"
+    },
+    {
+      "id": "ch5-b04-keep-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "He keeps it.",
+      "audio": "audio/ch5-b04-keep-b01-narrator.wav",
+      "where": "Chapter 5, step b04, if \"Keep it\", b01: caption"
+    },
+    {
+      "id": "ch5-b04-keep-b01-ferran",
+      "speaker": "ferran",
+      "name": "Ferran",
+      "voice": {
+        "tool": "speak",
+        "voice": "ryan",
+        "style": "jovial storyteller, unhurried"
+      },
+      "text": "A good walk and a good fee.",
+      "audio": "audio/ch5-b04-keep-b01-ferran.wav",
+      "where": "Chapter 5, step b04, if \"Keep it\", b01: line"
+    },
+    {
+      "id": "ch5-b04-onward-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Part of it runs on to the friend who helped make the introduction.",
+      "audio": "audio/ch5-b04-onward-b01-narrator.wav",
+      "where": "Chapter 5, step b04, if \"Share it onward\", b01: caption"
+    },
+    {
+      "id": "ch5-b04-onward-b01-ferran",
+      "speaker": "ferran",
+      "name": "Ferran",
+      "voice": {
+        "tool": "speak",
+        "voice": "ryan",
+        "style": "jovial storyteller, unhurried"
+      },
+      "text": "She made the first call. Half the credit is hers.",
+      "audio": "audio/ch5-b04-onward-b01-ferran.wav",
+      "where": "Chapter 5, step b04, if \"Share it onward\", b01: line"
+    },
+    {
+      "id": "ch5-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Priya and the other fund managers decide how the fund is spent, and they spread it.",
+      "audio": "audio/ch5-b05-narrator.wav",
+      "where": "Chapter 5, step b05: caption"
+    },
+    {
+      "id": "ch5-b05-priya",
+      "speaker": "priya",
+      "name": "Priya",
+      "voice": {
+        "tool": "speak",
+        "voice": "Priya"
+      },
+      "text": "Two thousand here, a thousand there, and small piles for quests.",
+      "audio": "audio/ch5-b05-priya.wav",
+      "where": "Chapter 5, step b05: line"
+    },
+    {
+      "id": "ch5-b06-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The water splits into many streams: into hives' chests, to single quests, and matching what a hive's own backers put in.",
+      "audio": "audio/ch5-b06-narrator.wav",
+      "where": "Chapter 5, step b06: caption"
+    },
+    {
+      "id": "ch5-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A fund directs its money four ways: into a chest, to a quest, toward a star, or by matching.",
+      "audio": "audio/ch5-b07-narrator.wav",
+      "where": "Chapter 5, step b07: caption"
+    },
+    {
+      "id": "ch5-b08-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The hives answer the fund's water with their patronage points, and as they pay out, the fund reinvests.",
+      "audio": "audio/ch5-b08-narrator.wav",
+      "where": "Chapter 5, step b08: caption"
+    },
+    {
+      "id": "ch5-b08-priya",
+      "speaker": "priya",
+      "name": "Priya",
+      "voice": {
+        "tool": "speak",
+        "voice": "Priya"
+      },
+      "text": "The point of a fund is to become a river.",
+      "audio": "audio/ch5-b08-priya.wav",
+      "where": "Chapter 5, step b08: line"
+    },
+    {
+      "id": "ch5-b09-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "There is room beside it for more lakes: many funds can grow in the realm.",
+      "audio": "audio/ch5-b09-narrator.wav",
+      "where": "Chapter 5, step b09: caption"
+    },
+    {
+      "id": "ch5-b10-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Investors cast no votes: fund managers decide, connectors are thanked, and hives answer with patronage points.",
+      "audio": "audio/ch5-b10-narrator.wav",
+      "where": "Chapter 5, step b10: caption"
+    },
+    {
+      "id": "ch5-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 5 walked. Next comes chapter 6: Across hives.",
+      "audio": "audio/ch5-done.wav",
+      "where": "Chapter 5: end"
+    },
+    {
+      "id": "ch6-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 6. Across hives. A guild member quests in three hives, and the aqueducts carry appreciation between them.",
+      "audio": "audio/ch6-card.wav",
+      "where": "Chapter 6: card"
+    },
+    {
+      "id": "ch6-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Mireille belongs to a guild, a craft practised across hives, and this hall is its home.",
+      "audio": "audio/ch6-b01-narrator.wav",
+      "where": "Chapter 6, step b01: caption"
+    },
+    {
+      "id": "ch6-b01-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "We train here, we eat here, and we argue about tools here.",
+      "audio": "audio/ch6-b01-mireille.wav",
+      "where": "Chapter 6, step b01: line"
+    },
+    {
+      "id": "ch6-b02-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "She sets out to do quests in three hives, starting with Millbrook.",
+      "audio": "audio/ch6-b02-narrator.wav",
+      "where": "Chapter 6, step b02: caption"
+    },
+    {
+      "id": "ch6-b02-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "Millbrook needs a map that folds properly.",
+      "audio": "audio/ch6-b02-mireille.wav",
+      "where": "Chapter 6, step b02: line"
+    },
+    {
+      "id": "ch6-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "In each hive she earns that hive's patronage points, one for one with the euros of the quest.",
+      "audio": "audio/ch6-b03-narrator.wav",
+      "where": "Chapter 6, step b03: caption"
+    },
+    {
+      "id": "ch6-b03-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "Lanternhill next. Wren has lamps that need hanging.",
+      "audio": "audio/ch6-b03-mireille.wav",
+      "where": "Chapter 6, step b03: line"
+    },
+    {
+      "id": "ch6-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "And in each she stands on the hive's attribution list, for the parts she made.",
+      "audio": "audio/ch6-b04-narrator.wav",
+      "where": "Chapter 6, step b04: caption"
+    },
+    {
+      "id": "ch6-b04-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "Riverbend last, and then supper at the hall.",
+      "audio": "audio/ch6-b04-mireille.wav",
+      "where": "Chapter 6, step b04: line"
+    },
+    {
+      "id": "ch6-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Between the hives, the aqueducts run wide or narrow, as the hives have agreed.",
+      "audio": "audio/ch6-b05-narrator.wav",
+      "where": "Chapter 6, step b05: caption"
+    },
+    {
+      "id": "ch6-b05-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "Lanternhill and Millbrook settled theirs over tea. Generosity is the practice here.",
+      "audio": "audio/ch6-b05-mireille.wav",
+      "where": "Chapter 6, step b05: line"
+    },
+    {
+      "id": "ch6-b06-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Mireille believes in Riverbend, downstream of Lanternhill. Does she stake her Lanternhill patronage points there? Stake them on Riverbend, their patronage point payouts flow there as funding. Or: Keep them in Lanternhill, its patronage point payouts come to her.",
+      "audio": "audio/ch6-b06-fork.wav",
+      "where": "Chapter 6, step b06: the choice"
+    },
+    {
+      "id": "ch6-b06-stake-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The patronage point payouts her Lanternhill patronage points would receive now flow to Riverbend as funding, and Riverbend gives her its patronage points.",
+      "audio": "audio/ch6-b06-stake-b01-narrator.wav",
+      "where": "Chapter 6, step b06, if \"Stake them on Riverbend\", b01: caption"
+    },
+    {
+      "id": "ch6-b06-stake-b01-mireille",
+      "speaker": "mireille",
+      "name": "Mireille",
+      "voice": {
+        "tool": "speak",
+        "voice": "Mireille"
+      },
+      "text": "What goes around comes back around.",
+      "audio": "audio/ch6-b06-stake-b01-mireille.wav",
+      "where": "Chapter 6, step b06, if \"Stake them on Riverbend\", b01: line"
+    },
+    {
+      "id": "ch6-b06-keep-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "She keeps them where they are, and Lanternhill's patronage point payouts come to her.",
+      "audio": "audio/ch6-b06-keep-b01-narrator.wav",
+      "where": "Chapter 6, step b06, if \"Keep them in Lanternhill\", b01: caption"
+    },
+    {
+      "id": "ch6-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Guilds carry craft across hives, and the aqueducts carry appreciation between them.",
+      "audio": "audio/ch6-b07-narrator.wav",
+      "where": "Chapter 6, step b07: caption"
+    },
+    {
+      "id": "ch6-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 6 walked. Next comes chapter 7: Remembering.",
+      "audio": "audio/ch6-done.wav",
+      "where": "Chapter 6: end"
+    },
+    {
+      "id": "ch7-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 7. Remembering. An ancestor's invitation arrives, and appreciation flows to her from a hive and from the Treasury.",
+      "audio": "audio/ch7-card.wav",
+      "where": "Chapter 7: card"
+    },
+    {
+      "id": "ch7-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Years ago, Agnes built a part of what NAOMS now is.",
+      "audio": "audio/ch7-b01-narrator.wav",
+      "where": "Chapter 7, step b01: caption"
+    },
+    {
+      "id": "ch7-b01-agnes",
+      "speaker": "agnes",
+      "name": "Agnes",
+      "voice": {
+        "tool": "speak",
+        "voice": "Agnes"
+      },
+      "text": "Oh, a long time ago. We had no idea what it would become.",
+      "audio": "audio/ch7-b01-agnes.wav",
+      "where": "Chapter 7, step b01: line"
+    },
+    {
+      "id": "ch7-b02-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Who is remembered here today? Agnes, who built a part of it. Or: A family supporter, who carried the cost at home, shown with privacy respected.",
+      "audio": "audio/ch7-b02-fork.wav",
+      "where": "Chapter 7, step b02: the choice"
+    },
+    {
+      "id": "ch7-b02-family-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The family who carried the cost of the work can be on the list too, with their privacy respected.",
+      "audio": "audio/ch7-b02-family-b01-narrator.wav",
+      "where": "Chapter 7, step b02, if \"A family supporter\", b01: caption"
+    },
+    {
+      "id": "ch7-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "An invitation arrives: her name is on Hearthfield's attribution list, with a share agreed before the first euro moved.",
+      "audio": "audio/ch7-b03-narrator.wav",
+      "where": "Chapter 7, step b03: caption"
+    },
+    {
+      "id": "ch7-b03-agnes",
+      "speaker": "agnes",
+      "name": "Agnes",
+      "voice": {
+        "tool": "speak",
+        "voice": "Agnes"
+      },
+      "text": "Hearthfield? I drew the very first sketch of that calendar!",
+      "audio": "audio/ch7-b03-agnes.wav",
+      "where": "Chapter 7, step b03: line"
+    },
+    {
+      "id": "ch7-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Appreciation flows to her from Hearthfield's chest, through the Grove, up to the agreed amount.",
+      "audio": "audio/ch7-b04-narrator.wav",
+      "where": "Chapter 7, step b04: caption"
+    },
+    {
+      "id": "ch7-b05-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Treasury's appreciation reaches NAOMS's own ancestors through the same Grove.",
+      "audio": "audio/ch7-b05-narrator.wav",
+      "where": "Chapter 7, step b05: caption"
+    },
+    {
+      "id": "ch7-b06-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "How should she appear on the list? With her name. Or: Counted, with her name kept private.",
+      "audio": "audio/ch7-b06-fork.wav",
+      "where": "Chapter 7, step b06: the choice"
+    },
+    {
+      "id": "ch7-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "She logs in, accepts, and sees what her contribution grew into.",
+      "audio": "audio/ch7-b07-narrator.wav",
+      "where": "Chapter 7, step b07: caption"
+    },
+    {
+      "id": "ch7-b07-agnes",
+      "speaker": "agnes",
+      "name": "Agnes",
+      "voice": {
+        "tool": "speak",
+        "voice": "Agnes"
+      },
+      "text": "Look at all those lamps!",
+      "audio": "audio/ch7-b07-agnes.wav",
+      "where": "Chapter 7, step b07: line"
+    },
+    {
+      "id": "ch7-b08-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Every hive remembers its ancestors, and the realm remembers its own.",
+      "audio": "audio/ch7-b08-narrator.wav",
+      "where": "Chapter 7, step b08: caption"
+    },
+    {
+      "id": "ch7-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 7 walked. Next comes chapter 8: The Gate.",
+      "audio": "audio/ch7-done.wav",
+      "where": "Chapter 7: end"
+    },
+    {
+      "id": "ch8-card",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 8. The Gate. You stand where you began. Someone vouches for you, you become a spring, and the Gate opens.",
+      "audio": "audio/ch8-card.wav",
+      "where": "Chapter 8: card"
+    },
+    {
+      "id": "ch8-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "You stand where you began, outside the Gate.",
+      "audio": "audio/ch8-b01-narrator.wav",
+      "where": "Chapter 8, step b01: caption"
+    },
+    {
+      "id": "ch8-b02-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Someone who knows the work vouches for you. How do you come in? They give you a membership token, one month, bought for 20 euros. Or: You pay your own 20 euros, one month, paid directly.",
+      "audio": "audio/ch8-b02-fork.wav",
+      "where": "Chapter 8, step b02: the choice"
+    },
+    {
+      "id": "ch8-b02-token-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A wax seal: one month of membership, bought for the same 20 euros as a month paid directly.",
+      "audio": "audio/ch8-b02-token-b01-narrator.wav",
+      "where": "Chapter 8, step b02, if \"They give you a membership token\", b01: caption"
+    },
+    {
+      "id": "ch8-b03-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Gate lets you through; every traveller is vouched for, freely.",
+      "audio": "audio/ch8-b03-narrator.wav",
+      "where": "Chapter 8, step b03: caption"
+    },
+    {
+      "id": "ch8-b04-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "You become a spring, and your 20 euros fall as rain.",
+      "audio": "audio/ch8-b04-narrator.wav",
+      "where": "Chapter 8, step b04: caption"
+    },
+    {
+      "id": "ch8-b05-fork",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A membership carries no vote. Do you want a voice at the gates? Buy Flow Tokens, 7 euros each, up to 144. Or: Not yet, walk the realm a while first.",
+      "audio": "audio/ch8-b05-fork.wav",
+      "where": "Chapter 8, step b05: the choice"
+    },
+    {
+      "id": "ch8-b05-buy-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "You join the backers on their hill, tokens in hand.",
+      "audio": "audio/ch8-b05-buy-b01-narrator.wav",
+      "where": "Chapter 8, step b05, if \"Buy Flow Tokens\", b01: caption"
+    },
+    {
+      "id": "ch8-b05-wait-b01-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "There is no hurry; Flow Tokens can wait for hives still to come.",
+      "audio": "audio/ch8-b05-wait-b01-narrator.wav",
+      "where": "Chapter 8, step b05, if \"Not yet\", b01: caption"
+    },
+    {
+      "id": "ch8-b06-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Look at the realm behind you: your own choices have shaped it and brought it to life.",
+      "audio": "audio/ch8-b06-narrator.wav",
+      "where": "Chapter 8, step b06: caption"
+    },
+    {
+      "id": "ch8-b07-narrator",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Gate opens, and the cooperative invites you to join.",
+      "audio": "audio/ch8-b07-narrator.wav",
+      "where": "Chapter 8, step b07: caption"
+    },
+    {
+      "id": "ch8-done",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapter 8 walked. You have walked all eight chapters, and the Gate is open.",
+      "audio": "audio/ch8-done.wav",
+      "where": "Chapter 8: end"
+    },
+    {
+      "id": "panel-cooperative",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The NAOMS cooperative, a boundaried commons. The whole realm is the cooperative, a boundaried commons. It sells memberships, membership tokens and Flow Tokens, and holds whatever patronage points the realm earns by investing. The Treasury is an organ within it. Under the lens: the wall that bounds the commons.",
+      "audio": "audio/panel-cooperative.wav",
+      "where": "Panel: The NAOMS cooperative"
+    },
+    {
+      "id": "panel-springs",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Members, the springs. €20 a month, or €460 at once for life (23 months); pay monthly and after 31 months you are lifetime. A membership token is one month, bought to give or to use. Members use the free apps. No vote. Under the lens: Noor's raindrop; a membership token handed to a friend.",
+      "spoken": "Members, the springs. 20 euros a month, or 460 euros at once for life (23 months); pay monthly and after 31 months you are lifetime. A membership token is one month, bought to give or to use. Members use the free apps. No vote. Under the lens: Noor's raindrop; a membership token handed to a friend.",
+      "audio": "audio/panel-springs.wav",
+      "where": "Panel: Members"
+    },
+    {
+      "id": "panel-springs-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "This month: about €50,000 of dues. Lifetime fees bought on a hive's referral send 20% to that hive: about €1,500 this month. Amounts are for an illustrative month.",
+      "spoken": "This month: about 50,000 euros of dues. Lifetime fees bought on a hive's referral send 20% to that hive: about 1,500 euros this month. Amounts are for an illustrative month.",
+      "audio": "audio/panel-springs-numbers.wav",
+      "where": "Panel: Members",
+      "dynamic": true
+    },
+    {
+      "id": "panel-gate",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Gate. Invite-only; every traveller vouched for, freely. The whole land is a boundaried commons. It opens once you have walked the eight chapters. Under the lens: a traveller let through.",
+      "audio": "audio/panel-gate.wav",
+      "where": "Panel: The Gate"
+    },
+    {
+      "id": "panel-gate-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Chapters walked: 0 of 8. The Gate is still closed. Amounts are for an illustrative month.",
+      "audio": "audio/panel-gate-numbers.wav",
+      "where": "Panel: The Gate",
+      "dynamic": true
+    },
+    {
+      "id": "panel-treasury",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Council, the Treasury. Where the dues pool and the Council decides, by discernment and with no fixed rule, how they flow: to the Forge, down the millraces, to the payout and appreciation line, and onward as surplus to invest or match. What leaves is money alone, into chests. The backers' water waits beside it for their votes. Under the lens: the circle of five at the water-table, moving the gates.",
+      "audio": "audio/panel-treasury.wav",
+      "where": "Panel: The Council"
+    },
+    {
+      "id": "panel-treasury-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "This month: about €50,500 of dues and app-sale shares in the Council's care. About €28,000 of backers' water, steered only by their votes. This month's surplus waits for the Council's decision. Amounts are for an illustrative month.",
+      "spoken": "This month: about 50,500 euros of dues and app-sale shares in the Council's care. About 28,000 euros of backers' water, steered only by their votes. This month's surplus waits for the Council's decision. Amounts are for an illustrative month.",
+      "audio": "audio/panel-treasury-numbers.wav",
+      "where": "Panel: The Council",
+      "dynamic": true
+    },
+    {
+      "id": "panel-millraces",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The usage stream, the millraces. Dues flow to the apps that are free to members, in proportion to use, covering costs and filling the patronage points those apps issued. When an app needs no more revenue, it sails into the commons and the race runs dry. Under the lens: a wheel turning with use, a granary filling.",
+      "audio": "audio/panel-millraces.wav",
+      "where": "Panel: The usage stream"
+    },
+    {
+      "id": "panel-millraces-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "the planting calendar: about €10,700 this month, 35% of the way to needing no more; the mill map: about €4,860 this month, 15% of the way to needing no more. Amounts are for an illustrative month.",
+      "spoken": "the planting calendar: about 10,700 euros this month, 35% of the way to needing no more; the mill map: about 4,860 euros this month, 15% of the way to needing no more. Amounts are for an illustrative month.",
+      "audio": "audio/panel-millraces-numbers.wav",
+      "where": "Panel: The usage stream",
+      "dynamic": true
+    },
+    {
+      "id": "panel-line",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The payout and appreciation line. Dues the Council sets aside to pay out on patronage points already held in NAOMS by those who invested time or money, and to give appreciation to NAOMS's own ancestors. Under the lens: patronage point payouts settling at the Forge's chest; a flow into the Grove.",
+      "audio": "audio/panel-line.wav",
+      "where": "Panel: The payout and appreciation line"
+    },
+    {
+      "id": "panel-line-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "This month: about €7,770 along the line. Amounts are for an illustrative month.",
+      "spoken": "This month: about 7,770 euros along the line. Amounts are for an illustrative month.",
+      "audio": "audio/panel-line-numbers.wav",
+      "where": "Panel: The payout and appreciation line",
+      "dynamic": true
+    },
+    {
+      "id": "panel-forge",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Forge team, the Forge. Builds and runs the NAOMS infrastructure. The Council sets its budget, pressure from above meeting needs from below. Its river holds steady while the realm grows. The Forge team pays each other from the Forge's chest. Under the lens: Ilse and Bram at the bellows, the floor filling.",
+      "audio": "audio/panel-forge.wav",
+      "where": "Panel: The Forge team"
+    },
+    {
+      "id": "panel-forge-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The floor the Council has set: about €15,000 a month. The floor is filled this month. Amounts are for an illustrative month.",
+      "spoken": "The floor the Council has set: about 15,000 euros a month. The floor is filled this month. Amounts are for an illustrative month.",
+      "audio": "audio/panel-forge-numbers.wav",
+      "where": "Panel: The Forge team",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hives",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Hives, villages and chests. Teams of artisans, one chest each, opened by a Hive Instigator. A hive runs several workshops and releases apps; it pays out from its chest by its own culture and rules, and 20% of every lifetime membership bought on its referral is its own. Under the lens: Wren at the gate of her hive; a chest paying out in organised channels.",
+      "audio": "audio/panel-hives.wav",
+      "where": "Panel: Hives"
+    },
+    {
+      "id": "panel-hives-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into each chest this month: Hearthfield, about €24,000; Riverbend, about €20,500; Lanternhill, a hive site still waiting; Thistledown, about €2,430 waiting in the Marshes; Millbrook, about €8,790; the farther hives, about €6,270. Amounts are for an illustrative month.",
+      "spoken": "Into each chest this month: Hearthfield, about 24,000 euros; Riverbend, about 20,500 euros; Lanternhill, a hive site still waiting; Thistledown, about 2,430 euros waiting in the Marshes; Millbrook, about 8,790 euros; the farther hives, about 6,270 euros. Amounts are for an illustrative month.",
+      "audio": "audio/panel-hives-numbers.wav",
+      "where": "Panel: Hives",
+      "dynamic": true
+    },
+    {
+      "id": "panel-fields",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Artisans, the fields. Build on NAOMS. A €100 quest earns 100 patronage points, agreed beforehand. Patronage points can be staked on another hive. Under the lens: Taavi whistling; quests sized in euros.",
+      "spoken": "Artisans, the fields. Build on NAOMS. A 100 euros quest earns 100 patronage points, agreed beforehand. Patronage points can be staked on another hive. Under the lens: Taavi whistling; quests sized in euros.",
+      "audio": "audio/panel-fields.wav",
+      "where": "Panel: Artisans"
+    },
+    {
+      "id": "panel-aqueducts",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Partners and foundations, the aqueducts. What an app stands on: partner projects and open-source foundations. Appreciation flows along the aqueducts; how much is negotiated between hives, and generosity is the practice. Under the lens: two hives agreeing a flow.",
+      "audio": "audio/panel-aqueducts.wav",
+      "where": "Panel: Partners and foundations"
+    },
+    {
+      "id": "panel-aqueducts-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Widths drawn as the hives have agreed; no fixed figure. Amounts are for an illustrative month.",
+      "audio": "audio/panel-aqueducts-numbers.wav",
+      "where": "Panel: Partners and foundations",
+      "dynamic": true
+    },
+    {
+      "id": "panel-guilds",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Guilds, guild halls. A craft practised across hives, with a home base: a training centre and clubhouse. Under the lens: Mireille and her apprentices training.",
+      "audio": "audio/panel-guilds.wav",
+      "where": "Panel: Guilds"
+    },
+    {
+      "id": "panel-clouds",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Backers, the clouds and the gates. Backers bring water to the realm and receive tokens: €7 each, up to 144. At the gates, n votes on one hive cost n² tokens; each vote sends water into that hive's chest and brings its patronage points back. Giftable, never cashed out. Under the lens: Dagny: water in, tokens back, gates opening, patronage points returning.",
+      "spoken": "Backers, the clouds and the gates. Backers bring water to the realm and receive tokens: 7 euros each, up to 144. At the gates, n votes on one hive cost n squared tokens; each vote sends water into that hive's chest and brings its patronage points back. Giftable, never cashed out. Under the lens: Dagny: water in, tokens back, gates opening, patronage points returning.",
+      "audio": "audio/panel-clouds.wav",
+      "where": "Panel: Backers"
+    },
+    {
+      "id": "panel-clouds-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "This month: about €28,000 of backers' water from about 40 backers. Votes cast: 92; each vote sends about €304. Amounts are for an illustrative month.",
+      "spoken": "This month: about 28,000 euros of backers' water from about 40 backers. Votes cast: 92; each vote sends about 304 euros. Amounts are for an illustrative month.",
+      "audio": "audio/panel-clouds-numbers.wav",
+      "where": "Panel: Backers",
+      "dynamic": true
+    },
+    {
+      "id": "panel-greatRiver",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Investors, the Great River. Larger capital enters through a fund. Investors cast no votes; the fund managers decide. Under the lens: Osei's trunk; a wide river splitting into many streams.",
+      "audio": "audio/panel-greatRiver.wav",
+      "where": "Panel: Investors"
+    },
+    {
+      "id": "panel-greatRiver-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "From €10,000 each. Amounts are for an illustrative month.",
+      "spoken": "From 10,000 euros each. Amounts are for an illustrative month.",
+      "audio": "audio/panel-greatRiver-numbers.wav",
+      "where": "Panel: Investors",
+      "dynamic": true
+    },
+    {
+      "id": "panel-fund",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Fund managers, the lakes. Raise a fund and decide how it is spent, four ways: into a chest, to a quest, toward a star, or matching. Hives answer with patronage points; the fund reinvests. No water passes between a fund and the Treasury, and there can be many funds. Under the lens: Priya dealing coins into neat piles.",
+      "audio": "audio/panel-fund.wav",
+      "where": "Panel: Fund managers"
+    },
+    {
+      "id": "panel-fund-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "This month: about €6,000 into Hearthfield's chest, €3,000 into Riverbend's, €1,500 to quests, €1,500 matching. Amounts are for an illustrative month.",
+      "spoken": "This month: about 6,000 euros into Hearthfield's chest, 3,000 euros into Riverbend's, 1,500 euros to quests, 1,500 euros matching. Amounts are for an illustrative month.",
+      "audio": "audio/panel-fund-numbers.wav",
+      "where": "Panel: Fund managers",
+      "dynamic": true
+    },
+    {
+      "id": "panel-connectors",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Connectors, the roads. Bring investors to a fund and receive 7% of the investment. Bringing a member through the Gate carries no coin. Under the lens: Ferran on the mountain road.",
+      "audio": "audio/panel-connectors.wav",
+      "where": "Panel: Connectors"
+    },
+    {
+      "id": "panel-granary",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Patronage points, the granaries. Patronage points, earned one-for-one with euros and filled over time by patronage point payouts: when a hive pays out, holders share it in proportion to patronage points held (100 of 5,000 means 2%), up to a cap the hive sets, higher while new and smaller once selling. Patronage points are filled, paid towards and paid out on. Under the lens: a pro-rata split; a cap meter.",
+      "audio": "audio/panel-granary.wav",
+      "where": "Panel: Patronage points"
+    },
+    {
+      "id": "panel-market",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Harbour Market, the app store. Apps stand in three states: for sale (80% to the hive, 20% to the Treasury), free to members (the millrace runs), and in the commons (free for all). Under the lens: a sale splitting; an app sailing out.",
+      "audio": "audio/panel-market.wav",
+      "where": "Panel: The Harbour Market"
+    },
+    {
+      "id": "panel-market-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The planting calendar: free to members. The mill map: free to members. The ferry timetable: for sale. The lamp-lighter: in the workshop. Amounts are for an illustrative month.",
+      "audio": "audio/panel-market-numbers.wav",
+      "where": "Panel: The Harbour Market",
+      "dynamic": true
+    },
+    {
+      "id": "panel-grove",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Ancestors, the Grove. Each hive lists everyone who took part in creating its work, agrees in advance how incoming money is shared with them, and sends them appreciation from its chest. NAOMS's own ancestors receive appreciation from the Treasury here. Everyone listed is invited to accept. Under the lens: Agnes opening her envelope among the trees.",
+      "audio": "audio/panel-grove.wav",
+      "where": "Panel: Ancestors"
+    },
+    {
+      "id": "panel-grove-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "All names invented. Amounts are for an illustrative month.",
+      "audio": "audio/panel-grove-numbers.wav",
+      "where": "Panel: Ancestors",
+      "dynamic": true
+    },
+    {
+      "id": "panel-marshes",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Marshes. Where flow gets stuck: a decision pending. Under the lens: water pooling.",
+      "audio": "audio/panel-marshes.wav",
+      "where": "Panel: The Marshes"
+    },
+    {
+      "id": "panel-marshes-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Thistledown's water waits here for a decision. Amounts are for an illustrative month.",
+      "audio": "audio/panel-marshes-numbers.wav",
+      "where": "Panel: The Marshes",
+      "dynamic": true
+    },
+    {
+      "id": "panel-sea",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Open Sea, the commons. Apps that need no more revenue become free for all, their makers already at work on the next version. Under the lens: apps drifting free.",
+      "audio": "audio/panel-sea.wav",
+      "where": "Panel: The Open Sea"
+    },
+    {
+      "id": "panel-sea-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Move the time scrubber to watch apps sail out here. Amounts are for an illustrative month.",
+      "audio": "audio/panel-sea-numbers.wav",
+      "where": "Panel: The Open Sea",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-hearthfield",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Hearthfield. A hive of farmers and coders. Its planting calendar is free to members and well used, so its millrace runs wide. Its ancestors are thanked through the Grove, and its partners and foundations along the aqueducts.",
+      "audio": "audio/panel-hive-hearthfield.wav",
+      "where": "Panel: Hearthfield"
+    },
+    {
+      "id": "panel-hive-hearthfield-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into its chest this month, all amounts about: From the backers' votes at its gate: 22 votes, about €6,700. Down the millrace, for its app that is free to members: about €10,700. The referral share, 20% of lifetime memberships bought on its referral: about €656. From a fund, into its chest: about €6,000. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "spoken": "Into its chest this month, all amounts about: From the backers' votes at its gate: 22 votes, about 6,700 euros. Down the millrace, for its app that is free to members: about 10,700 euros. The referral share, 20% of lifetime memberships bought on its referral: about 656 euros. From a fund, into its chest: about 6,000 euros. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "audio": "audio/panel-hive-hearthfield-numbers.wav",
+      "where": "Panel: Hearthfield",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-riverbend",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Riverbend. A hive that sells its ferry timetable in the Harbour Market: 80% of each sale comes to its chest and 20% to the Treasury. Sold apps draw no millrace.",
+      "audio": "audio/panel-hive-riverbend.wav",
+      "where": "Panel: Riverbend"
+    },
+    {
+      "id": "panel-hive-riverbend-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into its chest this month, all amounts about: From the backers' votes at its gate: 30 votes, about €9,130. The referral share, 20% of lifetime memberships bought on its referral: about €375. From a fund, into its chest: about €3,000. 80% of its app sales in the Harbour Market: about €8,000. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "spoken": "Into its chest this month, all amounts about: From the backers' votes at its gate: 30 votes, about 9,130 euros. The referral share, 20% of lifetime memberships bought on its referral: about 375 euros. From a fund, into its chest: about 3,000 euros. 80% of its app sales in the Harbour Market: about 8,000 euros. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "audio": "audio/panel-hive-riverbend-numbers.wav",
+      "where": "Panel: Riverbend",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-lanternhill",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Lanternhill. Wren's hive. She opened it as its Hive Instigator, and its workshop is building the lamp-lighter app.",
+      "audio": "audio/panel-hive-lanternhill.wav",
+      "where": "Panel: Lanternhill"
+    },
+    {
+      "id": "panel-hive-lanternhill-site",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Lanternhill. A hive site, waiting for a Hive Instigator.",
+      "audio": "audio/panel-hive-lanternhill-site.wav",
+      "where": "Panel: Lanternhill"
+    },
+    {
+      "id": "panel-hive-lanternhill-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "No chest yet: the site waits for a Hive Instigator.",
+      "audio": "audio/panel-hive-lanternhill-numbers.wav",
+      "where": "Panel: Lanternhill",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-thistledown",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Thistledown. A new hive. A decision is pending, so for now the water sent to it waits in the Marshes.",
+      "audio": "audio/panel-hive-thistledown.wav",
+      "where": "Panel: Thistledown"
+    },
+    {
+      "id": "panel-hive-thistledown-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into its chest this month, all amounts about: From the backers' votes at its gate: 8 votes, about €2,430. Its water waits in the Marshes until a decision is made. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "spoken": "Into its chest this month, all amounts about: From the backers' votes at its gate: 8 votes, about 2,430 euros. Its water waits in the Marshes until a decision is made. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "audio": "audio/panel-hive-thistledown-numbers.wav",
+      "where": "Panel: Thistledown",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-millbrook",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Millbrook. A hive whose mill map is free to members. It builds on Lanternhill's work, so appreciation runs along the aqueduct between them, as the two hives agreed.",
+      "audio": "audio/panel-hive-millbrook.wav",
+      "where": "Panel: Millbrook"
+    },
+    {
+      "id": "panel-hive-millbrook-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into its chest this month, all amounts about: From the backers' votes at its gate: 12 votes, about €3,650. Down the millrace, for its app that is free to members: about €4,860. The referral share, 20% of lifetime memberships bought on its referral: about €281. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "spoken": "Into its chest this month, all amounts about: From the backers' votes at its gate: 12 votes, about 3,650 euros. Down the millrace, for its app that is free to members: about 4,860 euros. The referral share, 20% of lifetime memberships bought on its referral: about 281 euros. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "audio": "audio/panel-hive-millbrook-numbers.wav",
+      "where": "Panel: Millbrook",
+      "dynamic": true
+    },
+    {
+      "id": "panel-hive-farther",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The farther hives. 12-14 projects are building on NAOMS. These hamlets stand for the hives beyond the five named ones, each with its own chest and its own gate.",
+      "spoken": "The farther hives. 12 to 14 projects are building on NAOMS. These hamlets stand for the hives beyond the five named ones, each with its own chest and its own gate.",
+      "audio": "audio/panel-hive-farther.wav",
+      "where": "Panel: The farther hives"
+    },
+    {
+      "id": "panel-hive-farther-numbers",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into its chest this month, all amounts about: From the backers' votes at its gate: 20 votes, about €6,090. The referral share, 20% of lifetime memberships bought on its referral: about €188. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "spoken": "Into its chest this month, all amounts about: From the backers' votes at its gate: 20 votes, about 6,090 euros. The referral share, 20% of lifetime memberships bought on its referral: about 188 euros. Out of its chest, in order: patronage point payouts, then appreciation through the Grove and along the aqueducts.",
+      "audio": "audio/panel-hive-farther-numbers.wav",
+      "where": "Panel: The farther hives",
+      "dynamic": true
+    },
+    {
+      "id": "pop-funds",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The four ways a fund directs money. A fund spreads its water: one investment of 10,000 euros becomes 2,000 here, 1,000 there, and smaller sums to quests. Its managers choose among four ways.",
+      "audio": "audio/pop-funds.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-funds-chest",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Into a hive's chest. You decide: the hive uses the money as it sees fit, within its own culture and rules.",
+      "audio": "audio/pop-funds-chest.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-funds-quest",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "To a quest. A specific piece of work, sized in euros, done by an artisan who earns the hive's patronage points for it.",
+      "audio": "audio/pop-funds-quest.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-funds-star",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Toward a star. A purpose the fund names; hives line up behind it by proposing quests that serve it.",
+      "audio": "audio/pop-funds-star.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-funds-match",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Matching. The fund matches what others put in, such as a hive's own backers.",
+      "audio": "audio/pop-funds-match.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-funds-outro",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Hives answer a fund's water with patronage points, and the fund reinvests what returns. The point of a fund is to become a river.",
+      "audio": "audio/pop-funds-outro.wav",
+      "where": "Pop-out: The four ways a fund directs money"
+    },
+    {
+      "id": "pop-council",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Council's panel. Decided by discernment each period; no rule. Each period the Council looks at what the Treasury has received from dues and at the whole realm, and decides what serves the greatest good. These are the gates it tends.",
+      "audio": "audio/pop-council.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-council-forge",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Forge. To cover the infrastructure's costs, up to the floor the Council sets. Top-down pressure meets the Forge team's bottom-up needs.",
+      "audio": "audio/pop-council-forge.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-council-mill",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The millraces. To the hives whose apps are free to members, in proportion to use, covering costs and filling the patronage points those apps issued.",
+      "audio": "audio/pop-council-mill.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-council-line",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The payout and appreciation line. To pay out on patronage points already held in NAOMS, and to give appreciation to NAOMS's own ancestors in the Grove.",
+      "audio": "audio/pop-council-line.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-council-surplus",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The surplus. Once the Forge and the free apps have what they need: invested directly in a hive's project, or matching what others put in, for patronage points the cooperative holds.",
+      "audio": "audio/pop-council-surplus.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-council-outro",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Sometimes the Forge's floor fills first, sometimes the millraces run first. The positions shown are illustrative.",
+      "audio": "audio/pop-council-outro.wav",
+      "where": "Pop-out: The Council's panel"
+    },
+    {
+      "id": "pop-points",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The patronage points calculator. Patronage points are earned one for one with euros, and filled over time by patronage point payouts shared in proportion to patronage points held.",
+      "audio": "audio/pop-points.wav",
+      "where": "Pop-out: The patronage points calculator"
+    },
+    {
+      "id": "pop-points-earn",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Earning. A quest's euros become the same number of patronage points, agreed before the work.",
+      "audio": "audio/pop-points-earn.wav",
+      "where": "Pop-out: The patronage points calculator"
+    },
+    {
+      "id": "pop-points-earn-result",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A quest of €100 earns 100 patronage points, agreed before the work.",
+      "spoken": "A quest of 100 euros earns 100 patronage points, agreed before the work.",
+      "audio": "audio/pop-points-earn-result.wav",
+      "where": "Pop-out: The patronage points calculator",
+      "dynamic": true
+    },
+    {
+      "id": "pop-points-pay",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A patronage point payout. When a hive pays out, each holder receives a share in proportion to the patronage points they hold.",
+      "audio": "audio/pop-points-pay.wav",
+      "where": "Pop-out: The patronage points calculator"
+    },
+    {
+      "id": "pop-points-pay-result",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Holding 100 of the 5,000 patronage points this hive has issued is 2% of them, so a payout of €1,000 brings you about €20.",
+      "spoken": "Holding 100 of the 5,000 patronage points this hive has issued is 2% of them, so a payout of 1,000 euros brings you about 20 euros.",
+      "audio": "audio/pop-points-pay-result.wav",
+      "where": "Pop-out: The patronage points calculator",
+      "dynamic": true
+    },
+    {
+      "id": "pop-points-cap",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Cap on what a point can return: set by the hive, higher while the work is new, smaller once its app is selling.",
+      "audio": "audio/pop-points-cap.wav",
+      "where": "Pop-out: The patronage points calculator"
+    },
+    {
+      "id": "pop-qv",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The voting toy. On one hive, n votes cost n² tokens. Many small voices outweigh one loud one.",
+      "spoken": "The voting toy. On one hive, n votes cost n squared tokens. Many small voices outweigh one loud one.",
+      "audio": "audio/pop-qv.wav",
+      "where": "Pop-out: The voting toy"
+    },
+    {
+      "id": "pop-qv-result",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "12 votes on this hive cost 144 tokens and bring 840 patronage points. No tokens stay in hand. Spread instead, 144 tokens cast one vote on each of 144 hives.",
+      "audio": "audio/pop-qv-result.wav",
+      "where": "Pop-out: The voting toy",
+      "dynamic": true
+    },
+    {
+      "id": "pop-qv-ex-1",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "One person spending 100 tokens on one hive casts 10 votes.",
+      "audio": "audio/pop-qv-ex-1.wav",
+      "where": "Pop-out: The voting toy"
+    },
+    {
+      "id": "pop-qv-ex-2",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "25 people spending 4 tokens each cast 50 votes.",
+      "audio": "audio/pop-qv-ex-2.wav",
+      "where": "Pop-out: The voting toy"
+    },
+    {
+      "id": "pop-qv-ex-3",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "144 tokens: 12 votes on one hive, or one vote each on 144 hives.",
+      "audio": "audio/pop-qv-ex-3.wav",
+      "where": "Pop-out: The voting toy"
+    },
+    {
+      "id": "dials-intro",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "These dials are for seeing, and every position on them is illustrative. In the realm the Council decides by discernment each period, with no rule.",
+      "audio": "audio/dials-intro.wav",
+      "where": "Council dials"
+    },
+    {
+      "id": "dials-fixed",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Fixed, and shown as such: Referral share: 20% of a lifetime fee bought on a hive's referral (92 of 460 euros); App sales: 80% to the hive's chest, 20% to the Treasury; Connectors: 7% of an investment they bring to a fund; Flow Tokens: 7 euros each, up to 144.",
+      "audio": "audio/dials-fixed.wav",
+      "where": "Council dials"
+    },
+    {
+      "id": "legend",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The legend. River: money, flowing. Width shows about how much. Millrace: the usage stream to free apps. Gold channel: payouts and appreciation. Deep green channel: a fund's water. Straight canal: the referral share. Chest: a hive's treasury. Token: a Flow Token. Wax seal: a membership token. Ticket: patronage points. Ochre path: a patronage point payout, cash to patronage point holders. Grey cloud: Flow Token money, falling as rain. Aqueduct: what an app stands on. Hall: a guild's home. Stall: an app in the Harbour Market. Gold thread: appreciation to the Grove. A drawn character: a role you can follow.",
+      "audio": "audio/legend.wav",
+      "where": "Legend"
+    },
+    {
+      "id": "who-decides",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Who decides. The Council divides the dues by discernment, sets the Forge's budget and decides where the surplus goes. Backers steer their own water with Flow Tokens. Fund managers decide their fund. Each hive decides its payouts, its patronage points and caps, its apps' prices, and its aqueducts. Each patronage point holder decides where their own payouts go. The referral share and the 20% on app sales are structure.",
+      "audio": "audio/who-decides.wav",
+      "where": "Legend"
+    },
+    {
+      "id": "legend-note",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Every amount here is illustrative: an invented month in an invented realm, drawn to show how the water moves. All people, hives and apps are invented.",
+      "audio": "audio/legend-note.wav",
+      "where": "Legend"
+    },
+    {
+      "id": "time-intro",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Move through the months: the Forge's river holds its width while the realm's water grows, millraces widen, apps fill their patronage points and sail into the Open Sea, and hives begin new versions.",
+      "audio": "audio/time-intro.wav",
+      "where": "Time scrubber"
+    },
+    {
+      "id": "time-now",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Month 12: about €71,300 of dues a month. The Forge's river about €15,000, its floor €15,000; the millraces about €21,900. In the commons by now: the planting calendar, the ferry timetable, the mill map.",
+      "spoken": "Month 12: about 71,300 euros of dues a month. The Forge's river about 15,000 euros, its floor 15,000 euros; the millraces about 21,900 euros. In the commons by now: the planting calendar, the ferry timetable, the mill map.",
+      "audio": "audio/time-now.wav",
+      "where": "Time scrubber (an example month; spoken by the browser when it changes)",
+      "dynamic": true
+    },
+    {
+      "id": "round-prepare",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Prepare: hives list their ancestors and agree their shares before the first euro moves, and the terms for memberships and tokens are set.",
+      "audio": "audio/round-prepare.wav",
+      "where": "The round: Prepare"
+    },
+    {
+      "id": "round-presale",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Pre-sale: memberships are offered to members, partners, their networks, friends and family, and the springs begin to run.",
+      "audio": "audio/round-presale.wav",
+      "where": "The round: Pre-sale"
+    },
+    {
+      "id": "round-invitations",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Attribution invitations: everyone on a hive's list is invited to log in, accept, and see what their work grew into.",
+      "audio": "audio/round-invitations.wav",
+      "where": "The round: Attribution invitations"
+    },
+    {
+      "id": "round-voting",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Flow Tokens and voting: backers bring water, receive tokens, and steer it at the gates.",
+      "audio": "audio/round-voting.wav",
+      "where": "The round: Flow Tokens and voting"
+    },
+    {
+      "id": "round-funds",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Funds and follow-on: investors come down the Great River into funds, and the round continues.",
+      "audio": "audio/round-funds.wav",
+      "where": "The round: Funds and follow-on"
+    },
+    {
+      "id": "futures-intro",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Each possible future sets the Council's dials and how fast the springs grow: a possibility the group has yet to choose between. Pick one, then move through the months.",
+      "audio": "audio/futures-intro.wav",
+      "where": "Possible futures"
+    },
+    {
+      "id": "future-steady",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Steady springs: membership grows at a steady pace and the Council's hand rests where it is today. A possibility the group has yet to choose between.",
+      "audio": "audio/future-steady.wav",
+      "where": "Possible future: Steady springs"
+    },
+    {
+      "id": "future-fast",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A warm welcome: the springs multiply quickly. The Forge's floor stays where it is, so its river holds while everything around it widens. A possibility the group has yet to choose between.",
+      "audio": "audio/future-fast.wav",
+      "where": "Possible future: A warm welcome"
+    },
+    {
+      "id": "future-slow",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "A quiet season: the springs grow slowly, and the Forge's floor takes most of the water for a while. A possibility the group has yet to choose between.",
+      "audio": "audio/future-slow.wav",
+      "where": "Possible future: A quiet season"
+    },
+    {
+      "id": "future-generous",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Generous millraces: the Council leans towards the free apps, and they reach the commons sooner. A possibility the group has yet to choose between.",
+      "audio": "audio/future-generous.wav",
+      "where": "Possible future: Generous millraces"
+    },
+    {
+      "id": "future-forge",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "Forge first: the Council raises the Forge's floor to build out the infrastructure, and the apps take longer to fill. A possibility the group has yet to choose between.",
+      "audio": "audio/future-forge.wav",
+      "where": "Possible future: Forge first"
+    },
+    {
+      "id": "gate-invitation",
+      "speaker": "narrator",
+      "name": "The narrator",
+      "voice": {
+        "tool": "speak",
+        "voice": "Tree"
+      },
+      "text": "The Gate is open. You have walked the realm. The NAOMS cooperative invites you to join it: 20 euros a month, lifetime after 31 months, or 460 euros at once for life. Someone who knows the work will vouch for you. Come in. On the round's invite-only website, this is where you would join.",
+      "audio": "audio/gate-invitation.wav",
+      "where": "The Gate invitation"
+    }
+  ]
+}
