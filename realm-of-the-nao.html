@@ -4000,7 +4000,7 @@ $('#brandSub').textContent = R.meta.subtitle;
    PERSISTENCE
    ====================================================================== */
 const KEY = R.config.storageKey;
-const prefs = { read: false, browserVoice: true };
+const prefs = { read: false };
 state.future = null;
 const walkedN = () => CHAPTERS.filter(c => state.completed[c.id]).length;
 function save() {
@@ -4150,7 +4150,7 @@ function futureItem(f) { return mk(f.id, 'narrator', () => f.text); }
 function gateItem() { const g = R.gateInvite; return mk(g.id, 'narrator', () => g.title + '. ' + g.text + ' ' + g.note); }
 
 /* ======================================================================
-   THE VOICE LAYER: audio/<id>.wav (and its parts), then the browser's voice, then the caption
+   THE VOICE LAYER: audio/<id>.wav (and its parts); no recording means a silent caption
    ====================================================================== */
 function spoken(t) {
   return String(t)
@@ -4163,55 +4163,18 @@ function spoken(t) {
 }
 function readTime(t) { return clamp(1200 + String(t).length * 52, 2600, 12000); }
 const VO = { run: null };
-let VOICES = [];
-function loadVoices() { try { VOICES = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)); } catch (e) { VOICES = []; } }
-if ('speechSynthesis' in window) { loadVoices(); try { speechSynthesis.onvoiceschanged = loadVoices; } catch (e) { } }
-const TTS = {
-  narrator: { g: 'f', pitch: 1, rate: 0.97, pref: ['en-GB'] }, wren: { g: 'f', pitch: 1.16, rate: 1.08, pref: ['Moira', 'en-IE'] },
-  taavi: { g: 'm', pitch: 1.06, rate: 1.05, pref: ['en-US'] }, noor: { g: 'f', pitch: 1.04, rate: 0.9 }, ilse: { g: 'f', pitch: 0.86, rate: 0.92 },
-  bram: { g: 'm', pitch: 0.7, rate: 0.86 }, council: { g: 'f', pitch: 0.94, rate: 0.88 }, dagny: { g: 'f', pitch: 1.22, rate: 1.12 },
-  osei: { g: 'm', pitch: 0.8, rate: 0.9, pref: ['en-ZA', 'en-NG'] }, priya: { g: 'f', pitch: 1.1, rate: 1.08, pref: ['en-IN'] },
-  ferran: { g: 'm', pitch: 0.92, rate: 0.95 }, mireille: { g: 'f', pitch: 1.02, rate: 1 }, agnes: { g: 'f', pitch: 1.12, rate: 0.82, pref: ['en-GB'] }
-};
-const FEM = /female|woman|samantha|victoria|karen|moira|tessa|fiona|zira|susan|serena|kate|hazel|libby|sonia|veena|allison|ava|joanna|salli|kimberly|emma|amy|olivia|natasha|aria|jenny|michelle|catherine|google us english|google uk english female/i;
-const MAL = /\bmale|daniel|alex|fred|david|mark|george|guy|ryan|oliver|thomas|rishi|arthur|brian|matthew|joey|justin|william|james|google uk english male/i;
-function pickVoice(sp) {
-  if (!VOICES.length) return null;
-  const cfg = TTS[sp] || TTS.narrator;
-  for (const p of (cfg.pref || [])) { const v = VOICES.find(v => v.name.indexOf(p) >= 0 || v.lang === p); if (v && (cfg.g === 'f' ? !MAL.test(v.name) || FEM.test(v.name) : !FEM.test(v.name))) return v; }
-  const pool = VOICES.filter(v => cfg.g === 'f' ? FEM.test(v.name) : (MAL.test(v.name) && !FEM.test(v.name)));
-  const list = pool.length ? pool : VOICES;
-  let hsh = 0; for (const ch of sp) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0;
-  return list[sp === 'narrator' ? 0 : hsh % list.length];
-}
+/* This realm speaks only in its recorded voices. There is no synthetic
+   browser-voice fallback: when a line has no recording, it stays on screen
+   as a caption in silence. */
 function stopVoice() {
   const r = VO.run; if (!r) return;
   r.stopped = true;
   if (r.audio) { try { r.audio.pause(); r.audio.removeAttribute('src'); } catch (e) { } }
   if (r.timer) clearTimeout(r.timer);
-  if ('speechSynthesis' in window) { try { speechSynthesis.cancel(); } catch (e) { } }
   const fs = r.onStop.slice(); r.onStop = []; fs.forEach(f => { try { f(); } catch (e) { } });
   if (VO.run === r) VO.run = null;
 }
 function newRun() { stopVoice(); const r = { stopped: false, audio: null, timer: null, onStop: [] }; VO.run = r; return r; }
-function speakTTS(it, run) {
-  return new Promise(res => {
-    let done = false, started = false; const t0 = performance.now();
-    const finNow = () => { if (!done) { done = true; res(); } };
-    /* a voice that fails without speaking still leaves the words on screen for as long as they take to read */
-    const fin = () => { if (done) return; if (!started && !run.stopped) { const left = readTime(it.text) - (performance.now() - t0); if (left > 50) { run.timer = setTimeout(finNow, left); return; } } finNow(); };
-    run.onStop.push(finNow);
-    try {
-      const u = new SpeechSynthesisUtterance(spoken(it.text));
-      const cfg = TTS[it.speaker] || TTS.narrator, v = pickVoice(it.speaker);
-      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
-      u.pitch = cfg.pitch; u.rate = cfg.rate;
-      u.onstart = () => { started = true; }; u.onend = fin; u.onerror = fin;
-      speechSynthesis.speak(u);
-      setTimeout(() => { if (!started && !done && !run.stopped) { try { speechSynthesis.cancel(); } catch (e) { } fin(); } }, 2000);
-    } catch (e) { run.timer = setTimeout(fin, readTime(it.text)); }
-  });
-}
 /* A readable item is one recorded clip or several played back to back. A multi-sentence
    item was recorded one clip per sentence as <id>-a, <id>-b, <id>-c ...; three recurring
    lines are shared clips reused across items; a clip too long for one take was split again
@@ -4278,19 +4241,16 @@ function playOne(it, run) {
     let settled = false; const done = () => { if (!settled) { settled = true; res(); } };
     if (run.stopped) return done();
     run.onStop.push(done);
-    const fallback = () => {
-      if (run.stopped) return done();
-      if (prefs.browserVoice && 'speechSynthesis' in window) speakTTS(it, run).then(done);
-      else run.timer = setTimeout(done, readTime(it.text));
-    };
+    /* no recording for this line: hold its caption on screen in silence, then move on */
+    const silent = () => { if (run.stopped) return done(); run.timer = setTimeout(done, readTime(it.text)); };
     /* the recorded clip is used only while the words on screen are the words recorded */
-    if (it.text !== it.defaultText) return fallback();
-    if (typeof Audio === 'undefined') return fallback();
+    if (it.text !== it.defaultText) return silent();
+    if (typeof Audio === 'undefined') return silent();
     (async () => {
       /* An item was recorded either as parts (<id>-a, <id>-b ...) or as one whole clip (<id>).
          Prefer the parts: play <id>-a, <id>-b ... in order (each part may itself be a flat clip or
          a further length-split), then the shared tail line if this item ends in one. If there are
-         no parts at all, play the single whole clip. Failing both, the browser's voice, then the caption. */
+         no parts at all, play the single whole clip. Failing both, the caption holds in silence. */
       const tail = sharedTailFor(it);
       let played = false;
       for (let i = 0; i < 26; i++) {
@@ -4311,7 +4271,7 @@ function playOne(it, run) {
       const whole = await playClip(it.id, run);
       if (settled) return;
       if (whole === 'ok' || whole === 'stop') return done();
-      return fallback();
+      return silent();
     })();
   });
 }
@@ -4756,10 +4716,6 @@ function buildLegend() {
   const bm = ['b-council', 'b-vote', 'b-fund', 'b-hive', 'b-harvest', 'b-structure'];
   R.whoDecides.items.forEach((t, i) => { const row = h('div', { class: 'leg-row' }, who); const s = el('svg', { viewBox: '0 0 44 24' }, row); use(bm[i] || 'b-structure', 0, 0, s, { transform: 'translate(22 12) scale(1.3)' }); h('span', {}, row, t); });
   const note = h('div', { class: 'lede', style: 'margin-top:12px' }, host, iNote.text);
-  h('h4', {}, host, 'Read aloud');
-  const lab = h('label', { class: 'check' }, host); const cb = h('input', { type: 'checkbox' }, lab); cb.checked = prefs.browserVoice;
-  h('span', {}, lab, "Where a recording is missing, let the browser's own voice read the words. Without it, the captions carry everything.");
-  cb.onchange = () => { prefs.browserVoice = cb.checked; save(); };
 }
 
 /* ======================================================================
@@ -5749,7 +5705,7 @@ function collectScript() {
   });
   return {
     title: R.meta.title + ': the script', build: R.meta.build, generated: new Date().toISOString().slice(0, 10),
-    how: 'One clip per item. Record "spoken" where it is given, otherwise "text", with the item\'s voice, and save it as <id>.wav; convert to mono mp3 at about 64 kbps and place it at the item\'s "audio" path beside the HTML. Designed voices: first call design_voice with the description and save_as the name on the voice\'s test item, then use speak with that name for every item. Items marked dynamic change with the visitor\'s choices: their clip is used only while the words match the text here, and the browser\'s voice reads them otherwise.',
+    how: 'One clip per item. Record "spoken" where it is given, otherwise "text", with the item\'s voice, and save it as <id>.wav; convert to mono mp3 at about 64 kbps and place it at the item\'s "audio" path beside the HTML. Designed voices: first call design_voice with the description and save_as the name on the voice\'s test item, then use speak with that name for every item. Items marked dynamic change with the visitor\'s choices: their clip is used only while the words match the text here, and otherwise the caption carries the line in silence (there is no synthetic-voice fallback).',
     voices, count: out.length, items: out
   };
 }

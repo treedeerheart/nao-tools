@@ -2,7 +2,7 @@
   "title": "The Realm of the NAO: the script",
   "build": "Plan v1.8: phases 3b, 3c, 3d, 4 and 5 (no publishing)",
   "generated": "2026-10-05",
-  "how": "One clip per item. Record \"spoken\" where it is given, otherwise \"text\", with the item's voice, and save it as <id>.wav; convert to mono mp3 at about 64 kbps and place it at the item's \"audio\" path beside the HTML. Designed voices: first call design_voice with the description and save_as the name on the voice's test item, then use speak with that name for every item. Items marked dynamic change with the visitor's choices: their clip is used only while the words match the text here, and the browser's voice reads them otherwise.",
+  "how": "One clip per item. Record \"spoken\" where it is given, otherwise \"text\", with the item's voice, and save it as <id>.wav; convert to mono mp3 at about 64 kbps and place it at the item's \"audio\" path beside the HTML. Designed voices: first call design_voice with the description and save_as the name on the voice's test item, then use speak with that name for every item. Items marked dynamic change with the visitor's choices: their clip is used only while the words match the text here, and otherwise the caption carries the line in silence (there is no synthetic-voice fallback).",
   "voices": [
     {
       "speaker": "narrator",
