@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Realm of the NAO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parch:#f3ead5; --ink:#3a3127; --ink2:#5b4f3f; --ink3:#8a7b63;
+    --water:#005eb4; --water-deep:#00437e; --water-cur:#bcd9f5;
+    --appr:#02b598; --appr-light:#7fe8d6;
+    --gold:#cf9f3a; --gold-deep:#9b7a2a; --rust:#a9472c;
+    --fund:#3d7f6e; --sea:#8fbdb8; --title:#273b34;
+    --serif:"EB Garamond", Georgia, serif;
+    --caps:"Cinzel", "Trajan Pro", Georgia, serif;
+  }
+  html,body{margin:0;height:100%;background:var(--parch);color:var(--ink);overflow:hidden;}
+  #wrap{width:100%;height:100%;}
+  svg{display:block;width:100%;height:100%;}
+  .t-title{font-family:var(--caps);font-weight:600;letter-spacing:.06em;fill:var(--title);}
+  .t-sub{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:.015em;fill:var(--ink2);}
+  .t-note{font-family:var(--serif);font-style:italic;font-weight:400;fill:var(--ink2);}
+  #tip{position:fixed;z-index:50;pointer-events:none;display:none;max-width:330px;
+    background:rgba(243,234,213,.97);border:1px solid var(--ink3);border-radius:5px;
+    padding:9px 13px;box-shadow:0 4px 14px rgba(58,49,39,.22);
+    font-family:var(--serif);font-size:17px;color:var(--ink);line-height:1.38;}
+  #tip.show{display:block;}
+  #tip b{font-family:var(--caps);font-weight:600;letter-spacing:.04em;color:var(--title);display:block;font-size:16px;margin-bottom:3px;}
+  #tip .l{font-style:italic;color:var(--ink2);}
+  .lbl[data-lens]{cursor:help;}
+  #panel{position:fixed;left:18px;top:70px;z-index:40;width:286px;
+    background:rgba(243,234,213,.95);border:1.5px solid var(--ink3);border-radius:8px;
+    box-shadow:0 6px 20px rgba(58,49,39,.22);padding:11px 15px;font-family:var(--serif);color:var(--ink);}
+  #panel .hd{display:flex;justify-content:space-between;align-items:baseline;}
+  #panel h3{font-family:var(--caps);font-weight:600;letter-spacing:.05em;color:var(--title);margin:0;font-size:18px;}
+  #panel .tog{cursor:pointer;font-family:var(--caps);font-size:11px;letter-spacing:.05em;color:var(--ink3);}
+  #panel .sub{font-style:italic;color:var(--ink2);font-size:14px;margin:4px 0 9px;}
+  #panel .row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13.5px;}
+  #panel .row label{flex:0 0 120px;}
+  #panel .row input[type=range]{flex:1;accent-color:var(--water);min-width:0;}
+  #panel .row .v{flex:0 0 32px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2);}
+  #panel hr{border:none;border-top:1px solid var(--ink3);opacity:.4;margin:9px 0;}
+  #readout{font-size:13.5px;line-height:1.42;}
+  #readout .r{display:flex;justify-content:space-between;gap:12px;}
+  #readout .warn{color:var(--rust);font-style:italic;margin:2px 0;}
+  #panel .pbtns{display:flex;gap:8px;margin-top:10px;}
+  #panel button{font-family:var(--caps);font-size:11px;letter-spacing:.06em;
+    background:var(--ink2);color:var(--parch);border:none;border-radius:5px;padding:7px 12px;cursor:pointer;}
+  #panel .ghost2{background:transparent;color:var(--ink2);border:1.4px solid var(--ink3);}
+  #panel.collapsed .body{display:none;}
+  #panel.hidden{display:none;}
+  /* ---- the Builder's Journey ---- */
+  #story{position:fixed;inset:0;z-index:60;pointer-events:none;font-family:var(--serif);}
+  #splash{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(243,234,213,.98);pointer-events:auto;text-align:center;gap:20px;padding:24px;}
+  #splash h1{font-family:var(--caps);font-size:clamp(30px,5vw,50px);letter-spacing:.09em;color:var(--title);margin:0;}
+  #splash p{font-style:italic;font-size:clamp(16px,2.4vw,22px);color:var(--ink2);margin:0;max-width:620px;}
+  #splash.gone{display:none;}
+  .btn{font-family:var(--caps);letter-spacing:.06em;font-size:15px;background:var(--water);color:#fff;border:none;border-radius:7px;padding:12px 26px;cursor:pointer;box-shadow:0 3px 10px rgba(0,60,120,.25);}
+  .btn:hover{filter:brightness(1.07);}
+  .btn.ghost{background:transparent;color:var(--ink2);border:1.6px solid var(--ink3);box-shadow:none;}
+  #narr{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:min(780px,92vw);
+    background:rgba(243,234,213,.97);border:1.6px solid var(--ink3);border-radius:11px;box-shadow:0 10px 28px rgba(40,30,15,.3);
+    padding:18px 24px;pointer-events:auto;display:none;}
+  #narr.show{display:block;}
+  #narr .who{font-family:var(--caps);font-size:12px;letter-spacing:.11em;color:var(--rust);margin-bottom:5px;}
+  #narr .say{font-size:21px;line-height:1.42;color:var(--ink);}
+  #narr .choices{display:flex;flex-wrap:wrap;gap:11px;margin-top:16px;}
+  #narr .step{font-size:12px;color:var(--ink3);margin-top:12px;font-style:italic;letter-spacing:.03em;}
+  .halo{paint-order:stroke;stroke:var(--parch);stroke-width:5px;stroke-linejoin:round;}
+  .halo-w{paint-order:stroke;stroke:rgba(255,255,255,.6);stroke-width:4.5px;stroke-linejoin:round;}
+  .cur{stroke-dasharray:3 15;animation:flow 1.5s linear infinite;}
+  .appr-cur{stroke-dasharray:2 13;animation:flow 2.2s linear infinite;}
+  @keyframes flow{to{stroke-dashoffset:-18;}}
+  .shim{animation:shim 3.4s ease-in-out infinite;}
+  @keyframes shim{0%,100%{opacity:.18;}50%{opacity:.6;}}
+  .sway{transform-box:fill-box;transform-origin:center bottom;animation:sway 3.6s ease-in-out infinite;}
+  @keyframes sway{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+  [data-green]{transition:transform .55s ease;}
+  [data-grow]{transition:opacity .55s ease;}
+  @media (prefers-reduced-motion: reduce){.cur,.appr-cur,.shim,.sway{animation:none;}}
+  /* ---- v2: storylines, characters, pulses ---- */
+  #topbar{position:fixed;z-index:45;top:calc(12px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));display:flex;gap:8px;}
+  #topbar button{font-family:var(--caps);font-size:12px;letter-spacing:.07em;background:rgba(243,234,213,.95);color:var(--ink2);
+    border:1.4px solid var(--ink3);border-radius:6px;padding:7px 12px;cursor:pointer;}
+  #topbar button:hover,#topbar button:focus-visible{background:var(--ink2);color:var(--parch);outline:none;}
+  #menu{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(243,234,213,.9);pointer-events:auto;padding:20px;overflow:auto;}
+  #menu.show{display:flex;}
+  #menu .box{max-width:860px;width:100%;}
+  #menu h2{font-family:var(--caps);font-weight:600;letter-spacing:.08em;color:var(--title);font-size:clamp(24px,3.4vw,36px);margin:0 0 6px;text-align:center;text-wrap:balance;}
+  #menu .lede{font-style:italic;color:var(--ink2);font-size:clamp(16px,2vw,20px);text-align:center;margin:0 auto 22px;max-width:640px;}
+  #menu .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;}
+  .card{font-family:var(--serif);text-align:left;background:#f8f1e0;border:1.5px solid var(--ink3);border-radius:9px;padding:14px 16px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .card:hover,.card:focus-visible{border-color:var(--water);box-shadow:0 4px 14px rgba(0,67,126,.18);outline:none;}
+  .card .n{font-family:var(--caps);font-size:12px;letter-spacing:.1em;color:var(--rust);}
+  .card .t{font-family:var(--caps);font-weight:600;font-size:19px;letter-spacing:.04em;color:var(--title);}
+  .card .c{font-style:italic;color:var(--ink2);font-size:15px;}
+  .card .d{font-size:15.5px;line-height:1.38;}
+  .card .done{font-family:var(--caps);font-size:11.5px;letter-spacing:.08em;color:var(--fund);}
+  .card[aria-disabled="true"]{opacity:.55;cursor:default;}
+  #menu .foot{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px;}
+  #confirm{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(58,49,39,.35);pointer-events:auto;padding:20px;z-index:70;}
+  #confirm.show{display:flex;}
+  #confirm .box{background:var(--parch);border:1.6px solid var(--ink3);border-radius:11px;box-shadow:0 10px 28px rgba(40,30,15,.3);padding:20px 24px;max-width:420px;text-align:center;}
+  #confirm h3{font-family:var(--caps);font-weight:600;letter-spacing:.06em;color:var(--title);margin:0 0 8px;font-size:21px;}
+  #confirm p{font-size:18px;line-height:1.4;margin:0 0 16px;color:var(--ink);}
+  #confirm .row2{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  #narr .line{font-size:19px;line-height:1.4;font-style:italic;color:var(--ink2);margin-top:9px;}
+  #narr .line b{font-family:var(--caps);font-style:normal;font-size:13px;letter-spacing:.08em;color:var(--rust);margin-right:6px;}
+  #narr .q{font-size:20px;line-height:1.4;color:var(--title);font-weight:600;margin-top:10px;}
+  #narr .choices .btn small{display:block;font-family:var(--serif);font-style:italic;letter-spacing:0;font-size:13.5px;opacity:.9;margin-top:2px;text-transform:none;}
+  #narr .nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;}
+  #narr .nav .step{margin:0;}
+  #narr .back{font-family:var(--caps);font-size:12px;letter-spacing:.07em;background:transparent;border:1.4px solid var(--ink3);border-radius:6px;color:var(--ink2);cursor:pointer;padding:6px 12px;}
+  #narr .back:hover,#narr .back:focus-visible{background:var(--ink2);color:var(--parch);outline:none;}
+  .btn:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px;}
+  .tag{font-family:var(--caps);font-weight:600;letter-spacing:.06em;fill:var(--rust);}
+  .ring{fill:none;stroke:var(--gold);stroke-width:2.4;opacity:0;}
+  .speaking .ring{opacity:1;animation:ring 1.4s ease-in-out infinite;}
+  .speaking .bob{animation:bob 1.1s ease-in-out infinite;}
+  @keyframes ring{0%,100%{stroke-width:1.6;opacity:.5}50%{stroke-width:3.2;opacity:1}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .ghost-route{fill:none;stroke-width:2.2;stroke-dasharray:4 7;opacity:.75;}
+  @media (max-width:600px){#narr{bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:13px 15px;}#narr .say{font-size:17px;}#narr .line{font-size:16px;}#narr .q{font-size:17px;}
+    #panel{left:auto;right:10px;top:56px;width:min(286px,calc(100vw - 20px));}}
+  @media (prefers-reduced-motion: reduce){.speaking .ring,.speaking .bob{animation:none;}}
+</style>
+</head>
+<body>
+<div id="wrap"><svg id="map" viewBox="0 0 1600 1110" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of the Realm of the NAO"></svg></div>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const INK='#3a3127';
+function el(tag,a,p,t){const e=document.createElementNS(NS,tag);if(a)for(const k in a){if(a[k]!=null&&a[k]!==false)e.setAttribute(k,a[k]);}if(t!=null)e.textContent=t;if(p)p.appendChild(e);return e;}
+const svg=document.getElementById('map');
+const L={};['bg','sea','green','grove','appr','water','reservoir','roads','trees','struct','figures','labels'].forEach(n=>L[n]=el('g',{class:'ly-'+n},svg));
+
+/* ---------- background ---------- */
+el('rect',{x:0,y:0,width:1600,height:1110,fill:'var(--parch)'},L.bg);
+el('rect',{x:12,y:12,width:1576,height:1086,fill:'none',stroke:INK,'stroke-width':2.4,rx:6},L.bg);
+el('rect',{x:20,y:20,width:1560,height:1070,fill:'none',stroke:INK,'stroke-width':0.8,rx:4,opacity:.7},L.bg);
+
+/* ---------- sea / shore ---------- */
+const SHORE=1012;
+(function(){let d='M12,'+SHORE;for(let x=12;x<=1588;x+=40){d+=` Q${x+20},${SHORE-6+Math.sin(x/90)*4} ${x+40},${SHORE}`;}
+el('path',{d:d+' L1588,1098 L12,1098 Z',fill:'var(--sea)',stroke:'#5f9a95','stroke-width':1.2},L.sea);
+for(let i=0;i<10;i++){const x=120+i*140,y=SHORE+22+(i%2)*14;el('path',{d:`M${x},${y} q6,-4 12,0 q6,4 12,0`,fill:'none',stroke:'#e8f2ef','stroke-width':1.4,opacity:.7},L.sea);}
+})();
+
+/* ---------- helpers ---------- */
+function flow(p,d,w,id,bg){
+  const g=id?el('g',{'data-flow':id,'data-basew':w},p):p;
+  const E=bg?'#0b6e74':'var(--water-deep)',B=bg?'#1b9aa0':'var(--water)',C=bg?'#bfecee':'var(--water-cur)';
+  el('path',{d:d,fill:'none',stroke:E,'stroke-width':w+3,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  el('path',{d:d,fill:'none',stroke:B,'stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  el('path',{d:d,fill:'none',stroke:C,'stroke-width':Math.max(1.4,w*0.3),'stroke-linecap':'round',class:'cur'},g);
+  return g;
+}
+function appr(p,d,id){
+  const g=id?el('g',{'data-appr':id,'data-basew':4},p):p;
+  el('path',{d:d,fill:'none',stroke:'#0a8f7b','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.9},g);
+  el('path',{d:d,fill:'none',stroke:'var(--appr)','stroke-width':4,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  el('path',{d:d,fill:'none',stroke:'var(--appr-light)','stroke-width':1.6,'stroke-linecap':'round',class:'appr-cur'},g);
+  return g;
+}
+function road(p,d){
+  el('path',{d:d,fill:'none',stroke:'#b89a5e','stroke-width':7,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.5},p);
+  el('path',{d:d,fill:'none',stroke:'var(--gold)','stroke-width':3.2,'stroke-linecap':'round','stroke-dasharray':'1.5 6'},p);
+}
+function gate(p,x,y){const g=el('g',{transform:`translate(${x} ${y})`},p);
+  el('rect',{x:-10,y:-4,width:4.5,height:19,fill:'#bfa77a',stroke:INK,'stroke-width':0.9},g);
+  el('rect',{x:5.5,y:-4,width:4.5,height:19,fill:'#bfa77a',stroke:INK,'stroke-width':0.9},g);
+  el('rect',{x:-8,y:-9,width:16,height:8,fill:'#8a5a3c',stroke:INK,'stroke-width':0.9},g);return g;}
+function house(p,x,y,o){o=o||{};const g=el('g',{transform:`translate(${x} ${y})`},p);const w=o.w||34,h=o.h||23;
+  el('ellipse',{cx:0,cy:h-1,rx:w*0.66,ry:5.5,fill:'rgba(110,92,64,.18)'},g);
+  el('rect',{x:-w/2,y:0,width:w,height:h,fill:o.wall||'#e7d6b0',stroke:INK,'stroke-width':1.3},g);
+  el('path',{d:`M${-w/2-4},0 L0,${-h*0.78} L${w/2+4},0 Z`,fill:o.roof||'#a85a3c',stroke:INK,'stroke-width':1.2,'stroke-linejoin':'round'},g);
+  el('rect',{x:-4.5,y:h-11,width:9,height:11,fill:'#3e342a',stroke:INK,'stroke-width':0.8},g);
+  el('rect',{x:w/2-10,y:6,width:7,height:7,fill:'#f0c76b',stroke:INK,'stroke-width':0.7},g);return g;}
+function chest(p,x,y,s){s=s||1;const g=el('g',{transform:`translate(${x} ${y}) scale(${s})`},p);
+  el('rect',{x:-9,y:-6,width:18,height:11,fill:'#8a5a3c',stroke:INK,'stroke-width':1},g);
+  el('path',{d:'M-9,-6 Q0,-13 9,-6 Z',fill:'#9b6a3c',stroke:INK,'stroke-width':1},g);
+  el('rect',{x:-1.8,y:-7,width:3.6,height:10,fill:'#cf9f3a',stroke:INK,'stroke-width':0.7},g);return g;}
+function tree(p,x,y,s,elder){s=s||1;const g=el('g',{transform:`translate(${x} ${y}) scale(${s})`},p);
+  el('ellipse',{cx:0,cy:2,rx:11,ry:3.5,fill:'rgba(60,80,40,.18)'},g);
+  el('rect',{x:-2,y:-12,width:4,height:14,fill:'#6b4a2e',stroke:INK,'stroke-width':0.6},g);
+  el('circle',{cx:0,cy:-20,r:13,fill:elder?'#5f7d4e':'#7a9a62',stroke:INK,'stroke-width':1},g);
+  el('circle',{cx:-5,cy:-24,r:8,fill:elder?'#6f8d5a':'#8aa972'},g);
+  el('circle',{cx:6,cy:-22,r:7,fill:elder?'#54714a':'#6f8f58'},g);return g;}
+function flower(p,x,y){const o=el('g',{transform:`translate(${x},${y})`},p);const g=el('g',{class:'sway'},o);
+  el('path',{d:'M0,0 L0,-8',stroke:'#4e7a3a','stroke-width':1.5,'stroke-linecap':'round'},g);
+  const c=['#e86a8e','#f2c230','#b86ad0','#ff8a3c','#ef5d5d'][Math.abs(Math.round(x+y))%5];
+  for(let i=0;i<5;i++){const a=i/5*6.283;el('circle',{cx:Math.cos(a)*2.6,cy:-8+Math.sin(a)*2.6,r:1.8,fill:c,stroke:INK,'stroke-width':0.3},g);}
+  el('circle',{cx:0,cy:-8,r:1.5,fill:'#f7df5a'},g);}
+function miniTree(p,x,y){const o=el('g',{transform:`translate(${x},${y})`},p);const g=el('g',{class:'sway'},o);
+  el('rect',{x:-1.3,y:-9,width:2.6,height:9,fill:'#6b4a2e'},g);
+  el('circle',{cx:0,cy:-13,r:7,fill:'#43a52f',stroke:'#2a6f20','stroke-width':0.8},g);
+  el('circle',{cx:-3,cy:-16,r:4.5,fill:'#58bd3e'},g);}
+function person(p,x,y,o){o=o||{};const s=(o.s||1)*1.35;const g=el('g',{transform:`translate(${x} ${y}) scale(${s})`},p);
+  el('ellipse',{cx:0,cy:1,rx:6,ry:2,fill:'rgba(60,40,20,.16)'},g);
+  el('path',{d:'M-2.4,-9 L-3,0 M2.4,-9 L3,0',stroke:'#4a3a2c','stroke-width':2.6,'stroke-linecap':'round'},g);
+  el('path',{d:'M0,-22 C-5.5,-21 -5.5,-10 -4.4,-9 L4.4,-9 C5.5,-10 5.5,-21 0,-22 Z',fill:o.top||'#6f915e',stroke:INK,'stroke-width':1},g);
+  el('path',{d:'M-4.2,-18 q-4,2 -3.2,7',fill:'none',stroke:o.top||'#6f915e','stroke-width':2.6,'stroke-linecap':'round'},g);
+  el('path',{d:o.token?'M4.2,-18 q4,-1 5,-5':'M4.2,-18 q4,2 3.2,7',fill:'none',stroke:o.top||'#6f915e','stroke-width':2.6,'stroke-linecap':'round'},g);
+  if(o.apron)el('path',{d:'M-3.4,-13 L3.4,-13 L4,-2 L-4,-2 Z',fill:o.apron,stroke:INK,'stroke-width':0.6},g);
+  if(o.token){el('circle',{cx:9.4,cy:-24,r:3.2,fill:'#cf9f3a',stroke:'#8a6420','stroke-width':0.8},g);el('circle',{cx:9.4,cy:-24,r:1.5,fill:'none',stroke:'#fff3c8','stroke-width':0.6},g);}
+  el('circle',{cx:0,cy:-26,r:4.8,fill:o.skin||'#e9c6a4',stroke:INK,'stroke-width':1},g);
+  el('path',{d:'M-4.8,-27 a4.8,4.8 0 0 1 9.6,0 C3,-30.5 -3,-30.5 -4.8,-27 Z',fill:o.hair||'#5a3a2a'},g);
+  if(o.hat)el('path',{d:'M-6.4,-29.5 h12.8 M-4.6,-29.5 a4.6,4.6 0 0 1 9.2,0 Z',fill:o.hat,stroke:INK,'stroke-width':0.7},g);
+  if(o.tool)el('path',{d:'M-7,-14 l-3,-9',stroke:'#6b4a2e','stroke-width':1.8,'stroke-linecap':'round'},g);
+  if(o.bucket){const dir=o.bucket;const bg=el('g',{transform:`translate(${dir*9},-16) rotate(${dir*34})`},g);
+    el('path',{d:'M-5,-5 L5,-5 L4.2,5 L-4.2,5 Z',fill:'#9b6a3c',stroke:INK,'stroke-width':0.9},bg);
+    el('path',{d:'M-5,-5 Q0,-9 5,-5',fill:'none',stroke:INK,'stroke-width':0.8},bg);
+    el('path',{d:'M-4.4,-4.4 L4.4,-4.4',stroke:'#4aa0e6','stroke-width':2.6,'stroke-linecap':'round'},bg);}
+  return g;}
+function label(x,y,title,sub,o){o=o||{};const g=el('g',{class:'lbl'},L.labels);const cls=o.lake?'halo-w':'halo';
+  el('text',{x:x,y:y,'text-anchor':o.anchor||'middle',class:'t-title '+cls,style:`font-size:${o.size||25}px`},g,title);
+  if(sub)el('text',{x:x,y:y+(o.size?o.size*0.92:24),'text-anchor':o.anchor||'middle',class:'t-sub '+cls,style:`font-size:${o.ssize||21}px`},g,sub);
+  if(o.lens){g.setAttribute('data-title',title);g.setAttribute('data-sub',sub||'');g.setAttribute('data-lens',o.lens);el('title',null,g,(sub?sub+' — ':'')+o.lens);}
+  return g;}
+
+/* ====================== TOP WALL + GATE ====================== */
+const GATEX=1250;
+(function(){
+  const g=el('g',{},L.struct),y0=44,y1=76;
+  el('rect',{x:20,y:y0,width:1560,height:y1-y0,fill:'#e6d6b1',stroke:INK,'stroke-width':1.3},g);
+  let d='';for(let x=28;x<1572;x+=16){if(x>GATEX-46&&x<GATEX+46)continue;d+=`M${x},${y0} v-7 h9 v7 `;}
+  el('path',{d,fill:'#e6d6b1',stroke:INK,'stroke-width':1},g);
+  let b='';for(let x=34;x<1566;x+=26)b+=`M${x},${y0+9} h13 M${x+13},${y0+18} h13 `;
+  el('path',{d:b,stroke:'#b6a079','stroke-width':0.6},g);
+  [60,540,980,1540].forEach(x=>{el('rect',{x:x-13,y:y0-15,width:26,height:(y1-y0)+15,fill:'#e9dab6',stroke:INK,'stroke-width':1.1},g);
+    el('path',{d:`M${x-13},${y0-15} v-5 h7 v5 h6 v-5 h7 v5`,fill:'none',stroke:INK,'stroke-width':1},g);});
+  [540,980].forEach(x=>{el('path',{d:`M${x},${y0-15} l0,-13 l13,4 l-13,4`,fill:'#c6553a',stroke:INK,'stroke-width':0.8},g);});
+  // gatehouse — THE GATE
+  const gx=GATEX;
+  el('rect',{x:gx-40,y:y0-26,width:80,height:(y1-y0)+30,fill:'#e9dab6',stroke:INK,'stroke-width':1.4},g);
+  el('path',{d:`M${gx-40},${y0-26} v-6 h9 v6 h9 v-6 h9 v6 h8 v-6 h9 v6 h9 v-6 h9 v6`,fill:'none',stroke:INK,'stroke-width':1},g);
+  el('path',{d:`M${gx-15},${y1+4} L${gx-15},${y0-2} A15,15 0 0 1 ${gx+15},${y0-2} L${gx+15},${y1+4} Z`,fill:'#3e342a',stroke:INK,'stroke-width':1},g);
+  let pc='';for(let x=gx-11;x<=gx+11;x+=5)pc+=`M${x},${y0-12} V${y1+2} `;for(let y=y0-6;y<=y1;y+=6)pc+=`M${gx-13},${y} H${gx+13} `;
+  el('path',{d:pc,stroke:'#a88f63','stroke-width':1.2},g);
+  el('path',{d:`M${gx-30},${y0-26} l0,-14 l14,4 l-14,4 M${gx+30},${y0-26} l0,-14 l14,4 l-14,4`,fill:'#c6553a',stroke:INK,'stroke-width':0.8},g);
+  // realm title banner (centre-left of the gate)
+  el('path',{d:'M470,48 L730,48 L744,62 L730,76 L470,76 L456,62 Z',fill:'#f6efdc',stroke:INK,'stroke-width':1.2},g);
+  el('text',{x:600,y:67,'text-anchor':'middle',class:'t-title',style:'font-size:17px;letter-spacing:.12em'},g,'THE REALM OF THE NAO');
+})();
+label(GATEX,112,'THE GATE','invited in, vouched for',{size:20,ssize:18});
+
+/* ====================== MEMBERSHIP STREAMS ====================== */
+const RES={x:800,y:320,rx:250,ry:90};
+(function(){
+  // members stand above the reservoir and pour their dues from buckets
+  const members=[[650,196,'#a9472c'],[726,184,'#3f7f86'],[800,198,'#6f915e'],[874,184,'#7d6f9c'],[950,196,'#b07a35']];
+  members.forEach(m=>{
+    const toward=m[0]<=RES.x?1:-1;
+    const bx=m[0]+toward*14,by=m[1]-14;
+    const d=`M${bx},${by} C${bx},${by+42} ${(bx+RES.x)/2},${RES.y-106} ${RES.x+(m[0]-RES.x)*0.42},${RES.y-RES.ry+6}`;
+    flow(L.water,d,6,'dues');
+    person(L.figures,m[0],m[1],{top:m[2],hair:'#3a2a24',s:1.05,bucket:toward});
+  });
+})();
+label(800,112,'MEMBERS','the membership streams',{size:24,ssize:20});
+
+/* ====================== RESERVOIR / TREASURY ====================== */
+(function(){
+  const g=L.reservoir;
+  el('ellipse',{cx:RES.x,cy:RES.y,rx:RES.rx+9,ry:RES.ry+9,fill:'#d8c69f',stroke:INK,'stroke-width':1.4},g);
+  let br='';for(let i=0;i<48;i++){const a=i/48*Math.PI*2;br+=`M${(RES.x+Math.cos(a)*(RES.rx+1)).toFixed(1)},${(RES.y+Math.sin(a)*(RES.ry+1)).toFixed(1)} L${(RES.x+Math.cos(a)*(RES.rx+9)).toFixed(1)},${(RES.y+Math.sin(a)*(RES.ry+9)).toFixed(1)} `;}
+  el('path',{d:br,stroke:'#b6a079','stroke-width':0.6},g);
+  const grad=el('radialGradient',{id:'gRes',cx:'46%',cy:'40%',r:'62%'},g);
+  [['0','#4aa0e6'],['0.6','#1f7ed2'],['1','#005eb4']].forEach(s=>el('stop',{offset:s[0],'stop-color':s[1]},grad));
+  el('ellipse',{cx:RES.x,cy:RES.y,rx:RES.rx,ry:RES.ry,fill:'url(#gRes)',stroke:'var(--water-deep)','stroke-width':1.5},g);
+  for(let i=0;i<8;i++)el('path',{d:`M${RES.x-170+i*44},${RES.y-28+(i%3)*22} q6,-3 12,0`,fill:'none',stroke:'#eaf3ff','stroke-width':1.5,class:'shim',style:`animation-delay:${-i*0.4}s`},g);
+  el('text',{x:RES.x,y:RES.y-2,'text-anchor':'middle',class:'t-title halo-w',style:'font-size:30px'},g,'THE TREASURY');
+  el('text',{x:RES.x,y:RES.y+25,'text-anchor':'middle',class:'t-sub halo-w',style:'font-size:22px'},g,'the reservoir');
+})();
+
+/* ====================== COUNCIL ====================== */
+(function(){
+  const cx=440,cy=342,g=el('g',{},L.struct);
+  el('ellipse',{cx:cx,cy:cy+2,rx:56,ry:30,fill:'rgba(120,100,70,.14)'},g);
+  el('ellipse',{cx:cx,cy:cy,rx:36,ry:17,fill:'#8a5a43',stroke:INK,'stroke-width':1.1},g);
+  el('ellipse',{cx:cx,cy:cy-2,rx:30,ry:12,fill:'#9fc3cf',stroke:'#4b7b84','stroke-width':1},g);
+  const seats=[[-36,-4],[-19,-17],[0,-21],[19,-17],[36,-4]];
+  seats.forEach((s,i)=>person(g,cx+s[0],cy+s[1]+6,{s:0.74,top:['#6f5f86','#4f7d86','#8a3b4a','#7d9870','#b07a35'][i],hair:'#4a3a2a'}));
+  flow(L.water,`M${cx+42},${cy-6} C${cx+130},${cy-20} ${RES.x-RES.rx-26},${RES.y+24} ${RES.x-RES.rx+6},${RES.y+10}`,4);
+})();
+label(440,420,'THE COUNCIL','ensuring the community is thriving',{size:22,ssize:19,lens:'look at what has arrived each month and decide, by discernment and with no fixed rule, where the Treasury’s water goes: the Forge, the usage streams, payouts and appreciation, and the surplus'});
+
+/* ====================== GATES + CHANNELS ====================== */
+const FORGE={x:650,y:560};
+const TOWNS=[
+  {id:'hearth',name:'HEARTHFIELD',x:470,y:772,gate:[588,366]},
+  {id:'river',name:'RIVERBEND',x:812,y:838,gate:[812,410]},
+  {id:'lantern',name:'LANTERNHILL',x:1150,y:772,gate:[952,391]}
+];
+const forgeGate=[690,400];
+flow(L.water,`M${forgeGate[0]},${forgeGate[1]} C${forgeGate[0]-10},${forgeGate[1]+58} ${FORGE.x+8},${FORGE.y-70} ${FORGE.x},${FORGE.y-26}`,9,'forge');
+gate(L.struct,forgeGate[0],forgeGate[1]-2);
+flow(L.water,`M${TOWNS[0].gate[0]},${TOWNS[0].gate[1]} C${TOWNS[0].gate[0]-60},${TOWNS[0].gate[1]+140} ${TOWNS[0].x+10},${TOWNS[0].y-170} ${TOWNS[0].x+8},${TOWNS[0].y-36}`,8,'town.hearth');
+flow(L.water,`M${TOWNS[1].gate[0]},${TOWNS[1].gate[1]} C${TOWNS[1].gate[0]+4},${TOWNS[1].gate[1]+150} ${TOWNS[1].x+4},${TOWNS[1].y-140} ${TOWNS[1].x},${TOWNS[1].y-36}`,8,'town.river');
+flow(L.water,`M${TOWNS[2].gate[0]},${TOWNS[2].gate[1]} C${TOWNS[2].gate[0]+70},${TOWNS[2].gate[1]+120} ${TOWNS[2].x-70},${TOWNS[2].y-150} ${TOWNS[2].x-8},${TOWNS[2].y-36}`,8,'town.lantern');
+TOWNS.forEach(t=>gate(L.struct,t.gate[0],t.gate[1]-2));
+// water-gate callout, pointing into open space on the right
+el('path',{d:`M${TOWNS[2].gate[0]+9},${TOWNS[2].gate[1]+2} C${TOWNS[2].gate[0]+70},${TOWNS[2].gate[1]+14} ${TOWNS[2].gate[0]+130},${TOWNS[2].gate[1]+14} ${TOWNS[2].gate[0]+168},${TOWNS[2].gate[1]+16}`,fill:'none',stroke:INK,'stroke-width':0.8,'stroke-dasharray':'2 3'},L.labels);
+el('text',{x:TOWNS[2].gate[0]+174,y:TOWNS[2].gate[1]+21,'text-anchor':'start',class:'t-note halo',style:'font-size:16px'},L.labels,'a water gate');
+
+/* ===== green zones: the land greens as water reaches the towns & the forge ===== */
+(function(){
+  const gg=el('radialGradient',{id:'gGreen',cx:'50%',cy:'50%',r:'50%'},L.green);
+  [['0','.62'],['0.5','.4'],['1','0']].forEach(s=>el('stop',{offset:s[0],'stop-color':'#2abc00','stop-opacity':s[1]},gg));
+  const Z=[['hearth',TOWNS[0].x,TOWNS[0].y],['river',TOWNS[1].x,TOWNS[1].y],['lantern',TOWNS[2].x,TOWNS[2].y],['forge',FORGE.x,FORGE.y+10]];
+  const spots=[[-66,10,'f'],[60,16,'t'],[-34,42,'t'],[44,40,'f'],[2,56,'f'],[-80,-10,'t'],[78,-6,'f'],[20,-30,'t'],[-24,-34,'f'],[-2,-54,'t']];
+  Z.forEach(z=>{
+    const o=el('g',{transform:`translate(${z[1]},${z[2]+14})`},L.green);
+    el('circle',{r:118,fill:'url(#gGreen)','data-green':z[0],transform:'scale(.4)'},o);
+    const fg=el('g',{'data-grow':z[0],opacity:0},o);
+    spots.forEach(s=>{s[2]==='t'?miniTree(fg,s[0],s[1]):flower(fg,s[0],s[1]);});
+  });
+})();
+
+/* ====================== FORGE ====================== */
+(function(){
+  const g=el('g',{},L.struct),x=FORGE.x,y=FORGE.y;
+  el('ellipse',{cx:x,cy:y+16,rx:42,ry:8,fill:'rgba(110,92,64,.18)'},g);
+  el('rect',{x:x-30,y:y-15,width:60,height:32,fill:'#e3d2ad',stroke:INK,'stroke-width':1.3},g);
+  el('path',{d:`M${x-34},${y-15} L${x},${y-40} L${x+34},${y-15} Z`,fill:'#7f4a35',stroke:INK,'stroke-width':1.2,'stroke-linejoin':'round'},g);
+  el('rect',{x:x-15,y:y-52,width:9,height:18,fill:'#b9a37b',stroke:INK,'stroke-width':1},g);
+  [0,1.2,2.4].forEach(d=>el('circle',{cx:x-10.5,cy:y-56,r:4,fill:'#cfc6b6',class:'shim',style:`animation-delay:${-d}s`},g));
+  el('rect',{x:x-5.5,y:y+2,width:11,height:15,fill:'#3e342a',stroke:INK,'stroke-width':0.8},g);
+  el('rect',{x:x-3.5,y:y+6,width:7,height:6,fill:'#e98b3a',class:'shim'},g);
+  const wx=x+36,wy=y+4,wg=el('g',{transform:`translate(${wx} ${wy})`},g);
+  el('circle',{r:13,fill:'#cdbf9d',stroke:INK,'stroke-width':1.1},wg);
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;el('path',{d:`M0,0 L${Math.cos(a)*13},${Math.sin(a)*13}`,stroke:INK,'stroke-width':0.9},wg);}
+})();
+label(FORGE.x,FORGE.y+44,'THE FORGE','keeping the core infrastructure healthy',{size:22,ssize:18.5,lens:'through roles and quests alike'});
+
+/* ====================== TOWNS ====================== */
+TOWNS.forEach(t=>{
+  const g=el('g',{},L.struct);
+  el('ellipse',{cx:t.x,cy:t.y+12,rx:52,ry:14,fill:'rgba(190,170,120,.16)'},g);
+  house(g,t.x-20,t.y-10,{w:30,roof:'#a85a3c'});
+  house(g,t.x+16,t.y-16,{w:34,roof:'#8d4f36'});
+  house(g,t.x+2,t.y+4,{w:27,roof:'#b5633c'});
+  chest(g,t.x+34,t.y+8,1.05);
+  el('path',{d:`M${t.x+18},${t.y-34} l0,-13 l15,5 l-15,5`,fill:'#c6553a',stroke:INK,'stroke-width':0.8},g);
+  label(t.x,t.y+48,t.name,'a hive',{size:20,ssize:19});
+});
+
+/* ====================== FUND ====================== */
+(function(){
+  const x=204,y=514,g=el('g',{},L.struct);
+  const gr=el('radialGradient',{id:'gFundB',cx:'46%',cy:'40%',r:'62%'},g);
+  [['0','#4aa0e6'],['0.6','#1f7ed2'],['1','#005eb4']].forEach(s=>el('stop',{offset:s[0],'stop-color':s[1]},gr));
+  el('ellipse',{cx:x,cy:y,rx:96,ry:56,fill:'#d8c69f',stroke:INK,'stroke-width':1.3},g);
+  el('ellipse',{cx:x,cy:y,rx:88,ry:48,fill:'url(#gFundB)',stroke:'var(--water-deep)','stroke-width':1.4},g);
+  for(let i=0;i<5;i++)el('path',{d:`M${x-52+i*25},${y-10+(i%2)*14} q6,-3 12,0`,fill:'none',stroke:'#eaf3ff','stroke-width':1.4,class:'shim',style:`animation-delay:${-i*0.5}s`},g);
+  flow(L.water,`M${x+72},${y+12} C${x+180},${y+70} 330,${TOWNS[0].y-30} ${TOWNS[0].x-46},${TOWNS[0].y-8}`,5,'fund');
+  flow(L.water,`M${x+60},${y+34} C${x+260},${y+150} 640,700 ${TOWNS[1].x-40},${TOWNS[1].y-30}`,4,'fund2');
+  // investors arrive along the mountain road with a connector
+  road(L.roads,`M24,330 C70,360 90,420 ${x-70},${y-30}`);
+  person(L.figures,64,372,{top:'#2f4f4f',hair:'#1d1612',s:0.95});
+  chest(L.figures,82,384,0.8);
+  person(L.figures,40,350,{hat:'#7a5a3a',top:'#8a6a3c',hair:'#4a3226',tool:1,s:0.9});
+  el('text',{x:62,y:418,'text-anchor':'middle',class:'t-note halo',style:'font-size:15px'},L.labels,'an investor, a connector');
+})();
+label(204,592,'THE FUND','watering the projects the community needs',{size:22,ssize:18,lens:'larger capital, kept apart from the Treasury. Its managers resource hives by matching what their backers put in, and the hives answer with patronage points'});
+
+/* ====================== GUILD (down, near Lanternhill) ====================== */
+(function(){
+  const x=1336,y=604,g=el('g',{},L.struct);
+  el('ellipse',{cx:x,cy:y+20,rx:50,ry:12,fill:'rgba(110,92,64,.18)'},g);
+  el('rect',{x:x-36,y:y-17,width:72,height:36,fill:'#e7d6b0',stroke:INK,'stroke-width':1.3},g);
+  el('path',{d:`M${x-42},${y-17} L${x},${y-46} L${x+42},${y-17} Z`,fill:'#5a6f8a',stroke:INK,'stroke-width':1.2,'stroke-linejoin':'round'},g);
+  el('circle',{cx:x,cy:y-31,r:5,fill:'#cf9f3a',stroke:INK,'stroke-width':0.9},g);
+  [-19,19].forEach(o=>el('rect',{x:x+o-5,y:y-8,width:10,height:10,fill:'#f0c76b',stroke:INK,'stroke-width':0.7},g));
+  el('rect',{x:x-6.5,y:y+5,width:13,height:14,fill:'#3e342a',stroke:INK,'stroke-width':0.8},g);
+})();
+label(1336,656,'THE GUILD','craftspeople every hive needs',{size:22,ssize:18.5,lens:'like facilitators, ceremonialists, designers, and event producers'});
+/* villages pay the guild for its craft (not treasury money, so blue-green) */
+flow(L.water,`M${TOWNS[2].x+28},${TOWNS[2].y-30} C1250,700 1304,676 1336,638`,4,'guild',true);
+flow(L.water,`M${TOWNS[1].x+40},${TOWNS[1].y-26} C1080,724 1250,700 1330,642`,4,'guild',true);
+
+/* ====================== BACKERS (where the guild was, closer to water) ====================== */
+(function(){
+  const x=1420,y=448;
+  // a soft cloud over them (backers bring water)
+  el('path',{d:`M${x-34},${y-34} a16,16 0 0 1 30,-6 a14,14 0 0 1 24,6 a12,12 0 0 1 -3,18 l-48,0 a12,12 0 0 1 -3,-18 Z`,fill:'#dfe7ea',stroke:'#9fb0b6','stroke-width':1.1},L.struct);
+  person(L.figures,x-24,y+6,{top:'#6f5f86',hair:'#3a2a30',token:1,s:1.05});
+  person(L.figures,x+6,y+14,{top:'#b07a35',hair:'#2e2420',token:1,s:1.05});
+  person(L.figures,x+34,y+4,{top:'#4f7d86',hair:'#1d1612',token:1,s:1.0});
+  // backers' token money flows into the Treasury; their votes then open the hives' water gates
+  flow(L.water,`M${x-30},${y-20} C${x-120},${y-150} 1190,300 ${RES.x+RES.rx-4},${RES.y-8}`,4,'backers');
+})();
+label(1420,512,'BACKERS','tokens in hand',{size:22,ssize:19,lens:'buy Flow Tokens, €7 each and up to 144. The money joins the Treasury, and their votes open the hives’ water gates'});
+
+/* ====================== ROADS + people ====================== */
+road(L.roads,`M${TOWNS[0].x+34},${TOWNS[0].y+10} C620,${TOWNS[0].y+34} 720,${TOWNS[1].y-6} ${TOWNS[1].x-34},${TOWNS[1].y+4}`);
+road(L.roads,`M${TOWNS[1].x+38},${TOWNS[1].y} C980,${TOWNS[1].y-20} 1050,${TOWNS[2].y+20} ${TOWNS[2].x-38},${TOWNS[2].y+10}`);
+road(L.roads,`M${TOWNS[1].x},${TOWNS[1].y+38} C${TOWNS[1].x},900 835,950 824,988`);
+road(L.roads,`M1336,650 C1320,700 1250,740 ${TOWNS[2].x+42},${TOWNS[2].y-18}`);
+road(L.roads,`M460,418 C462,540 474,660 ${TOWNS[0].x-28},${TOWNS[0].y-20}`);
+person(L.figures,642,818,{apron:'#ece2c8',tool:1,top:'#5d7d90',hair:'#d8ae55',s:1.0});
+person(L.figures,1016,812,{apron:'#efe1c5',tool:1,top:'#6f915e',hair:'#7a4a2a',s:1.0});
+person(L.figures,520,640,{apron:'#ece2c8',tool:1,top:'#a9472c',hair:'#2b211d',s:1.0});
+person(L.figures,1286,700,{hat:'#a9472c',top:'#3d4f6e',hair:'#4a3226',s:1.0});
+person(L.figures,838,912,{top:'#5a6f8a',hair:'#6b3a2a',s:0.95});
+
+/* ====================== APP STORE (on the shore, dock in the water) ====================== */
+(function(){
+  const x=812,y=SHORE-6,g=el('g',{},L.struct);
+  // dock reaching into the water
+  el('path',{d:`M${x-100},${y+10} L${x+100},${y+10} L${x+106},${y+40} L${x-106},${y+40} Z`,fill:'#a97e4f',stroke:INK,'stroke-width':1},g);
+  for(let px=x-96;px<x+100;px+=15)el('path',{d:`M${px},${y+10} v30`,stroke:'#7a5a3a','stroke-width':0.6},g);
+  [[-62,'#cf9f3a'],[-21,'#4f8f7d'],[21,'#a9472c'],[62,'#5a6f8a']].forEach(s=>{const sx=x+s[0];
+    el('rect',{x:sx-15,y:y-10,width:30,height:18,fill:'#efe3c6',stroke:INK,'stroke-width':0.9},g);
+    el('path',{d:`M${sx-18},${y-10} L${sx-14},${y-21} L${sx+14},${y-21} L${sx+18},${y-10} Z`,fill:s[1],stroke:INK,'stroke-width':0.9},g);
+    el('rect',{x:sx-6,y:y-5,width:12,height:13,fill:'#d9c7a0',stroke:INK,'stroke-width':0.6},g);});
+})();
+label(812,SHORE+58,'THE APP STORE','free to members, or for sale',{size:21,ssize:18});
+label(1210,SHORE+52,'THE OPEN SEA','the commons, free for all',{size:19,ssize:16,lake:true});
+(function(){const g=el('g',{id:'boat',transform:`translate(905 ${SHORE+16})`,opacity:0},L.struct);
+  el('path',{d:'M-16,0 L16,0 L11,8 L-11,8 Z',fill:'#8a5a3c',stroke:INK,'stroke-width':1},g);
+  el('path',{d:'M0,0 L0,-22 L13,-4 Z',fill:'#f6efdc',stroke:INK,'stroke-width':0.9},g);
+  el('text',{x:-3,y:-6,'text-anchor':'end',class:'t-note',style:'font-size:11px;fill:#3a3127'},g,'v1');})();
+
+/* ====================== GROVE + appreciation ====================== */
+const GROVE={x:232,y:886};
+(function(){
+  el('ellipse',{cx:GROVE.x,cy:GROVE.y+4,rx:142,ry:74,fill:'rgba(120,140,100,.2)'},L.grove);
+  const seed=[[150,860,1],[196,840,1.1],[248,850,1],[300,868,1.05],[146,902,0.95],[202,892,1.3,true],[262,896,1.45,true],[318,910,1],[178,932,1],[244,936,1.05],[306,934,0.95],[128,878,0.9],[334,852,0.92],[352,900,0.9]];
+  seed.sort((a,b)=>a[1]-b[1]).forEach(t=>tree(L.grove,t[0],t[1],t[2],t[3]));
+})();
+appr(L.appr,`M${FORGE.x-26},${FORGE.y+8} C470,650 356,800 ${GROVE.x+100},${GROVE.y-38}`,'grove');
+appr(L.appr,`M${TOWNS[0].x-32},${TOWNS[0].y+8} C390,840 336,884 ${GROVE.x+116},${GROVE.y-8}`,'grove');
+appr(L.appr,`M${TOWNS[1].x-36},${TOWNS[1].y+14} C640,932 430,936 ${GROVE.x+124},${GROVE.y+30}`,'grove');
+appr(L.appr,`M${TOWNS[2].x-42},${TOWNS[2].y+20} C900,956 470,948 ${GROVE.x+130},${GROVE.y+46}`,'grove');
+/* villages appreciate each other, not only the ancestors */
+appr(L.appr,`M${TOWNS[0].x+46},${TOWNS[0].y+30} Q${(TOWNS[0].x+TOWNS[1].x)/2},${TOWNS[1].y+70} ${TOWNS[1].x-48},${TOWNS[1].y+34}`,'village');
+appr(L.appr,`M${TOWNS[1].x+50},${TOWNS[1].y+26} Q${(TOWNS[1].x+TOWNS[2].x)/2},${TOWNS[1].y+70} ${TOWNS[2].x-50},${TOWNS[2].y+32}`,'village');
+label(GROVE.x,GROVE.y+92,"THE ANCESTORS' GROVE",'appreciation to those who came before',{size:20,ssize:18});
+
+/* ====================== scattered trees ====================== */
+[[1490,560,1],[1540,640,0.9],[1460,700,1.05],[1520,780,0.95],[1380,820,1],[1470,860,0.9],
+ [120,640,1],[70,720,0.9],[150,700,0.95],[360,470,0.9],[560,470,0.85],
+ [1040,560,0.9],[690,690,0.85],[980,690,0.9],[1240,520,0.9],[1180,640,0.85]
+].forEach(t=>tree(L.trees,t[0],t[1],t[2]));
+
+/* ====================== legend ====================== */
+(function(){
+  const x=1316,y=880,g=el('g',{},L.labels);
+  const rows=[['var(--water)','money: dues, tokens, fund'],['#1b9aa0','hives paying the guild'],['var(--appr)','appreciation'],['var(--gold)','roads, where people walk']];
+  rows.forEach((r,i)=>{el('rect',{x:x,y:y+i*26-9,width:28,height:7,rx:3.5,fill:r[0]},g);el('text',{x:x+38,y:y+i*26-2,class:'t-note',style:'font-size:16px'},g,r[1]);});
+})();
+
+/* legend: one more row for patronage points */
+(function(){const x=1316,y=880+4*26,g=el('g',{},L.labels);
+  el('rect',{x:x+9,y:y-12,width:9,height:9,fill:'#f2c94c',stroke:'#8a6420','stroke-width':1,transform:`rotate(45 ${x+13.5} ${y-7.5})`},g);
+  el('text',{x:x+38,y:y-2,class:'t-note',style:'font-size:16px'},g,'patronage points');})();
+
+/* ====================== THE CAST: three named characters ====================== */
+const CAST={
+  wren:{name:'Wren',role:'the builder'},
+  noor:{name:'Noor',role:'a member'},
+  noorb:{name:'Noor',role:'a backer'},
+  priya:{name:'Priya',role:'a fund manager'},
+  narrator:{name:'The narrator',role:''}
+};
+function character(id,x,y,o,show){
+  const g=el('g',{id:'ch-'+id,opacity:show===false?0:1,style:'transition:opacity .6s, transform 1.8s ease-in-out'},L.figures);
+  el('ellipse',{class:'ring',cx:x,cy:y+2,rx:16,ry:6},g);
+  const b=el('g',{class:'bob'},g);person(b,x,y,o);
+  el('text',{x:x,y:y+20,'text-anchor':'middle',class:'tag halo',style:'font-size:14px'},g,CAST[id].name);
+  return g;}
+character('wren',1100,708,{top:'#c6553a',hair:'#b8562a',apron:'#efe1c5',tool:1,s:1.1});
+character('priya',318,474,{top:'#7d3f6e',hair:'#1d1612',skin:'#c99a74',s:1.1});
+character('noorb',1462,486,{top:'#3f7f86',hair:'#2a1d18',skin:'#b98b67',token:1,s:1.05},false);
+// Noor is the member in the middle of the five, pouring his dues
+el('text',{x:800,y:226,'text-anchor':'middle',class:'tag halo',style:'font-size:14px'},L.labels,'Noor');
+(function(){const g=el('g',{id:'ch-noor'},L.figures);el('ellipse',{class:'ring',cx:800,cy:200,rx:16,ry:6},g);})();
+
+/* ====================== ROUTES the story pulses along ====================== */
+const R={
+  gateIn:'M1250,6 L1250,140',
+  dues:'M800,170 C800,206 800,222 800,236',
+  forge:'M760,352 Q720,382 690,400 C680,458 658,490 650,534',
+  'gate.hearth':'M690,346 Q640,360 588,366 C528,506 480,602 478,736',
+  'gate.river':'M812,362 L812,410 C816,560 816,698 812,802',
+  'gate.lantern':'M900,356 Q930,380 952,391 C1022,511 1080,622 1142,736',
+  'hearth.res':'M478,736 C480,602 528,506 588,366 Q640,360 690,346',
+  backers:'M1390,428 C1300,298 1190,300 1046,312',
+  'res.grove':'M600,384 C520,520 420,700 344,846',
+  'res.holders':'M640,392 C600,480 548,560 524,612',
+  referral:'M950,200 C1010,420 900,620 842,800',
+  'store.lantern':'M846,986 C960,940 1080,860 1140,804',
+  'store.res':'M792,986 C760,900 750,600 796,414',
+  'chest.workers':'M1180,786 C1120,836 1060,836 1022,818',
+  'chest.wren':'M1182,772 C1164,742 1130,722 1104,716',
+  'lantern.grove':'M1108,792 C900,956 470,948 362,932',
+  'lantern.river':'M1100,804 Q981,908 862,870',
+  guild:'M1178,742 C1250,700 1304,676 1336,638',
+  stake:'M1120,792 C1020,852 920,862 858,848',
+  'stake.back':'M858,848 C920,862 1020,852 1120,792',
+  'points.backers':'M1160,740 C1250,620 1380,560 1440,500',
+  investor:'M40,346 C70,380 100,440 134,484',
+  connector:'M134,484 C100,440 70,380 44,354',
+  'fund.hearth':'M276,526 C384,584 330,742 424,764',
+  'fund.river':'M264,548 C464,664 640,700 772,808',
+  'hearth.fund':'M430,760 C340,700 300,620 262,566'
+};
+const KIND={
+  water:{fill:'#eaf6ff',stroke:'#00437e',r:5.5,ghost:'#4aa0e6'},
+  coin:{fill:'#f2c94c',stroke:'#8a6420',r:5.5,ghost:'#cf9f3a'},
+  points:{fill:'#f2c94c',stroke:'#8a6420',r:5,ghost:'#cf9f3a',diamond:1},
+  appr:{fill:'#7fe8d6',stroke:'#0a8f7b',r:5,ghost:'#02b598'},
+  fee:{fill:'#bfecee',stroke:'#0b6e74',r:5,ghost:'#1b9aa0'}
+};
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pulseLayer=el('g',{class:'ly-pulse'},svg);
+let pulses=[],rafId=null;
+function clearPulses(){pulses.forEach(p=>p.g.remove());pulses=[];if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
+function addPulse(route,kind){
+  const k=KIND[kind]||KIND.water,d=R[route];if(!d)return;
+  const g=el('g',{},pulseLayer);
+  const path=el('path',{d:d,class:'ghost-route',stroke:k.ghost},g);
+  const len=path.getTotalLength();const dots=[];
+  for(let i=0;i<3;i++){let dot;
+    if(k.diamond)dot=el('rect',{x:-4.2,y:-4.2,width:8.4,height:8.4,fill:k.fill,stroke:k.stroke,'stroke-width':1.3},g);
+    else dot=el('circle',{r:k.r,fill:k.fill,stroke:k.stroke,'stroke-width':1.4},g);
+    dots.push(dot);}
+  pulses.push({g,path,len,dots,t0:performance.now()});
+  if(reduceMotion){dots.forEach((dt,i)=>{const pt=path.getPointAtLength(len*(0.25+i*0.25));dt.setAttribute('transform',`translate(${pt.x} ${pt.y})${k.diamond?' rotate(45)':''}`);});return;}
+  if(!rafId)rafId=requestAnimationFrame(tick);
+  pulses[pulses.length-1].diamond=!!k.diamond;
+}
+function tick(now){
+  pulses.forEach(p=>{const T=2600;p.dots.forEach((dt,i)=>{const f=(((now-p.t0)/T)+i/3)%1;const pt=p.path.getPointAtLength(p.len*f);
+    dt.setAttribute('transform',`translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})${p.diamond?' rotate(45)':''}`);dt.setAttribute('opacity',Math.min(1,Math.min(f,1-f)*6).toFixed(2));});});
+  rafId=pulses.length?requestAnimationFrame(tick):null;
+}
+function sailBoat(){const b=document.getElementById('boat');if(!b)return;b.setAttribute('opacity',1);
+  if(reduceMotion){b.setAttribute('transform',`translate(1380 ${SHORE+40})`);return;}
+  const t0=performance.now(),D=5200;(function step(now){const k=Math.min(1,(now-t0)/D);const x=905+(1440-905)*k,y=SHORE+16+28*Math.sin(k*Math.PI/2);
+    b.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);if(k<1)requestAnimationFrame(step);})(performance.now());}
+
+/* ===== the Living Map: sliders over one illustrative month ===== */
+(function(){
+  const due=20, FLOOR=1800, CAP=1500, TOK=120;
+  const defs={members:160,backers:8,match:100,uh:6,ur:5,ul:3};
+  const SL=[
+    ['members','Members',40,400,1,''],
+    ['backers','Backers',0,24,1,''],
+    ['match','Fund matching',0,200,10,'%'],
+    ['uh','Hearthfield use',0,10,1,''],
+    ['ur','Riverbend use',0,10,1,''],
+    ['ul','Lanternhill use',0,10,1,'']
+  ];
+  const panel=document.createElement('div');panel.id='panel';
+  panel.innerHTML='<div class="hd"><h3>The Living Map</h3><span class="tog" id="tog" role="button" tabindex="0">hide</span></div>'
+    +'<div class="body"><p class="sub">One illustrative month. The Council decides by discernment each month; these sliders show one possibility.</p><div id="ctls"></div><hr><div id="readout"></div><div class="pbtns"><button id="reset">Reset</button><button id="replay" class="ghost2">Storylines</button></div></div>';
+  document.body.appendChild(panel);
+  const I={}, ctls=panel.querySelector('#ctls');
+  SL.forEach(s=>{const row=document.createElement('div');row.className='row';
+    row.innerHTML='<label for="'+s[0]+'">'+s[1]+'</label><input type="range" id="'+s[0]+'" min="'+s[2]+'" max="'+s[3]+'" step="'+s[4]+'" value="'+defs[s[0]]+'"><span class="v" id="v-'+s[0]+'"></span>';
+    ctls.appendChild(row);I[s[0]]=row.querySelector('input');});
+  const RO=panel.querySelector('#readout');
+  const eur=n=>'€'+Math.round(n).toLocaleString('en');
+  function setW(sel,isAppr,scale){scale=Math.max(0.1,Math.min(3.9,scale));
+    document.querySelectorAll(sel).forEach(g=>{const b=+g.dataset.basew,w=Math.max(0.8,b*scale),ps=g.children;
+      ps[0].setAttribute('stroke-width',w+(isAppr?2:3));ps[1].setAttribute('stroke-width',w);ps[2].setAttribute('stroke-width',Math.max(1,w*0.35));});}
+  function compute(){
+    const members=+I.members.value,backers=+I.backers.value,match=+I.match.value/100;
+    const use={h:+I.uh.value,r:+I.ur.value,l:+I.ul.value};
+    SL.forEach(s=>panel.querySelector('#v-'+s[0]).textContent=I[s[0]].value+s[5]);
+    const D=members*due;                        // dues into the Treasury
+    const T=backers*TOK;                        // Flow Token money into the Treasury
+    const forge=Math.min(D,FLOOR), rem=Math.max(0,D-forge);
+    const usum=(use.h+use.r+use.l)||1;
+    const usage={h:rem*use.h/usum,r:rem*use.r/usum,l:rem*use.l/usum};
+    let surplus=0;['h','r','l'].forEach(k=>{if(usage[k]>CAP){surplus+=usage[k]-CAP;usage[k]=CAP;}});
+    const votes={h:T*use.h/usum,r:T*use.r/usum,l:T*use.l/usum};   // backers' votes, drawn here as following use
+    const fund={h:votes.h*match,r:votes.r*match};                   // the fund matches Hearthfield and Riverbend
+    const hive={h:usage.h+votes.h+fund.h,r:usage.r+votes.r+fund.r,l:usage.l+votes.l};
+    const tsum=hive.h+hive.r+hive.l;
+    const green=(id,amt)=>{const c=document.querySelector('[data-green="'+id+'"]');if(c)c.setAttribute('transform','scale('+Math.max(0.3,Math.min(1.85,amt/1250))+')');
+      const fg=document.querySelector('[data-grow="'+id+'"]');if(fg)fg.setAttribute('opacity',Math.max(0,Math.min(1,(amt-350)/1000)));};
+    green('hearth',hive.h);green('river',hive.r);green('lantern',hive.l);green('forge',forge);
+    setW('[data-flow="dues"]',false,D/4000);
+    setW('[data-flow="backers"]',false,T/1000);
+    setW('[data-flow="fund"]',false,fund.h/700);
+    setW('[data-flow="fund2"]',false,fund.r/700);
+    setW('[data-flow="forge"]',false,forge/1800);
+    setW('[data-flow="town.hearth"]',false,(usage.h+votes.h)/1500);
+    setW('[data-flow="town.river"]',false,(usage.r+votes.r)/1500);
+    setW('[data-flow="town.lantern"]',false,(usage.l+votes.l)/1500);
+    setW('[data-flow="guild"]',false,tsum/4500);
+    setW('[data-appr="village"]',true,tsum/3600);
+    setW('[data-appr="grove"]',true,(tsum+forge)/6000);
+    RO.innerHTML='<div class="r"><span>Dues into the Treasury</span><b>'+eur(D)+'</b></div>'
+      +'<div class="r"><span>Flow Tokens into the Treasury</span><b>'+eur(T)+'</b></div>'
+      +'<div class="r"><span>The Forge (floor '+eur(FLOOR)+')</span><b>'+eur(forge)+'</b></div>'
+      +(D<FLOOR?'<div class="warn">The Forge’s floor isn’t met, so the usage streams run dry.</div>':'')
+      +'<div class="r"><span>Hearthfield</span><b>'+eur(hive.h)+'</b></div>'
+      +'<div class="r"><span>Riverbend</span><b>'+eur(hive.r)+'</b></div>'
+      +'<div class="r"><span>Lanternhill</span><b>'+eur(hive.l)+'</b></div>'
+      +'<div class="r"><span>of which fund matching</span><b>'+eur(fund.h+fund.r)+'</b></div>'
+      +'<div class="r"><span>Surplus for the Council</span><b>'+eur(surplus)+'</b></div>';
+  }
+  Object.values(I).forEach(inp=>inp.addEventListener('input',compute));
+  panel.querySelector('#reset').addEventListener('click',()=>{SL.forEach(s=>I[s[0]].value=defs[s[0]]);compute();});
+  panel.querySelector('#replay').addEventListener('click',()=>{window.Journey&&window.Journey.menu();});
+  const tog=panel.querySelector('#tog');
+  const toggle=()=>{panel.classList.toggle('collapsed');tog.textContent=panel.classList.contains('collapsed')?'show':'hide';};
+  tog.addEventListener('click',toggle);tog.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  compute();
+  panel.classList.add('hidden');
+  window.LivingMap={show:function(pre){if(pre)for(const k in pre){if(I[k])I[k].value=pre[k];}panel.classList.remove('hidden');compute();},hide:function(){panel.classList.add('hidden');},compute};
+})();
+
+/* hover tips on the labelled places */
+(function(){
+  const tip=document.createElement('div');tip.id='tip';document.body.appendChild(tip);
+  document.querySelectorAll('.lbl[data-lens]').forEach(g=>{
+    g.addEventListener('mouseenter',()=>{tip.innerHTML=`<b>${g.getAttribute('data-title')}</b>${g.getAttribute('data-sub')?g.getAttribute('data-sub')+'. ':''}<span class="l">${g.getAttribute('data-lens')}</span>`;tip.classList.add('show');});
+    g.addEventListener('mousemove',e=>{tip.style.left=Math.min(e.clientX+16,window.innerWidth-346)+'px';tip.style.top=(e.clientY+16)+'px';});
+    g.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+  });
+})();
+
+/* ===== the four storylines and the Gate ===== */
+(function(){
+  const mapSvg=document.getElementById('map');
+  const F={
+    gate:[940,0,620,430], members:[450,60,700,490], res:[380,100,900,620], council:[240,170,720,500],
+    forge:[380,180,720,520], hives:[300,300,1100,760], lant:[900,560,560,420], guildlant:[900,420,700,520],
+    store:[560,700,700,500], storewide:[540,320,820,780], grove:[60,600,1200,700], sea:[700,780,900,460],
+    backers:[1040,250,560,460], backersres:[800,170,800,560], gates:[520,270,760,520], backershives:[880,300,720,560], livemap:[-440,0,2040,1110],
+    fund:[0,290,620,460], fundhives:[0,300,1020,700], resgrove:[120,180,900,820], full:[-60,0,1720,1290]
+  };
+  const state={};
+  const S={
+    builder:{n:'1',title:'The Builder',who:'Wren',char:'wren',blurb:'A hive, its quests, an app, payouts, appreciation, and a gift to the commons.',scenes:[
+      {who:'wren',focus:'gate',wrenAt:'gate',pulse:[['gateIn','water']],say:'Wren has a project ready to build. Someone who knows her work vouched for her, so the Gate opens.',line:'I’m Wren. I’ve come to build.'},
+      {who:'wren',focus:'lant',say:'She opens a hive on Lanternhill: a team of builders with one chest for all its money. As its Hive Instigator, she invites others to build with her.',line:'One chest, so we always know what we have.'},
+      {who:'wren',focus:'lant',pulse:[['chest.workers','points']],say:'Work is offered as quests, each sized in euros before it begins. A quest of €100 earns 100 patronage points, one for one.',line:'We agree it before the work, so nobody has to guess.'},
+      {who:'narrator',focus:'guildlant',pulse:[['guild','fee']],say:'Some quests need a craft the hive doesn’t have. A facilitator from the Guild takes one on, and Lanternhill pays the Guild for its craft.'},
+      {who:'narrator',focus:'forge',pulse:[['forge','water']],say:'The Forge keeps the shared infrastructure healthy, so every hive can build on it from the first day.'},
+      {who:'wren',focus:'store',q:'Version 1 of Lanternhill’s app is ready. How does the hive offer it?',choices:[
+        {label:'Free to members',sub:'a usage stream flows from the Treasury',set:{offer:'free'},then:[
+          {who:'narrator',focus:'gates',pulse:[['gate.lantern','water']],say:'Members use it for free. From the Treasury, a usage stream flows to Lanternhill, wider the more the app is used.'}]},
+        {label:'For sale',sub:'80% to the hive, 20% to the Treasury',set:{offer:'sell'},then:[
+          {who:'narrator',focus:'storewide',pulse:[['store.lantern','coin'],['store.res','coin']],say:'Buyers pay Lanternhill’s price. 80% goes into the hive’s chest and 20% to the Treasury. An app for sale draws no usage stream.'}]}]},
+      {who:'wren',focus:'lant',pulse:[['chest.workers','coin'],['chest.wren','coin']],say:'Out of its chest, the hive pays out in order. First come patronage point payouts, shared in proportion to the points each person holds.',line:'Holding 100 of our 5,000 patronage points is 2%, so a €1,000 payout brings €20.'},
+      {who:'narrator',focus:'grove',pulse:[['lantern.grove','appr'],['lantern.river','appr']],say:'Then appreciation flows: through the Grove to the ancestors whose work the app grew from, and to the other hives whose work it stands on.'},
+      {who:'wren',focus:'sea',act:'boat',say:'Month by month its patronage points fill. When the app needs no more revenue, version 1 sails into the Open Sea, free for everyone, and its usage stream stops.',line:'Off you go. Version 2 is already on the bench.'},
+      {who:'wren',focus:'hives',q:'Lanternhill has had a good season. What does Wren do with her own patronage points?',choices:[
+        {label:'Stake them on Riverbend',sub:'their payouts flow there as funding',set:{give:'stake'},then:[
+          {who:'narrator',focus:'hives',pulse:[['stake','coin'],['stake.back','points']],say:'The payouts her points would bring now flow to Riverbend as funding, and Riverbend’s patronage points come back to her.'}]},
+        {label:'Keep building',sub:'she starts version 2',set:{give:'keep'},then:[
+          {who:'narrator',focus:'lant',pulse:[['chest.workers','points']],say:'She keeps them and posts the first quests of version 2, which issue new patronage points.'}]}]},
+      {who:'narrator',focus:'full',say:'That is a builder’s path: a hive, its quests, an app, payouts, appreciation, and a gift to the commons.'}
+    ]},
+    member:{n:'2',title:'The Member',who:'Noor',char:'noor',blurb:'Where €20 a month goes: the Council, the Forge, the usage streams, the ancestors.',scenes:[
+      {who:'noor',focus:'members',say:'Noor is a member. He pays €20 a month, and the realm’s free apps are his to use.',line:'Apps that simply work. And I can see where my €20 goes.'},
+      {who:'narrator',focus:'res',pulse:[['dues','water']],say:'His €20 falls into the Treasury with everyone else’s dues.'},
+      {who:'narrator',focus:'council',say:'Each month the Council looks at what has arrived and at the whole realm. It decides with discernment where the water goes, with no fixed rule and no set order.'},
+      {who:'narrator',focus:'forge',pulse:[['forge','water']],say:'Water goes to the Forge, up to the floor the Council sets, to keep the shared infrastructure running.'},
+      {who:'narrator',focus:'hives',pulse:[['gate.hearth','water'],['gate.river','water'],['gate.lantern','water']],say:'Water runs to the hives whose apps are free to members, wider for the apps people use most.'},
+      {who:'narrator',focus:'resgrove',pulse:[['res.holders','coin'],['res.grove','appr']],say:'Water also pays out on patronage points already held in NAOMS by people who gave time or money to build it, and flows as appreciation to NAOMS’s own ancestors in the Grove.'},
+      {who:'narrator',focus:'hives',pulse:[['gate.hearth','water'],['hearth.res','points']],say:'When the Forge and the free apps have what they need, the Council can invest the surplus in a hive, or match what others put in. The cooperative then holds that hive’s patronage points.'},
+      {who:'noor',focus:'members',q:'Noor’s friend wants to join too. How does she pay?',choices:[
+        {label:'€20 a month',sub:'lifetime after 31 months',set:{friend:'monthly'},then:[
+          {who:'narrator',focus:'res',pulse:[['dues','water']],say:'Her €20 a month joins the dues. After 31 months, €620 in all, she is a lifetime member and her dues stop.'}]},
+        {label:'€460 at once',sub:'a lifetime membership, through Riverbend',set:{friend:'lifetime'},then:[
+          {who:'narrator',focus:'hives',pulse:[['referral','coin'],['dues','water']],say:'She buys a lifetime membership for €460. She found NAOMS through Riverbend, so 20% of it, €92, goes straight into Riverbend’s chest, and the rest goes to the Treasury.'}]}]},
+      {who:'noor',focus:'full',say:'A membership carries no vote. Members’ dues keep the whole realm watered, and the Council tends where the water goes.',line:'Lifetime, eventually. I’ll still be here.'}
+    ]},
+    backer:{n:'3',title:'The Backer',who:'Noor',char:'noorb',blurb:'Flow Tokens, quadratic votes at the hives’ water gates, and patronage points in return.',scenes:[
+      {who:'noorb',focus:'backers',say:'After a while, Noor wants a voice in where the water goes. A membership carries no vote, so he becomes a backer as well.',line:'Tokens it is.'},
+      {who:'noorb',focus:'backersres',pulse:[['backers','water']],say:'He buys Flow Tokens at €7 each, up to 144. His money flows into the Treasury, and the tokens stay in his hand.',line:'They never turn back into cash, so I’ll use them.'},
+      {who:'narrator',focus:'gates',say:'At the hives’ water gates, tokens become votes. n votes on one hive cost n² tokens: 1, 4, 9, 16. Many small voices outweigh one loud one.'},
+      {who:'noorb',focus:'gates',q:'How does Noor spend his 144 tokens?',choices:[
+        {label:'Twelve votes on Lanternhill',sub:'all 144 tokens',set:{votes:'stack'},then:[
+          {who:'narrator',focus:'gates',pulse:[['gate.lantern','water']],say:'The Lanternhill gate opens wide, and Treasury water flows through it in proportion to the votes.'}]},
+        {label:'One vote on each of twelve hives',sub:'12 tokens, 132 kept',set:{votes:'spread'},then:[
+          {who:'narrator',focus:'hives',pulse:[['gate.hearth','water'],['gate.river','water'],['gate.lantern','water']],say:'Twelve gates open a little each, and he keeps 132 tokens for hives still to come.'}]}]},
+      {who:'noorb',focus:'backershives',pulse:[['points.backers','points']],say:'Each hive answers his votes with its own patronage points, the number decided by the hive.',line:'Same time next month.'}
+    ]},
+    fund:{n:'4',title:'The Fund',who:'Priya',char:'priya',blurb:'Larger capital that resources hives by matching what their backers bring.',scenes:[
+      {who:'priya',focus:'fund',say:'Priya manages a fund: a lake of larger capital, kept apart from the Treasury. No money passes between them.',line:'Members bring the steady rain. We bring the larger rains.'},
+      {who:'narrator',focus:'fund',pulse:[['investor','water'],['connector','coin']],say:'An investor brings €10,000 into the fund. The connector who walked him here receives 7% of it, €700.'},
+      {who:'narrator',focus:'fund',say:'Bringing members through the Gate earns no one a fee. A connector’s share comes only with investment.'},
+      {who:'priya',focus:'fundhives',pulse:[['gate.hearth','water'],['fund.hearth','water']],say:'Priya resources hives by matching. When backers vote Treasury water through Hearthfield’s gate, the fund adds its own water beside it.',line:'We follow the backers. They see the hives up close.'},
+      {who:'priya',focus:'fundhives',q:'Hearthfield’s backers bring €2,000 this month. How much does Priya match? (The amounts are illustrative.)',choices:[
+        {label:'One to one',sub:'€2,000 from the fund',set:{match:100},then:[
+          {who:'narrator',focus:'fundhives',pulse:[['fund.hearth','water']],say:'€2,000 flows from the fund into Hearthfield’s chest, as much as its backers’ votes brought.'}]},
+        {label:'One to two',sub:'€1,000 from the fund',set:{match:50},then:[
+          {who:'narrator',focus:'fundhives',pulse:[['fund.hearth','water']],say:'€1,000 flows from the fund into Hearthfield’s chest, beside the €2,000 its backers’ votes brought.'}]}]},
+      {who:'priya',focus:'fundhives',pulse:[['hearth.fund','points'],['fund.river','water']],say:'Hearthfield answers the fund’s water with its patronage points. As the hive pays out, the fund receives its share and puts it into the next match.',line:'The point of a fund is to become a river.'}
+    ]},
+    gate:{n:'',title:'The Gate',who:'You',char:null,blurb:'Opens once you have walked all four.',scenes:[
+      {who:'narrator',focus:'full',say:'You have walked the realm with a builder, a member, a backer and a fund.'},
+      {who:'narrator',focus:'gate',q:'You stand at the Gate. Someone who knows the work vouches for you. How do you come in?',choices:[
+        {label:'They give you a membership token',sub:'one month of membership, €20',set:{entry:'token'},then:[]},
+        {label:'You pay your own €20',sub:'a month of membership',set:{entry:'own'},then:[]}]},
+      {who:'narrator',focus:'members',pulse:[['gateIn','water'],['dues','water']],say:'The Gate lets you through. Your €20 falls into the Treasury with everyone else’s dues.'},
+      {who:'narrator',focus:'full',say:'The Gate opens, and the cooperative invites you to join. The Living Map is yours to play with.'}
+    ]}
+  };
+  const ORDER=['builder','member','backer','fund'];
+  const KEY='realm-v2-walked';
+  let walked={};try{walked=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){walked={};}
+  const saveWalked=()=>{try{localStorage.setItem(KEY,JSON.stringify(walked));}catch(e){}};
+  const allWalked=()=>ORDER.every(k=>walked[k]);
+
+  function camTo(key,dur){const end=F[key]||F.full;const start=mapSvg.getAttribute('viewBox').split(' ').map(Number);const t0=performance.now();dur=reduceMotion?1:(dur||800);
+    (function step(now){let k=Math.min(1,(now-t0)/dur);k=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      mapSvg.setAttribute('viewBox',start.map((s,i)=>(s+(end[i]-s)*k).toFixed(1)).join(' '));if(k<1)requestAnimationFrame(step);})(performance.now());}
+  function placeWren(atGate){const g=document.getElementById('ch-wren');if(!g)return;g.style.transform=atGate?'translate(150px,-512px)':'translate(0px,0px)';}
+  function speak(id){document.querySelectorAll('[id^="ch-"]').forEach(g=>g.classList.remove('speaking'));if(id&&id!=='narrator'){const g=document.getElementById('ch-'+id);if(g)g.classList.add('speaking');}}
+
+  const story=document.createElement('div');story.id='story';
+  story.innerHTML='<div id="splash"><h1>The Realm of the NAO</h1><p>A living map of how the NAOMS cooperative moves money and work. Walk four storylines with Wren, Noor and Priya, then step through the Gate.</p><button class="btn" id="enter">Enter the realm</button></div>'
+    +'<div id="menu" role="dialog" aria-label="Storylines"><div class="box"><h2>Four storylines</h2><p class="lede">Walk them in order to see every way money moves through the realm. The Gate opens when all four are walked.</p><div class="cards" id="cards"></div><div class="foot"><button class="btn ghost" id="toMap">Just explore the map</button></div></div></div>'
+    +'<div id="narr" aria-live="polite"></div>'
+    +'<div id="confirm" role="alertdialog" aria-labelledby="cfT"><div class="box"><h3 id="cfT">Are you sure?</h3><p>This will reset the entire story.</p><div class="row2"><button class="btn ghost" id="cfNo">Keep going</button><button class="btn" id="cfYes">Restart</button></div></div></div>';
+  document.body.appendChild(story);
+  const top=document.createElement('div');top.id='topbar';
+  top.innerHTML='<button id="tbRestart">Restart</button><button id="tbStories">Storylines</button><button id="tbMap">Living map</button>';
+  document.body.appendChild(top);
+  const splash=story.querySelector('#splash'),menu=story.querySelector('#menu'),narr=story.querySelector('#narr'),cards=story.querySelector('#cards');
+
+  let cur=null,list=[],idx=0,hist=[];
+  function showMenu(){clearPulses();speak(null);placeWren(false);narr.classList.remove('show');window.LivingMap.hide();camTo('full');
+    cards.innerHTML='';
+    ORDER.concat(['gate']).forEach(k=>{const sl=S[k];const locked=k==='gate'&&!allWalked();
+      const b=document.createElement('button');b.className='card';if(locked)b.setAttribute('aria-disabled','true');
+      b.innerHTML=(sl.n?'<span class="n">Storyline '+sl.n+'</span>':'<span class="n">Finale</span>')
+        +'<span class="t">'+sl.title+'</span>'+(sl.char?'<span class="c">with '+sl.who+'</span>':'')
+        +'<span class="d">'+sl.blurb+'</span>'+(walked[k]?'<span class="done">✓ walked</span>':'');
+      b.onclick=()=>{if(!locked)start(k);};cards.appendChild(b);});
+    menu.classList.add('show');}
+  function start(k){menu.classList.remove('show');cur=k;list=S[k].scenes.slice();idx=0;hist=[];render();}
+  function finish(){walked[cur]=true;saveWalked();
+    const backTo={k:cur,list:list.slice(),hist:hist.slice()};
+    const done=cur;cur=null;clearPulses();speak(null);
+    if(done==='gate'){narr.classList.remove('show');camTo('livemap');window.LivingMap.show(presets());return;}
+    const next=ORDER.find(k=>!walked[k]);
+    narr.innerHTML='<div class="who">'+S[done].title+' · walked</div><div class="say">'+(next?'Next: '+S[next].title+', with '+S[next].who+'.':'All four storylines walked. The Gate is open.')+'</div><div class="choices"></div>';
+    const ch=narr.querySelector('.choices');
+    const go=document.createElement('button');go.className='btn';go.textContent=next?'Walk '+S[next].title:'Go to the Gate';go.onclick=()=>start(next||'gate');ch.appendChild(go);
+    const m=document.createElement('button');m.className='btn ghost';m.textContent='All storylines';m.onclick=showMenu;ch.appendChild(m);
+    const nav=document.createElement('div');nav.className='nav';nav.innerHTML='<button class="back">← Back</button>';narr.appendChild(nav);
+    nav.querySelector('.back').onclick=()=>{cur=backTo.k;list=backTo.list;hist=backTo.hist;idx=list.length-1;render();};
+    camTo('full');}
+  function render(){
+    clearPulses();
+    if(idx>=list.length){finish();return;}
+    const sc=list[idx];
+    if(sc.who==='noorb'){const g=document.getElementById('ch-noorb');if(g)g.setAttribute('opacity',1);}
+    camTo(sc.focus);speak(sc.who);
+    (sc.pulse||[]).forEach(p=>addPulse(p[0],p[1]));
+    if(sc.act==='boat')sailBoat();
+    placeWren(sc.wrenAt==='gate');
+    const c=CAST[sc.who]||CAST.narrator;
+    const whoTxt=sc.who==='narrator'?'The narrator':c.name+' · '+c.role;
+    let h='<div class="who">'+S[cur].title+' · '+whoTxt+'</div>';
+    if(sc.say)h+='<div class="say">'+sc.say+'</div>';
+    if(sc.line)h+='<div class="line"><b>'+c.name+'</b>“'+sc.line+'”</div>';
+    if(sc.q)h+='<div class="q">'+sc.q+'</div>';
+    h+='<div class="choices"></div><div class="nav"><button class="back" id="back">'+(hist.length?'← Back':'← Storylines')+'</button><div class="step">'+S[cur].title+' · '+(idx+1)+' of '+list.length+'</div></div>';
+    narr.innerHTML=h;narr.classList.add('show');
+    narr.querySelector('#back').onclick=()=>{const prev=hist.pop();if(prev){list=prev.list;idx=prev.idx;render();}else{showMenu();}};
+    const ch=narr.querySelector('.choices');
+    if(sc.choices){sc.choices.forEach(o=>{const b=document.createElement('button');b.className='btn';
+      b.innerHTML=o.label+(o.sub?'<small>'+o.sub+'</small>':'');
+      b.onclick=()=>{hist.push({list:list.slice(),idx});if(o.set)Object.assign(state,o.set);list=list.slice(0,idx+1).concat(o.then||[],list.slice(idx+1));idx++;render();};ch.appendChild(b);});}
+    else{const b=document.createElement('button');b.className='btn';b.textContent=idx===list.length-1?'Finish':'Continue';
+      b.onclick=()=>{hist.push({list:list.slice(),idx});idx++;render();};ch.appendChild(b);b.focus({preventScroll:true});}
+  }
+  function presets(){const p={members:260,backers:state.votes?16:8,match:state.match!=null?state.match:100};
+    p.ul=state.offer==='free'?9:4;return p;}
+  story.querySelector('#enter').onclick=()=>{splash.classList.add('gone');showMenu();};
+  story.querySelector('#toMap').onclick=()=>{menu.classList.remove('show');camTo('livemap');window.LivingMap.show();};
+  top.querySelector('#tbStories').onclick=()=>{splash.classList.add('gone');showMenu();};
+  top.querySelector('#tbMap').onclick=()=>{splash.classList.add('gone');menu.classList.remove('show');narr.classList.remove('show');clearPulses();speak(null);camTo('livemap');window.LivingMap.show();};
+  const confirmBox=story.querySelector('#confirm');
+  top.querySelector('#tbRestart').onclick=()=>{confirmBox.classList.add('show');story.querySelector('#cfNo').focus();};
+  story.querySelector('#cfNo').onclick=()=>confirmBox.classList.remove('show');
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')confirmBox.classList.remove('show');});
+  story.querySelector('#cfYes').onclick=()=>{confirmBox.classList.remove('show');
+    walked={};saveWalked();Object.keys(state).forEach(k=>delete state[k]);cur=null;list=[];idx=0;hist=[];
+    clearPulses();speak(null);narr.classList.remove('show');menu.classList.remove('show');window.LivingMap.hide();
+    const nb=document.getElementById('ch-noorb');if(nb)nb.setAttribute('opacity',0);
+    const bt=document.getElementById('boat');if(bt){bt.setAttribute('opacity',0);bt.setAttribute('transform',`translate(905 ${SHORE+16})`);}
+    camTo('full');splash.classList.remove('gone');};
+  window.Journey={menu:showMenu};
+})();
+</script>
+</body>
+</html>

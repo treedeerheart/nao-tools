@@ -2306,7 +2306,7 @@ button{font:inherit;color:inherit}
 .canal .w-edge{stroke:#5d554a;stroke-linecap:butt;opacity:.9}.canal .w-body{stroke:var(--canal);stroke-linecap:butt}.canal .w-cur{stroke:#eef7f4;stroke-dasharray:3 12}
 .mill .w-edge{stroke:var(--mill-deep)}.mill .w-body{stroke:var(--mill)}.mill .w-cur{stroke:#e3f1f4;stroke-dasharray:3 10;animation-duration:1.1s}
 .gline .w-edge{stroke:var(--line-deep)}.gline .w-body{stroke:var(--line)}.gline .w-cur{stroke:#fff3c8}
-.aqueduct .w-cur{stroke:#fff3c8;stroke-width:1;stroke-dasharray:2 9}
+.aqueduct .w-cur{stroke:#dff2ec;stroke-width:1;stroke-dasharray:2 9}
 .flow-el .w-edge,.flow-el .w-body,.flow-el .w-cur{transition:stroke-width .9s ease, opacity .6s}
 .flow-el{transition:opacity .7s}
 .flow-el.off{opacity:0;pointer-events:none}
@@ -2366,7 +2366,7 @@ button{font:inherit;color:inherit}
 .pose-act .arm-r{animation:act 1.3s ease-in-out infinite}
 .pose-act .head{animation:nod 1.3s ease-in-out infinite}
 .pose-act .rod{animation:rod 2.4s ease-in-out infinite}
-@keyframes act{0%,100%{transform:rotate(0)}40%,60%{transform:rotate(-110deg)}}
+@keyframes act{0%,100%{transform:rotate(-40deg)}50%{transform:rotate(-66deg)}}
 @keyframes nod{0%,100%{transform:rotate(0)}50%{transform:rotate(5deg)}}
 @keyframes rod{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
 .steam{animation:steam 2s ease-in-out infinite}
@@ -2399,10 +2399,10 @@ button{font:inherit;color:inherit}
 #lensHandle{position:absolute;z-index:7;width:18px;height:92px;border-radius:9px;pointer-events:none;display:none;
   background:linear-gradient(90deg,#4a3a24,#7a5f38 45%,#3b2e1c);box-shadow:0 6px 14px rgba(40,30,15,.35);transform-origin:50% 0}
 #lensHandle.show{display:block}
-#lensCaption{position:absolute;z-index:9;pointer-events:none;display:none;max-width:260px;text-align:center;
-  font-style:italic;font-size:14px;color:var(--ink);background:rgba(243,234,213,.94);border:1px solid var(--ink-faint);
-  padding:4px 10px;border-radius:3px;box-shadow:0 2px 6px rgba(58,49,39,.15)}
-#lensCaption b{font-family:var(--caps);font-style:normal;font-size:11.5px;letter-spacing:.08em;display:block;color:var(--title)}
+#lensCaption{position:absolute;z-index:9;pointer-events:none;display:none;max-width:380px;text-align:center;
+  font-style:italic;font-size:20px;line-height:1.35;color:var(--ink);background:rgba(243,234,213,.96);border:1px solid var(--ink-faint);
+  padding:7px 14px;border-radius:4px;box-shadow:0 2px 6px rgba(58,49,39,.15)}
+#lensCaption b{font-family:var(--caps);font-style:normal;font-size:16.5px;letter-spacing:.08em;display:block;color:var(--title);margin-bottom:2px}
 #lensCaption.show{display:block}
 
 /* ---------- floating controls ---------- */
@@ -3296,7 +3296,7 @@ function buildDefs(svg) {
   const d = el('defs', {}, svg);
   const lg = (id, stops, attrs) => { const g = el('linearGradient', Object.assign({ id }, attrs || { x1: 0, y1: 0, x2: 0, y2: 1 }), d); stops.forEach(s => el('stop', { offset: s[0], 'stop-color': s[1] }, g)); };
   const rg = (id, stops) => { const g = el('radialGradient', { id, cx: '50%', cy: '45%', r: '60%' }, d); stops.forEach(s => el('stop', { offset: s[0], 'stop-color': s[1] }, g)); };
-  rg('gLake', [[0, '#a9d0cb'], [0.7, '#7fb2b0'], [1, '#5f9a9b']]);
+  rg('gLake', [[0, '#aecae6'], [0.7, '#7a9ecf'], [1, '#4e77b6']]);
   rg('gBackers', [[0, '#b7cdd6'], [0.7, '#93b1bd'], [1, '#7896a3']]);
   rg('gFund', [[0, '#93bcae'], [0.7, '#6c9c8c'], [1, '#4f7f70']]);
   lg('gSea', [[0, '#a8cdc8'], [0.4, '#86b8b4'], [1, '#6aa3a1']]);
@@ -3525,7 +3525,7 @@ function drawWater(w, rnd) {
       el('path', { d: f.d, fill: 'none', stroke: '#d9c7a0', 'stroke-width': 7.5 }, fg);
       let ar = ''; for (let i = 1; i < s.pts.length - 1; i++) { const [x, y] = s.pts[i], a = ang(s.pts, i), nx = -Math.sin(a), ny = Math.cos(a), sg = ny < 0 ? -1 : 1, bx = x + nx * 3.6 * sg, by = y + ny * 3.6 * sg, ux = Math.cos(a) * 3.2, uy = Math.sin(a) * 3.2; ar += `M${(bx - ux).toFixed(1)},${(by - uy).toFixed(1)} Q${(bx - nx * sg * 2.6).toFixed(1)},${(by - ny * sg * 2.6).toFixed(1)} ${(bx + ux).toFixed(1)},${(by + uy).toFixed(1)} `; }
       el('path', { d: ar, fill: 'none', stroke: C.ink2, 'stroke-width': 0.7 }, fg);
-      el('path', { d: f.d, fill: 'none', class: 'w-body', stroke: C.teal, 'stroke-width': f.agreed, 'data-w': 'body', style: 'stroke-linecap:butt;stroke:#c9a650' }, fg);
+      el('path', { d: f.d, fill: 'none', class: 'w-body', stroke: C.teal, 'stroke-width': f.agreed, 'data-w': 'body', style: 'stroke-linecap:butt;stroke:#6fb0a6' }, fg);
       el('path', { d: f.d, fill: 'none', class: 'w-cur', 'data-w': 'cur' }, fg);
     } else {
       el('path', { d: f.d, class: 'w-edge', 'data-w': 'edge' }, fg);
@@ -3535,7 +3535,7 @@ function drawWater(w, rnd) {
     el('path', { d: f.d, class: 'pulse-path', 'data-pulse': f.id, 'stroke-width': 10 }, fg);
     if (!reduceMotion && f.kind !== 'canal' && f.id !== 'headrace' && f.id !== 'leat') {
       const pg = el('g', { class: 'particles' }, fg);
-      for (let i = 0; i < 2; i++) { const c = el('circle', { r: f.kind === 'aqueduct' ? 1.1 : 1.5, fill: f.kind === 'line' || f.kind === 'aqueduct' ? '#fff3c8' : '#eef8f5', opacity: 0.85 }, pg); const ss = sample(f.d); w.movers.push({ el: c, s: ss, t: rnd() * ss.len, speed: 34 + rnd() * 18, loop: true, flowId: f.id }); }
+      for (let i = 0; i < 2; i++) { const c = el('circle', { r: f.kind === 'aqueduct' ? 1.1 : 1.5, fill: f.kind === 'line' ? '#fff3c8' : (f.kind === 'aqueduct' ? '#dff2ec' : '#eef8f5'), opacity: 0.85 }, pg); const ss = sample(f.d); w.movers.push({ el: c, s: ss, t: rnd() * ss.len, speed: 34 + rnd() * 18, loop: true, flowId: f.id }); }
     }
   });
   /* each free app's drop from the leat into its hive's river, with a wheel */
@@ -3555,10 +3555,7 @@ function drawRoads(w) {
     const rg = el('g', { class: 'road-g', 'data-road': r.id, 'data-hl': r.id, 'data-show': r.show || null }, w.ly.roads);
     el('path', { d: r.d, class: 'road ' + r.kind + (r.faint ? ' faint' : '') }, rg);
     el('path', { d: r.d, class: 'pulse-path', 'data-pulse': r.id, 'stroke-width': 8 }, rg);
-    if (r.carts && !reduceMotion) {
-      const c = use(r.carts === 'coin' ? 's-coin' : 's-cart', 0, 0, rg);
-      const ss = sample(r.d); w.movers.push({ el: c, s: ss, t: 0.37 * ss.len, speed: 16, loop: true, scale: r.carts === 'coin' ? 1.1 : 0.9 });
-    }
+    /* pathways are gold and static: no moving carts or coins (they read as "yellow water") */
   });
 }
 
